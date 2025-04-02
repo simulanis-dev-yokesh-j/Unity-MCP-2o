@@ -33,22 +33,43 @@ MonoBehaviour:
     - org.nuget.microsoft.bcl.asyncinterfaces
     - org.nuget.microsoft.bcl.memory
     - org.nuget.microsoft.extensions.caching.abstractions
+    - org.nuget.microsoft.extensions.configuration
     - org.nuget.microsoft.extensions.configuration.abstractions
+    - org.nuget.microsoft.extensions.configuration.binder
+    - org.nuget.microsoft.extensions.configuration.commandline
+    - org.nuget.microsoft.extensions.configuration.environmentvariables
+    - org.nuget.microsoft.extensions.configuration.fileextensions
+    - org.nuget.microsoft.extensions.configuration.json
+    - org.nuget.microsoft.extensions.configuration.usersecrets
+    - org.nuget.microsoft.extensions.dependencyinjection
     - org.nuget.microsoft.extensions.dependencyinjection.abstractions
+    - org.nuget.microsoft.extensions.diagnostics
     - org.nuget.microsoft.extensions.diagnostics.abstractions
     - org.nuget.microsoft.extensions.fileproviders.abstractions
+    - org.nuget.microsoft.extensions.fileproviders.physical
+    - org.nuget.microsoft.extensions.filesystemglobbing
+    - org.nuget.microsoft.extensions.hosting
     - org.nuget.microsoft.extensions.hosting.abstractions
+    - org.nuget.microsoft.extensions.logging
     - org.nuget.microsoft.extensions.logging.abstractions
+    - org.nuget.microsoft.extensions.logging.configuration
+    - org.nuget.microsoft.extensions.logging.console
+    - org.nuget.microsoft.extensions.logging.debug
+    - org.nuget.microsoft.extensions.logging.eventlog
+    - org.nuget.microsoft.extensions.logging.eventsource
     - org.nuget.microsoft.extensions.options
+    - org.nuget.microsoft.extensions.options.configurationextensions
     - org.nuget.microsoft.extensions.primitives
     - org.nuget.system.buffers
     - org.nuget.system.componentmodel.annotations
     - org.nuget.system.diagnostics.diagnosticsource
+    - org.nuget.system.diagnostics.eventlog
     - org.nuget.system.io.pipelines
     - org.nuget.system.memory
     - org.nuget.system.net.serversentevents
     - org.nuget.system.numerics.vectors
     - org.nuget.system.runtime.compilerservices.unsafe
+    - org.nuget.system.security.principal.windows
     - org.nuget.system.text.encodings.web
     - org.nuget.system.text.json
     - org.nuget.system.threading.channels

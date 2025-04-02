@@ -1,9 +1,9 @@
 {
-    "name": "com.ivanmurzak.Unity-MCP.Tests",
-    "rootNamespace": "",
+    "name": "com.IvanMurzak.UnityMCP.Tests",
+    "rootNamespace": "com.IvanMurzak.UnityMCP",
     "references": [
         "UnityEngine.TestRunner",
-        "com.ivanmurzak.Unity-MCP.Runtime"
+        "com.IvanMurzak.UnityMCP.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

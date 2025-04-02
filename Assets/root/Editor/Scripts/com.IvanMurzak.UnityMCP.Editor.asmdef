@@ -1,11 +1,11 @@
 {
-    "name": "com.ivanmurzak.Unity-MCP.Runtime",
-    "rootNamespace": "",
-    "references": [],
-    "includePlatforms": [],
-    "excludePlatforms": [
-        "Editor"
+    "name": "com.IvanMurzak.UnityMCP.Editor",
+    "rootNamespace": "com.IvanMurzak.UnityMCP",
+    "references": [
+        "com.IvanMurzak.UnityMCP.Runtime"
     ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],

@@ -1,11 +1,11 @@
 {
-    "name": "com.ivanmurzak.Unity-MCP.Editor.Tests",
-    "rootNamespace": "",
+    "name": "com.IvanMurzak.UnityMCP.Editor.Tests",
+    "rootNamespace": "com.IvanMurzak.UnityMCP",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "com.ivanmurzak.Unity-MCP.Runtime",
-        "com.ivanmurzak.Unity-MCP.Editor"
+        "com.IvanMurzak.UnityMCP.Runtime",
+        "com.IvanMurzak.UnityMCP.Editor"
     ],
     "includePlatforms": [
         "Editor"
