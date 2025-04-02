@@ -1,6 +1,11 @@
 {
   "dependencies": {
     "com.unity.test-framework": "1.1.33",
+    "org.nuget.microsoft.bcl.memory": "9.0.3",
+    "org.nuget.microsoft.extensions.hosting.abstractions": "9.0.3",
+    "org.nuget.microsoft.extensions.logging.abstractions": "9.0.3",
+    "org.nuget.system.text.json": "9.0.3",
+    "org.nuget.system.threading.channels": "9.0.3",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -31,6 +36,41 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
-  }
+    "com.unity.modules.xr": "1.0.0",
+    "org.nuget.microsoft.extensions.caching.abstractions": "9.0.3",
+    "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "9.0.3",
+    "org.nuget.system.diagnostics.diagnosticsource": "9.0.3",
+    "org.nuget.system.net.serversentevents": "9.0.3"
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "org.nuget.microsoft.bcl.asyncinterfaces",
+        "org.nuget.microsoft.bcl.memory",
+        "org.nuget.microsoft.extensions.caching.abstractions",
+        "org.nuget.microsoft.extensions.configuration.abstractions",
+        "org.nuget.microsoft.extensions.dependencyinjection.abstractions",
+        "org.nuget.microsoft.extensions.diagnostics.abstractions",
+        "org.nuget.microsoft.extensions.fileproviders.abstractions",
+        "org.nuget.microsoft.extensions.hosting.abstractions",
+        "org.nuget.microsoft.extensions.logging.abstractions",
+        "org.nuget.microsoft.extensions.options",
+        "org.nuget.microsoft.extensions.primitives",
+        "org.nuget.system.buffers",
+        "org.nuget.system.componentmodel.annotations",
+        "org.nuget.system.diagnostics.diagnosticsource",
+        "org.nuget.system.io.pipelines",
+        "org.nuget.system.memory",
+        "org.nuget.system.net.serversentevents",
+        "org.nuget.system.numerics.vectors",
+        "org.nuget.system.runtime.compilerservices.unsafe",
+        "org.nuget.system.text.encodings.web",
+        "org.nuget.system.text.json",
+        "org.nuget.system.threading.channels",
+        "org.nuget.system.threading.tasks.extensions"
+      ]
+    }
+  ]
 }
