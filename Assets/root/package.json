@@ -1,6 +1,6 @@
 {
     "name": "com.github.ivanmurzak.unity.mcp",
-    "displayName": "com.github.ivanmurzak.unity.mcp",
+    "displayName": "Unity MCP (Model Context Protocol)",
     "author": {
         "name": "IvanMurzak",
         "url": "https://github.com/IvanMurzak"
@@ -14,5 +14,16 @@
     "version": "0.1.0",
     "unity": "2022.3",
     "description": "Unity MCP (Model Context Protocol) package. It includes server for seamless workflow with LLM",
-    "dependencies": {}
+    "dependencies": {
+        "org.nuget.microsoft.bcl.memory": "9.0.3",
+        "org.nuget.microsoft.extensions.caching.abstractions": "9.0.3",
+        "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "9.0.3",
+        "org.nuget.microsoft.extensions.hosting": "9.0.3",
+        "org.nuget.microsoft.extensions.hosting.abstractions": "9.0.3",
+        "org.nuget.microsoft.extensions.logging.abstractions": "9.0.3",
+        "org.nuget.system.diagnostics.diagnosticsource": "9.0.3",
+        "org.nuget.system.net.serversentevents": "10.0.0-preview.2.25163.2",
+        "org.nuget.system.text.json": "9.0.3",
+        "org.nuget.system.threading.channels": "9.0.3"
+    }
 }
