@@ -1,10 +1,15 @@
 {
-    "name": "com.github.ivanmurzak.unity.mcp.Tests",
+    "name": "com.ivanmurzak.Unity-MCP.Editor.Tests",
+    "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
-        "com.github.ivanmurzak.unity.mcp.Runtime"
+        "UnityEditor.TestRunner",
+        "com.ivanmurzak.Unity-MCP.Runtime",
+        "com.ivanmurzak.Unity-MCP.Editor"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

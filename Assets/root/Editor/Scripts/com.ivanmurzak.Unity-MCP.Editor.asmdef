@@ -1,7 +1,8 @@
 {
-    "name": "com.github.ivanmurzak.unity.mcp.Editor",
+    "name": "com.ivanmurzak.Unity-MCP.Editor",
+    "rootNamespace": "",
     "references": [
-        "com.github.ivanmurzak.unity.mcp.Runtime"
+        "com.ivanmurzak.Unity-MCP.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

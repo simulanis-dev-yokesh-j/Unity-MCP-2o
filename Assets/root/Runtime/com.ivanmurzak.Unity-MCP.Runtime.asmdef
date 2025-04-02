@@ -1,5 +1,6 @@
 {
-    "name": "com.github.ivanmurzak.unity.mcp.Runtime",
+    "name": "com.ivanmurzak.Unity-MCP.Runtime",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [
