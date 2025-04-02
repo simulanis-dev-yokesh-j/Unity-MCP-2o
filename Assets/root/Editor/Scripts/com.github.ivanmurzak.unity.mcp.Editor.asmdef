@@ -1,7 +1,7 @@
 {
-    "name": "Package.Editor",
+    "name": "com.github.ivanmurzak.unity.mcp.Editor",
     "references": [
-        "Package.Runtime"
+        "com.github.ivanmurzak.unity.mcp.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
