@@ -1,9 +1,15 @@
 {
   "dependencies": {
+    "com.unity.ide.visualstudio": "2.0.23",
     "com.unity.test-framework": "1.1.33",
     "org.nuget.microsoft.bcl.memory": "9.0.3",
+    "org.nuget.microsoft.extensions.caching.abstractions": "9.0.3",
+    "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "9.0.3",
+    "org.nuget.microsoft.extensions.hosting": "9.0.3",
     "org.nuget.microsoft.extensions.hosting.abstractions": "9.0.3",
     "org.nuget.microsoft.extensions.logging.abstractions": "9.0.3",
+    "org.nuget.system.diagnostics.diagnosticsource": "9.0.3",
+    "org.nuget.system.net.serversentevents": "9.0.3",
     "org.nuget.system.text.json": "9.0.3",
     "org.nuget.system.threading.channels": "9.0.3",
     "com.unity.modules.ai": "1.0.0",
@@ -36,12 +42,7 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "org.nuget.microsoft.extensions.caching.abstractions": "9.0.3",
-    "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "9.0.3",
-    "org.nuget.system.diagnostics.diagnosticsource": "9.0.3",
-    "org.nuget.system.net.serversentevents": "9.0.3",
-    "org.nuget.microsoft.extensions.hosting": "9.0.3"
+    "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
     {
