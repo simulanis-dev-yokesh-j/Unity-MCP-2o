@@ -1,10 +1,5 @@
-using System;
-using System.Reflection;
-using System.Linq;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using Microsoft.Extensions.Options;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
@@ -16,17 +11,18 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         TcpClient tcpClient;
         NetworkStream networkStream;
 
-        readonly ILogger _logger;
+        readonly ILogger<Connector> _logger;
 
         public Status GetStatus { get; protected set; } = Status.Disconnected;
 
-        internal Connector(ILogger logger, IOptions<ConnectorConfig> configOptions)
+        public Connector(ILogger<Connector> logger, IOptions<ConnectorConfig> configOptions)
         {
             _logger = logger;
-            _logger.LogTrace($"Ctor. {Version}");
+            _logger.LogTrace($"Ctor. Version: {Version}");
 
             var config = configOptions.Value;
 
+            _logger.LogTrace($"Options. {config}");
             tcpClient = new TcpClient(config.Hostname, config.Port);
             networkStream = tcpClient.GetStream();
         }

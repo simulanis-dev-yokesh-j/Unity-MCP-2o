@@ -19,10 +19,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         [MenuItem("Tools/MCP/Connect Server")]
         static void Editor_Disconnect()
         {
-            Debug.Log($"{Consts.LogTag} [Connector] Stopping");
+            Debug.Log($"{Consts.Log.Tag} [Connector] Stopping");
             if (!HasInstance)
             {
-                Debug.Log($"{Consts.LogTag} [Connector] Already stopped");
+                Debug.Log($"{Consts.Log.Tag} [Connector] Already stopped");
                 return;
             }
             Instance.Disconnect();

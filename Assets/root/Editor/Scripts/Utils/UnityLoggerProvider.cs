@@ -1,4 +1,5 @@
 using System;
+using com.IvanMurzak.UnityMCP.Common;
 using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.UnityMCP.Editor
@@ -9,7 +10,9 @@ namespace com.IvanMurzak.UnityMCP.Editor
 
         public UnityLogger(string categoryName)
         {
-            _categoryName = categoryName;
+            _categoryName = categoryName.Contains('.')
+                ? categoryName.Substring(categoryName.LastIndexOf('.') + 1)
+                : categoryName;
         }
 
         public IDisposable BeginScope<TState>(TState state) => null!;
@@ -21,7 +24,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
             if (formatter == null) throw new ArgumentNullException(nameof(formatter));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            var message = $"[{logLevel}] {_categoryName}: {formatter(state, exception)}";
+            var message = $"{Consts.Log.Tag} {Consts.Log.Color.LevelStart}[{logLevel}]{Consts.Log.Color.LevelEnd} {Consts.Log.Color.CategoryStart}{_categoryName}:{Consts.Log.Color.CategoryEnd} {formatter(state, exception)}";
             switch (logLevel)
             {
                 case LogLevel.Critical:

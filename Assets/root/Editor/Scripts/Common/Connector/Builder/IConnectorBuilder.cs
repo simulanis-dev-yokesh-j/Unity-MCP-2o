@@ -1,7 +1,11 @@
+using System;
+using Microsoft.Extensions.Logging;
+
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public interface IConnectorBuilder
     {
-        public IConnector Build();
+        IConnectorBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder);
+        IConnector Build();
     }
 }

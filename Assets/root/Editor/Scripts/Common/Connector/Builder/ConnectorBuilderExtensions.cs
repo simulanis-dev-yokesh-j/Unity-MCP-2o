@@ -2,11 +2,13 @@ using System;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public static class ConnectorBuilderExtensions
     {
+
         public static IConnectorBuilder WithCommands(this IConnectorBuilder builder, params Type[] promptTypes)
             => WithCommands(builder, promptTypes.ToArray());
 
