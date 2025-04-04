@@ -8,7 +8,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         static Connector instance;
 
         public static bool HasInstance => instance != null;
-        public static Connector Instance => instance; // ??= new Connector();
+        public static Connector Instance => instance;
 
         [MenuItem("Tools/MCP/Start Server")]
         static void Editor_Connect()
