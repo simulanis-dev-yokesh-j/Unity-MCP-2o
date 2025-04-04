@@ -25,9 +25,9 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                     {
                         if (promptMethod.GetCustomAttribute<PromptAttribute>() is not null)
                         {
-                            builder.Services.AddSingleton((Func<IServiceProvider, Prompt>)(promptMethod.IsStatic ?
-                                services => McpServerPrompt.Create(promptMethod, options: new() { Services = services }) :
-                                services => McpServerPrompt.Create(promptMethod, promptType, new() { Services = services })));
+                            // builder.Services.AddSingleton((Func<IServiceProvider, Prompt>)(promptMethod.IsStatic ?
+                            //     services => McpServerPrompt.Create(promptMethod, options: new() { Services = services }) :
+                            //     services => McpServerPrompt.Create(promptMethod, promptType, new() { Services = services })));
                         }
                     }
                 }
