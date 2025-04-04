@@ -65,7 +65,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                         await tcpClient.ConnectAsync(_config.IPAddress, _config.Port);
                         networkStream = tcpClient.GetStream();
                         GetStatus = Status.Connected;
-                        _logger.LogInformation("Connected to server.");
+                        _logger.LogInformation("Connected to server(receiver).");
                     }
                 }
                 catch (Exception ex)
@@ -143,7 +143,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
                         _logger.LogTrace("Waiting for incoming connections...");
                         var client = await tcpListener.AcceptTcpClientAsync();
-                        _logger.LogInformation("Client connected.");
+                        _logger.LogInformation("Client(sender) connected.");
 
                         try
                         {
