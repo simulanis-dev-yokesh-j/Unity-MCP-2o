@@ -24,7 +24,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
             if (formatter == null) throw new ArgumentNullException(nameof(formatter));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            var message = $"{Consts.Log.Tag} {Consts.Log.Color.LevelStart}[{logLevel}]{Consts.Log.Color.LevelEnd} {Consts.Log.Color.CategoryStart}{_categoryName}:{Consts.Log.Color.CategoryEnd} {formatter(state, exception)}";
+            var message = $"{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}{_categoryName}{Consts.Log.Color.CategoryEnd} {Consts.Log.Color.LevelStart}[{logLevel}]{Consts.Log.Color.LevelEnd} {formatter(state, exception)}";
             switch (logLevel)
             {
                 case LogLevel.Critical:
