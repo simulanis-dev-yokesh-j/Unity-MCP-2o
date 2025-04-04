@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using ModelContextProtocol.Server;
 
 namespace com.IvanMurzak.UnityMCP.Server
 {
@@ -28,19 +29,19 @@ namespace com.IvanMurzak.UnityMCP.Server
                 .AddConnector()
                 .AddLogging(loggingBuilder =>
                 {
-                    loggingBuilder.AddSimpleConsole(options =>
-                    {
-                        options.IncludeScopes = false;
-                        options.SingleLine = true;
-                        options.TimestampFormat = "hh:mm:ss ";
-                    });
-                    loggingBuilder.AddProvider(new ConsoleLoggerProvider());
-                    // loggingBuilder.AddConsole(consoleLogOptions =>
+                    // loggingBuilder.AddSimpleConsole(options =>
                     // {
-                    //     // Ensure logs are sent to stdout
-                    //     consoleLogOptions.FormatterName = ConsoleFormatterNames.Systemd;
+                    //     options.IncludeScopes = false;
+                    //     options.SingleLine = true;
+                    //     options.TimestampFormat = "hh:mm:ss ";
                     // });
-                    loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+                    // loggingBuilder.AddProvider(new ConsoleLoggerProvider());
+                    loggingBuilder.AddConsole(consoleLogOptions =>
+                    {
+                        // Ensure logs are sent to stdout
+                        consoleLogOptions.FormatterName = ConsoleFormatterNames.Systemd;
+                    });
+                    loggingBuilder.SetMinimumLevel(LogLevel.Information);
                 })
                 .WithConfig(config =>
                 {
@@ -48,6 +49,29 @@ namespace com.IvanMurzak.UnityMCP.Server
                 })
                 .Build()
                 .Connect();
+
+            var server = builder.Services.BuildServiceProvider().GetRequiredService<IMcpServer>();
+            if (server.ServerOptions.Capabilities?.Tools?.ToolCollection != null)
+            {
+                server.ServerOptions.Capabilities.Tools.ToolCollection
+                    .Add(McpServerTool.Create(() =>
+                    {
+                        if (Connector.HasInstance)
+                        {
+                            Connector.Instance?.Send("This is custom command from server!");
+                            return Task.FromResult("This is custom response from server!");
+                        }
+                        return Task.FromResult("Connector is null");
+                    },
+                    new McpServerToolCreateOptions()
+                    {
+                        Name = "CustomCommand",
+                        Description = "This is custom command from server!"
+                    }));
+                // server.ServerOptions.Capabilities.Tools.ListChanged = true;
+            }
+            //server.ClientCapabilities.Roots.ListChanged = true; // .Sampling
+            // server.SendMessageAsync("Hello from server!"); // .Wait();
 
             await builder.Build().RunAsync();
         }

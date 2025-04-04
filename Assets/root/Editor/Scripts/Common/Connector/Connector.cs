@@ -70,7 +70,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Connection failed: {ex.Message}");
+                    _logger.LogError(ex, $"Connection failed: {ex.Message}");
                     GetStatus = Status.Disconnected;
                 }
 
@@ -122,7 +122,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             }
             catch (Exception ex)
             {
-                _logger.LogError($"SendData failed: {ex.Message}");
+                _logger.LogError(ex, $"SendData failed: {ex.Message}");
             }
         }
         async Task ReceiveData(CancellationToken cancellationToken)
@@ -137,6 +137,11 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                         {
                             _logger.LogTrace("Initializing TcpListener...");
                             tcpListener = new TcpListener(_config.IPAddress, _config.Port);
+                        }
+
+                        if (tcpListener.Server != null && !tcpListener.Server.IsBound)
+                        {
+                            _logger.LogTrace("Starting TcpListener...");
                             tcpListener.Start();
                             _logger.LogInformation($"TcpListener started on {_config.IPAddress}:{_config.Port}");
                         }
@@ -168,7 +173,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"TcpListener failed: {ex.Message}");
+                        _logger.LogError(ex, $"TcpListener failed: {ex.Message}");
                         GetStatus = Status.Disconnected;
                     }
 
@@ -181,7 +186,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ReceiveData failed: {ex.Message}");
+                _logger.LogError(ex, $"ReceiveData failed: {ex.Message}");
             }
             finally
             {
