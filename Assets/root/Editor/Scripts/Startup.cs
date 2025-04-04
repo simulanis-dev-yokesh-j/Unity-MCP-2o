@@ -11,7 +11,8 @@ namespace com.IvanMurzak.UnityMCP.Editor
     {
         static Startup()
         {
-            Debug.Log($"{Consts.Log.Tag} Startup <color=red>---------------------------------------------</color>");
+            var message = "<b><color=yellow>STARTUP</color></b>";
+            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>╭━━━━╮┈┈┈┈╭━━━━╮┈┈┈┈╭━━━━╮</color>");
 
             new ConnectorBuilder()
                 .AddLogging(loggingBuilder =>
