@@ -11,6 +11,12 @@ namespace com.IvanMurzak.UnityMCP.Editor
     {
         static Startup()
         {
+            BuildAndStart();
+        }
+
+        [MenuItem("Tools/UnityMCP/Build and Start")]
+        public static void BuildAndStart()
+        {
             var message = "<b><color=yellow>STARTUP</color></b>";
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>╭━━━━╮┈┈┈┈╭━━━━╮┈┈┈┈╭━━━━╮</color>");
 
@@ -28,7 +34,8 @@ namespace com.IvanMurzak.UnityMCP.Editor
                     loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 })
                 .WithCommandsFromAssembly(typeof(Startup).Assembly)
-                .Build();
+                .Build()
+                .Connect();
         }
     }
 }
