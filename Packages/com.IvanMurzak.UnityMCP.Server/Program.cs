@@ -14,11 +14,13 @@ namespace com.IvanMurzak.UnityMCP.Server
                 // Configure all logs to go to stderr
                 consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
             });
+
             builder.Services
                 .AddMcpServer()
                 .WithStdioServerTransport()
                 .WithPromptsFromAssembly()
                 .WithToolsFromAssembly();
+
             await builder.Build().RunAsync();
         }
     }

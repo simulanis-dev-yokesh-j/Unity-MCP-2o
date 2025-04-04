@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
-    public static class TcpConnectorBuilderExtensions
+    public static class ConnectorBuilderExtensions
     {
         public static IConnectorBuilder WithCommands(this IConnectorBuilder builder, params Type[] promptTypes)
             => WithCommands(builder, promptTypes.ToArray());
