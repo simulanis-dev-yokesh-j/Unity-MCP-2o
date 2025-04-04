@@ -6,19 +6,18 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public partial class Connector : IConnector
     {
-        [MenuItem("Tools/MCP/Start Server")]
+        [MenuItem("Tools/MCP/Connect")]
         static void Editor_Connect()
         {
             Instance.Connect();
         }
 
-        [MenuItem("Tools/MCP/Connect Server")]
+        [MenuItem("Tools/MCP/Disconnect")]
         static void Editor_Disconnect()
         {
-            Debug.Log($"{Consts.Log.Tag} [Connector] Stopping");
             if (!HasInstance)
             {
-                Debug.Log($"{Consts.Log.Tag} [Connector] Already stopped");
+                Debug.Log($"{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}[Connector]{Consts.Log.Color.CategoryEnd} Already disconnected.");
                 return;
             }
             Instance.Disconnect();

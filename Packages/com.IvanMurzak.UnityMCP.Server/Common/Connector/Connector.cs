@@ -116,6 +116,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                     _logger.LogWarning("TcpClient is not connected or NetworkStream is null.");
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogTrace("SendData operation canceled.");
+            }
             catch (Exception ex)
             {
                 _logger.LogError($"SendData failed: {ex.Message}");
@@ -170,6 +174,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
                     await Task.Delay(5000, cancellationToken); // Retry every 5 seconds
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogTrace("ReceiveData operation canceled.");
             }
             catch (Exception ex)
             {
