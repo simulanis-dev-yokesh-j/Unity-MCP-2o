@@ -9,11 +9,11 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         internal List<Action<IConnector>> buildActions = new();
 
-        readonly ServiceCollection _services;
+        readonly IServiceCollection _services;
 
-        public ConnectorBuilder()
+        public ConnectorBuilder(IServiceCollection? services = null)
         {
-            _services = new ServiceCollection();
+            _services = services ?? new ServiceCollection();
             _services.AddTransient<IConnector, Connector>();
         }
 
@@ -23,29 +23,14 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             return this;
         }
 
+        public IConnectorBuilder WithConfig(Action<ConnectorConfig> config)
+        {
+            _services.Configure(config);
+            return this;
+        }
+
         public IConnector Build() => _services
             .BuildServiceProvider()
             .GetRequiredService<IConnector>();
-
-        public IConnector TEST()
-        {
-            var services = new ServiceCollection();
-
-            // Register ConnectorConfig with default values or from configuration
-            services.Configure<ConnectorConfig>(config =>
-            {
-                config.Hostname = "127.0.0.1"; // Replace with actual hostname
-                config.Port = 60606;          // Replace with actual port
-            });
-
-            // Register ILogger (if not already registered)
-            services.AddLogging();
-
-            // Register Connector
-            services.AddTransient<IConnector, Connector>();
-
-            var serviceProvider = services.BuildServiceProvider();
-            return serviceProvider.GetRequiredService<IConnector>();
-        }
     }
 }

@@ -184,13 +184,19 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         {
             _logger.LogTrace("Disconnect");
             cancellationTokenSource?.Cancel();
+            tcpClient?.Close();
+            tcpListener?.Stop();
             Dispose();
         }
         public void Dispose()
         {
             _logger.LogTrace("Dispose");
+            cancellationTokenSource?.Dispose();
+            cancellationTokenSource = null;
             tcpClient?.Close();
             tcpClient?.Dispose();
+            tcpListener?.Stop();
+            tcpListener = null;
             networkStream?.Close();
             networkStream = null;
             tcpClient = null;

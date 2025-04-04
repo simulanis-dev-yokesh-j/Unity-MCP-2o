@@ -1,12 +1,16 @@
 using System;
-using System.Reflection;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public static class ConnectorBuilderExtensions
     {
+        public static IConnectorBuilder AddConnector(this IServiceCollection services)
+            => new ConnectorBuilder(services);
+
         public static IConnectorBuilder WithCommands(this IConnectorBuilder builder, params Type[] promptTypes)
             => WithCommands(builder, promptTypes.ToArray());
 

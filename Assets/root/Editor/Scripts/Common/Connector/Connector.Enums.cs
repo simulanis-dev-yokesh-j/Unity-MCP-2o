@@ -10,5 +10,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             Disconnecting = 3,
             Error = 4
         }
+        public enum ConnectionType
+        {
+            Client = 0,
+            Server = 1
+        }
     }
 }
