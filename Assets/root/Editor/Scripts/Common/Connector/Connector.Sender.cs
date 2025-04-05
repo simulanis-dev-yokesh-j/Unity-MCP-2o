@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,12 +11,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         public class Sender : IConnectorSender
         {
-            // Task? taskConnection;
-            Task? taskDataSend;
             TcpClient? tcpClient;
-            NetworkStream? networkStream;
-            // CancellationTokenSource? cancellationTokenSource;
-            Queue<string> sendQueue = new();
+            NetworkStream? stream;
 
             readonly ILogger<Sender> _logger;
             readonly ConnectorConfig _config;
@@ -37,74 +32,28 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 Dispose();
             }
 
-            async Task MonitorConnection(CancellationToken cancellationToken)
-            {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    try
-                    {
-                        if (tcpClient == null || !tcpClient.Connected)
-                        {
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, $"Connection failed: {ex.Message}");
-                        GetStatus = Status.Disconnected;
-                    }
-
-                    await Task.Delay(5000, cancellationToken); // Retry every 5 seconds
-                }
-            }
-            public Task Send(string data, CancellationToken cancellationToken = default)
-            {
-                _logger.LogTrace($"Send. Data: {data}");
-                lock (sendQueue)
-                {
-                    sendQueue.Enqueue(data);
-                    if (taskDataSend == null || taskDataSend.IsCompleted)
-                    {
-                        taskDataSend = Task.Run(async () =>
-                        {
-                            while (sendQueue.Count > 0 && !cancellationToken.IsCancellationRequested)
-                            {
-                                string dataToSend;
-                                lock (sendQueue)
-                                {
-                                    dataToSend = sendQueue.Dequeue();
-                                }
-                                await SendData(dataToSend, cancellationToken);
-                            }
-                        }, cancellationToken);
-                    }
-                }
-                return taskDataSend;
-            }
-            async Task<bool> SendData(string data, CancellationToken cancellationToken)
+            public async Task<string> Send(string data, CancellationToken cancellationToken = default)
             {
                 try
                 {
-                    await BuildConnectionIfNeeded(cancellationToken);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(data);
-                    await networkStream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
-                    _logger.LogInformation($"Sent data: {data}");
+                    BuildConnectionIfNeeded(cancellationToken).Wait(cancellationToken);
+
+                    await TcpUtils.SendAsync(stream, data, cancellationToken);
+                    return await TcpUtils.ReadResponseAsync(stream, cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
                     _logger.LogTrace("SendData operation canceled.");
-                    return false;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"SendData failed: {ex.Message}");
-                    return false;
+                    _logger.LogError(ex, "SendData failed: {0}", ex.Message);
                 }
-                return true;
+                return null;
             }
             Task BuildConnectionIfNeeded(CancellationToken cancellationToken)
             {
-                if (tcpClient == null || !tcpClient.Connected || networkStream == null)
+                if (tcpClient == null || !tcpClient.Connected || stream == null)
                 {
                     _logger.LogInformation("Connection is not established.");
                     return BuildConnection(cancellationToken);
@@ -121,7 +70,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
                 tcpClient = new TcpClient();
                 await tcpClient.ConnectAsync(_config.IPAddress, port);
-                networkStream = tcpClient.GetStream();
+                stream = tcpClient.GetStream();
                 GetStatus = Status.Connected;
                 _logger.LogInformation("Connected to server(receiver): {0}:{1}", _config.IPAddress, port);
             }
@@ -131,12 +80,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 tcpClient?.Close();
                 tcpClient?.Dispose();
                 tcpClient = null;
-                networkStream?.Close();
-                networkStream = null;
-
-                // cancellationTokenSource?.Cancel();
-                // cancellationTokenSource?.Dispose();
-                // cancellationTokenSource = null;
+                stream?.Close();
+                stream = null;
 
                 GetStatus = Status.Disconnected;
             }
