@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -23,13 +20,13 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         public Connector(ILogger<Connector> logger, IConnectorReceiver receiver, IConnectorSender sender, IOptions<ConnectorConfig> configOptions)
         {
             _logger = logger;
-            _logger.LogTrace($"Ctor. Version: {Version}");
+            _logger.LogTrace("Ctor. Version: {0}", Version);
 
             _receiver = receiver;
             _sender = sender;
 
             _config = configOptions.Value;
-            _logger.LogTrace($"Options. {_config}");
+            _logger.LogTrace("Options. {0}", _config);
 
             if (HasInstance)
             {
@@ -42,9 +39,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
         public void Connect()
         {
-            _logger.LogTrace("Connect");
             _receiver.Connect();
-            _sender.Connect();
         }
 
         public Task<string?> Send(string message, CancellationToken cancellationToken = default)
@@ -56,12 +51,14 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
         public void Disconnect()
         {
-            _logger.LogTrace("Disconnect");
-            Dispose();
+            _receiver.Disconnect();
+            _sender.Disconnect();
         }
+
         public void Dispose()
         {
-            _logger.LogTrace("Dispose");
+            _receiver.Dispose();
+            _sender.Dispose();
         }
         ~Connector() => Dispose();
     }

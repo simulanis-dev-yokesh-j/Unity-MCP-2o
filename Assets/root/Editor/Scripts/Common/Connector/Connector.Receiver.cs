@@ -26,7 +26,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             {
                 _logger = logger;
                 _config = configOptions.Value;
-                _logger.LogTrace($"Ctor. {_config}");
+                _logger.LogTrace("Ctor. {0}", _config);
             }
 
             public void Connect()
@@ -74,17 +74,20 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                     {
                         _logger.LogTrace("Starting TcpListener...");
                         tcpListener.Start();
-                        _logger.LogInformation($"TcpListener started on {_config.IPAddress}:{port}");
+                        _logger.LogInformation("TcpListener started on  {0}:{1}.", _config.IPAddress, port);
                     }
                     while (!cancellationToken.IsCancellationRequested)
                     {
                         try
                         {
-                            _logger.LogTrace("Waiting for incoming(sender) connections...");
+                            _logger.LogTrace("Waiting for incoming(sender) connections... {0}:{1}.", _config.IPAddress, port);
                             if (tcpListener == null)
+                            {
+                                _logger.LogWarning("TcpListener is null. Exiting.");
                                 break;
+                            }
                             var client = await tcpListener.AcceptTcpClientAsync();
-                            _logger.LogInformation("Client(sender) connected.");
+                            _logger.LogInformation("Client(sender) connected, {0}:{1}.", _config.IPAddress, port);
 
                             try
                             {
@@ -99,8 +102,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                                             memoryStream.Write(buffer, 0, bytesRead);
 
                                         var receivedData = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
-                                        _logger.LogTrace($"TcpListener Received full data: {receivedData}");
-                                        // Process the received data here
+                                        _logger.LogTrace("TcpListener Received full data: {0}", receivedData);
 
                                         if (waitingForData)
                                         {
@@ -111,18 +113,18 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                             }
                             finally
                             {
-                                _logger.LogInformation("Client(Sender) disconnected.");
+                                _logger.LogInformation("Client(sender) disconnected.");
                                 client.Close();
                             }
                         }
                         catch (ObjectDisposedException ex)
                         {
-                            _logger.LogTrace(ex, $"TcpListener disposed object exception. Ignoring.");
+                            _logger.LogTrace(ex, "TcpListener disposed object exception. Ignoring.");
                             GetStatus = Status.Disconnected;
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, $"TcpListener failed: {ex.Message}");
+                            _logger.LogError(ex, "TcpListener failed: {0}", ex.Message);
                             GetStatus = Status.Disconnected;
                         }
 
@@ -135,7 +137,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"TcpListener failed: {ex.Message}");
+                    _logger.LogError(ex, "TcpListener failed {0}", ex.Message);
                 }
                 finally
                 {

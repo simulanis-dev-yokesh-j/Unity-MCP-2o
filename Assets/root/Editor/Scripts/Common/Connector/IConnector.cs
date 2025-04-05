@@ -22,7 +22,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     public interface IConnectorSender : IDisposable
     {
         Connector.Status GetStatus { get; }
-        void Connect();
         void Disconnect();
         Task Send(string message, CancellationToken cancellationToken = default);
     }

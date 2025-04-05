@@ -12,11 +12,11 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         public class Sender : IConnectorSender
         {
-            Task? taskConnection;
+            // Task? taskConnection;
             Task? taskDataSend;
             TcpClient? tcpClient;
             NetworkStream? networkStream;
-            CancellationTokenSource? cancellationTokenSource;
+            // CancellationTokenSource? cancellationTokenSource;
             Queue<string> sendQueue = new();
 
             readonly ILogger<Sender> _logger;
@@ -28,22 +28,12 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             {
                 _logger = logger;
                 _config = configOptions.Value;
-                _logger.LogTrace($"Ctor. {_config}");
-            }
-
-            public void Connect()
-            {
-                _logger.LogTrace("Connect");
-                cancellationTokenSource?.Cancel();
-                cancellationTokenSource = new CancellationTokenSource();
-                taskConnection = Task.Run(() => MonitorConnection(cancellationTokenSource.Token));
+                _logger.LogTrace("Ctor. {0}", _config);
             }
 
             public void Disconnect()
             {
                 _logger.LogTrace("Disconnect");
-                cancellationTokenSource?.Cancel();
-                tcpClient?.Close();
                 Dispose();
             }
 
@@ -55,16 +45,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                     {
                         if (tcpClient == null || !tcpClient.Connected)
                         {
-                            var port = _config.ConnectionType == ConnectionRole.Unity
-                                ? _config.PortUnity
-                                : _config.PortServer;
-                            _logger.LogTrace("Attempting to connect...: {0}:{1}", _config.IPAddress, port);
 
-                            tcpClient = new TcpClient();
-                            await tcpClient.ConnectAsync(_config.IPAddress, port);
-                            networkStream = tcpClient.GetStream();
-                            GetStatus = Status.Connected;
-                            _logger.LogInformation("Connected to server(receiver): {0}:{1}", _config.IPAddress, port);
                         }
                     }
                     catch (Exception ex)
@@ -100,42 +81,70 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 }
                 return taskDataSend;
             }
-            async Task SendData(string data, CancellationToken cancellationToken)
+            async Task<bool> SendData(string data, CancellationToken cancellationToken)
             {
                 try
                 {
-                    if (tcpClient != null && tcpClient.Connected && networkStream != null)
-                    {
-                        var buffer = System.Text.Encoding.UTF8.GetBytes(data);
-                        await networkStream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
-                        _logger.LogInformation($"Sent data: {data}");
-                    }
-                    else
-                    {
-                        _logger.LogWarning("TcpClient is not connected or NetworkStream is null.");
-                    }
+                    await BuildConnectionIfNeeded(cancellationToken);
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(data);
+                    await networkStream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
+                    _logger.LogInformation($"Sent data: {data}");
                 }
                 catch (OperationCanceledException)
                 {
                     _logger.LogTrace("SendData operation canceled.");
+                    return false;
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, $"SendData failed: {ex.Message}");
+                    return false;
                 }
+                return true;
             }
-
-            public void Dispose()
+            Task BuildConnectionIfNeeded(CancellationToken cancellationToken)
             {
-                _logger.LogTrace("Dispose");
-                cancellationTokenSource?.Dispose();
-                cancellationTokenSource = null;
+                if (tcpClient == null || !tcpClient.Connected || networkStream == null)
+                {
+                    _logger.LogInformation("Connection is not established.");
+                    return BuildConnection(cancellationToken);
+                }
+                return Task.CompletedTask;
+            }
+            async Task BuildConnection(CancellationToken cancellationToken)
+            {
+                Clear();
+                var port = _config.ConnectionType == ConnectionRole.Unity
+                    ? _config.PortUnity
+                    : _config.PortServer;
+                _logger.LogTrace("Attempting to connect...: {0}:{1}", _config.IPAddress, port);
+
+                tcpClient = new TcpClient();
+                await tcpClient.ConnectAsync(_config.IPAddress, port);
+                networkStream = tcpClient.GetStream();
+                GetStatus = Status.Connected;
+                _logger.LogInformation("Connected to server(receiver): {0}:{1}", _config.IPAddress, port);
+            }
+            void Clear()
+            {
+                _logger.LogTrace("Clear");
                 tcpClient?.Close();
                 tcpClient?.Dispose();
                 tcpClient = null;
                 networkStream?.Close();
                 networkStream = null;
+
+                // cancellationTokenSource?.Cancel();
+                // cancellationTokenSource?.Dispose();
+                // cancellationTokenSource = null;
+
                 GetStatus = Status.Disconnected;
+            }
+
+            public void Dispose()
+            {
+                _logger.LogTrace("Dispose");
+                Clear();
             }
 
             ~Sender() => Dispose();
