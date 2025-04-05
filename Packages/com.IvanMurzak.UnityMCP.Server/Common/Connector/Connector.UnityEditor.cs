@@ -17,7 +17,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         {
             if (!HasInstance)
             {
-                Debug.Log($"{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}[Connector]{Consts.Log.Color.CategoryEnd} Already disconnected.");
+                Debug.Log($"{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}Connector{Consts.Log.Color.CategoryEnd} Already disconnected.");
                 return;
             }
             Instance.Disconnect();
