@@ -35,7 +35,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 Clear();
             }
 
-            public async Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default)
+            public async Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default)
             {
                 try
                 {
@@ -60,6 +60,16 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 {
                     _logger.LogError(ex, "SendData failed: {0}", ex.Message);
                 }
+                finally
+                {
+                    if (tcpClient != null && tcpClient.Connected)
+                    {
+                        _logger.LogTrace("Closing connection.");
+                        tcpClient.Close();
+                    }
+                }
+                if (retry > 0)
+                    return await Send(data, retry - 1, cancellationToken);
                 return null;
             }
             Task BuildConnectionIfNeeded(CancellationToken cancellationToken)

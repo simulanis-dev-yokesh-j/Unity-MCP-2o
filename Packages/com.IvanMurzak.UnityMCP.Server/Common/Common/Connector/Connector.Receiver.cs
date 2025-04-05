@@ -80,14 +80,37 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                             {
                                 var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
                                 _logger.LogTrace("Received data: {0}", receivedData);
-                                _onReceivedData.OnNext(receivedData.ParseDataPackage());
 
-                                await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Success, cancellationToken);
+                                var dataPackage = receivedData.ParseDataPackage();
+                                if (dataPackage == null)
+                                {
+                                    _logger.LogWarning("Received data is null. Ignoring.");
+                                    continue;
+                                }
+
+                                _onReceivedData.OnNext(dataPackage);
+
+                                if (dataPackage?.Command != null)
+                                {
+                                    var result = _commandDispatcher.Dispatch(dataPackage.Command);
+                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                }
+                                else if (dataPackage?.Notification != null)
+                                {
+                                    // var result = _notificationDispatcher.Dispatch(dataPackage.Response);
+                                    // await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                    await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Error, cancellationToken);
+                                }
+                                else
+                                {
+                                    _logger.LogWarning("Received data is not a command or notification. Ignoring.");
+                                    await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Error, cancellationToken);
+                                }
                             }
                         }
                         finally
                         {
-                            _logger.LogTrace("Data receiving completed.");
+                            _logger.LogTrace("Data receiving and processing is completed.");
                             client.Close();
                         }
                     }
@@ -106,7 +129,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                         Disconnect();
                     }
 
-                    await Task.Delay(5000, cancellationToken); // Retry every 5 seconds
+                    await Task.Yield();  // (5000, cancellationToken); // Retry every 5 seconds
                 }
             }
 

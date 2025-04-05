@@ -14,7 +14,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         Observable<IDataPackage?> OnReceivedData { get; }
         void Connect();
         void Disconnect();
-        Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default);
+        Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default);
     }
     public interface IConnectorReceiver : IDisposable
     {
@@ -27,6 +27,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         Connector.Status GetStatus { get; }
         void Disconnect();
-        Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default);
+        Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default);
     }
 }

@@ -17,9 +17,8 @@ namespace com.IvanMurzak.UnityMCP.Common
 
             await stream.WriteAsync(lengthPrefix, 0, lengthPrefix.Length, cancellationToken);
             if (cancellationToken.IsCancellationRequested)
-            {
                 throw new OperationCanceledException(cancellationToken);
-            }
+
             await stream.WriteAsync(messageBytes, 0, messageBytes.Length, cancellationToken);
         }
 

@@ -44,8 +44,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             _receiver.Connect();
         }
 
-        public Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default)
-            => _sender.Send(data, cancellationToken);
+        public Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default)
+            => _sender.Send(data, retry, cancellationToken);
 
         public void Disconnect()
         {
