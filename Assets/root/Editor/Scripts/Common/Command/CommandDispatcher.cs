@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using com.IvanMurzak.UnityMCP.Common.API;
+using com.IvanMurzak.UnityMCP.Common.Data;
 using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.UnityMCP.Common
@@ -22,14 +22,14 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// Executes a command based on the provided CommandData.
         /// </summary>
         /// <param name="data">The CommandData containing the command name and parameters.</param>
-        public ICommandResponseData Dispatch(ICommandData data)
+        public IResponseData Dispatch(ICommandData data)
         {
             if (data == null)
-                return CommandResponseData.Error("Command data is null.")
+                return ResponseData.Error("Command data is null.")
                     .Log(_logger);
 
             if (!_commands.TryGetValue(data.Name, out var command))
-                return CommandResponseData.Error($"Command with name '{data.Name}' not found.")
+                return ResponseData.Error($"Command with name '{data.Name}' not found.")
                     .Log(_logger);
 
             try
@@ -44,7 +44,7 @@ namespace com.IvanMurzak.UnityMCP.Common
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return CommandResponseData.Error($"Failed to execute command '{data.Name}'. Exception: {ex}")
+                return ResponseData.Error($"Failed to execute command '{data.Name}'. Exception: {ex}")
                     .Log(_logger);
             }
         }

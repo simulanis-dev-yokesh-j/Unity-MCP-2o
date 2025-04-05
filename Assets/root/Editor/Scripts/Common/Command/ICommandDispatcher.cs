@@ -1,8 +1,9 @@
 using System;
-namespace com.IvanMurzak.UnityMCP.Common.API
+using com.IvanMurzak.UnityMCP.Common.Data;
+namespace com.IvanMurzak.UnityMCP.Common
 {
     public interface ICommandDispatcher : IDisposable
     {
-        ICommandResponseData Dispatch(ICommandData data);
+        IResponseData Dispatch(ICommandData data);
     }
 }

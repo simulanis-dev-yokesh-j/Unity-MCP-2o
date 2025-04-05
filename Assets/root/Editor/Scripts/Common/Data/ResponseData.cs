@@ -1,17 +1,17 @@
-namespace com.IvanMurzak.UnityMCP.Common.API
+namespace com.IvanMurzak.UnityMCP.Common.Data
 {
-    public class CommandResponseData : ICommandResponseData
+    public class ResponseData : IResponseData
     {
         public bool IsSuccess { get; set; }
         public string? SuccessMessage { get; set; } = null;
         public string? ErrorMessage { get; set; } = null;
 
-        public static CommandResponseData Success(string message = null) => new CommandResponseData()
+        public static ResponseData Success(string message = null) => new ResponseData()
         {
             IsSuccess = true,
             SuccessMessage = message
         };
-        public static CommandResponseData Error(string message = null) => new CommandResponseData()
+        public static ResponseData Error(string message = null) => new ResponseData()
         {
             IsSuccess = false,
             ErrorMessage = message

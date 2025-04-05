@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using com.IvanMurzak.UnityMCP.Common.Data;
 
-namespace com.IvanMurzak.UnityMCP.Common.API
+namespace com.IvanMurzak.UnityMCP.Common
 {
     public interface ICommand
     {
@@ -9,7 +10,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        ICommandResponseData Execute(params object[] parameters);
+        IResponseData Execute(params object[] parameters);
 
         /// <summary>
         /// Executes the target method with named parameters.
@@ -17,6 +18,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        ICommandResponseData Execute(IDictionary<string, object?> namedParameters);
+        IResponseData Execute(IDictionary<string, object?> namedParameters);
     }
 }

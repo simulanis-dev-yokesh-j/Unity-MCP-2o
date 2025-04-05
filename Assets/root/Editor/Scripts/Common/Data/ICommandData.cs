@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace com.IvanMurzak.UnityMCP.Common.API
+namespace com.IvanMurzak.UnityMCP.Common.Data
 {
     public interface ICommandData : IDisposable
     {

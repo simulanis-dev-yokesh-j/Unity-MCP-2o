@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.UnityMCP.Common.Data;
 using R3;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
@@ -9,21 +10,22 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         Connector.Status ReceiverStatus { get; }
         Connector.Status SenderStatus { get; }
+        Observable<IDataPackage?> OnReceivedData { get; }
         void Connect();
-        Task<string?> Send(string message, CancellationToken cancellationToken = default);
         void Disconnect();
+        Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default);
     }
     public interface IConnectorReceiver : IDisposable
     {
         Connector.Status GetStatus { get; }
         void Connect();
         void Disconnect();
-        Observable<string?> OnReceivedData { get; }
+        Observable<IDataPackage?> OnReceivedData { get; }
     }
     public interface IConnectorSender : IDisposable
     {
         Connector.Status GetStatus { get; }
         void Disconnect();
-        Task<string?> Send(string message, CancellationToken cancellationToken = default);
+        Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default);
     }
 }

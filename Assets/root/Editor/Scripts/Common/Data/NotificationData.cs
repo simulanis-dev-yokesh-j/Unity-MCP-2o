@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace com.IvanMurzak.UnityMCP.Common.API
+namespace com.IvanMurzak.UnityMCP.Common.Data
 {
-    public class CommandData : ICommandData
+    public class NotificationData : INotificationData
     {
         public string Name { get; set; }
         public Dictionary<string, object?> Parameters { get; set; } = new();
@@ -11,6 +11,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         {
             Parameters.Clear();
         }
-        ~CommandData() => Dispose();
+        ~NotificationData() => Dispose();
     }
 }

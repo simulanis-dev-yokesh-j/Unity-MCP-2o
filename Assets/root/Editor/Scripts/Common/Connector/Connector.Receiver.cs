@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.UnityMCP.Common.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using R3;
@@ -20,10 +21,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             readonly ILogger<Receiver> _logger;
             readonly ICommandDispatcher _commandDispatcher;
             readonly ConnectorConfig _config;
-            readonly Subject<string?> _onReceivedData = new();
+            readonly Subject<IDataPackage?> _onReceivedData = new();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
-            public Observable<string?> OnReceivedData => _onReceivedData;
+            public Observable<IDataPackage?> OnReceivedData => _onReceivedData;
 
             public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IOptions<ConnectorConfig> configOptions)
             {
@@ -79,7 +80,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                             {
                                 var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
                                 _logger.LogTrace("Received data: {0}", receivedData);
-                                _onReceivedData.OnNext(receivedData);
+                                _onReceivedData.OnNext(receivedData.ParseDataPackage());
 
                                 await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Success, cancellationToken);
                             }

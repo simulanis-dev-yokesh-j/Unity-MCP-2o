@@ -2,6 +2,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.UnityMCP.Common.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -33,7 +34,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 Clear();
             }
 
-            public async Task<string?> Send(string data, CancellationToken cancellationToken = default)
+            public async Task<IResponseData?> Send(IDataPackage data, CancellationToken cancellationToken = default)
             {
                 try
                 {
@@ -45,8 +46,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                         return null;
                     }
 
-                    await TcpUtils.SendAsync(stream, data, cancellationToken);
-                    return await TcpUtils.ReadResponseAsync(stream, cancellationToken);
+                    var json = data.ToJson();
+                    await TcpUtils.SendAsync(stream, json, cancellationToken);
+                    var jsonResponse = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
+                    return jsonResponse.ParseResponseData();
                 }
                 catch (OperationCanceledException)
                 {

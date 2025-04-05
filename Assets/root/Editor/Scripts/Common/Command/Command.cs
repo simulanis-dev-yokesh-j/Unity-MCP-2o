@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using com.IvanMurzak.UnityMCP.Common.API;
+using com.IvanMurzak.UnityMCP.Common.Data;
 
 namespace com.IvanMurzak.UnityMCP.Common
 {
@@ -79,7 +79,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public ICommandResponseData Execute(params object[] parameters)
+        public IResponseData Execute(params object[] parameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -89,7 +89,7 @@ namespace com.IvanMurzak.UnityMCP.Common
 
             // Invoke the method (static or instance)
             var result = _methodInfo.Invoke(instance, BuildParameters(parameters));
-            return result as ICommandResponseData ?? CommandResponseData.Success(result.ToString());
+            return result as IResponseData ?? ResponseData.Success(result.ToString());
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public ICommandResponseData Execute(IDictionary<string, object?> namedParameters)
+        public IResponseData Execute(IDictionary<string, object?> namedParameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -108,7 +108,7 @@ namespace com.IvanMurzak.UnityMCP.Common
 
             // Invoke the method (static or instance)
             var result = _methodInfo.Invoke(instance, BuildParameters(namedParameters));
-            return result as ICommandResponseData ?? CommandResponseData.Success(result.ToString());
+            return result as IResponseData ?? ResponseData.Success(result.ToString());
         }
 
         object[] BuildParameters(object[] parameters)

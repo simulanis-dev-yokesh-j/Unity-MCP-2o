@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace com.IvanMurzak.UnityMCP.Common.API
+namespace com.IvanMurzak.UnityMCP.Common
 {
     public static class TcpUtils
     {
