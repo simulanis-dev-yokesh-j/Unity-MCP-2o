@@ -1,5 +1,7 @@
+using com.IvanMurzak.UnityMCP.Common.API;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace com.IvanMurzak.UnityMCP.Server.API.Tool
 {
@@ -7,6 +9,7 @@ namespace com.IvanMurzak.UnityMCP.Server.API.Tool
     public static class ToolGameObject
     {
         [McpServerTool, Description("Creates gameObject at specific path with specific name")]
-        public static string Create(string path, string name) => $"Create at {path} with name {name}";
+        public static Task<string?> Create(string path, string name)
+            => Connector.Instance?.Send($"CreateGameObject {path} {name}") ?? Task.FromResult<string?>(null);
     }
 }
