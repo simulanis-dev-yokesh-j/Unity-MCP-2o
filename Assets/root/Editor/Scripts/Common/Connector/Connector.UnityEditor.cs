@@ -6,13 +6,13 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public partial class Connector : IConnector
     {
-        [MenuItem("Tools/MCP/Connect")]
+        [MenuItem("Tools/Unity-MCP/Connect", priority = 1001)]
         static void Editor_Connect()
         {
             Instance.Connect();
         }
 
-        [MenuItem("Tools/MCP/Disconnect")]
+        [MenuItem("Tools/Unity-MCP/Disconnect", priority = 1001)]
         static void Editor_Disconnect()
         {
             if (!HasInstance)

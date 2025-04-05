@@ -23,11 +23,11 @@ namespace com.IvanMurzak.UnityMCP.Editor
             CompileServerIfNeeded();
         }
 
-        [MenuItem("Tools/UnityMCP/Build and Start")]
+        [MenuItem("Tools/Unity-MCP/Build and Start", priority = 1000)]
         public static void BuildAndStart()
         {
             var message = "<b><color=yellow>STARTUP</color></b>";
-            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>╭━━━━╮┈┈┈┈╭━━━━╮┈┈┈┈╭━━━━╮</color>");
+            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>⊂(◉‿◉)つ</color>");
 
             new ConnectorBuilder()
                 .WithConfig(config =>
@@ -55,11 +55,11 @@ namespace com.IvanMurzak.UnityMCP.Editor
             CompileServer();
         }
 
-        [MenuItem("Tools/UnityMCP/Compile server")]
+        [MenuItem("Tools/Unity-MCP/Server/Build", priority = 1010)]
         public static void CompileServer()
         {
-            var message = "<b><color=yellow>Server Compilation</color></b>";
-            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>╰━━━━╯┈┈┈┈╰━━━━╯┈┈┈┈╰━━━━╯</color>");
+            var message = "<b><color=yellow>Server Build</color></b>";
+            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
 
             var processStartInfo = new ProcessStartInfo
             {
@@ -74,6 +74,8 @@ namespace com.IvanMurzak.UnityMCP.Editor
 
             using (var process = new Process { StartInfo = processStartInfo })
             {
+                Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
+                Debug.Log($"{Consts.Log.Tag} Command: <color=#8CFFD1>{processStartInfo.FileName} {processStartInfo.Arguments}</color>");
                 process.Start();
 
                 // Read the output and error streams
