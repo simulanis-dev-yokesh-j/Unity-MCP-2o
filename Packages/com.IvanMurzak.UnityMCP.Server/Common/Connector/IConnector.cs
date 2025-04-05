@@ -17,12 +17,11 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         Connector.Status GetStatus { get; }
         void Connect();
         void Disconnect();
-        Task<string?> Receive(CancellationToken cancellationToken = default);
     }
     public interface IConnectorSender : IDisposable
     {
         Connector.Status GetStatus { get; }
         void Disconnect();
-        Task Send(string message, CancellationToken cancellationToken = default);
+        Task<string?> Send(string message, CancellationToken cancellationToken = default);
     }
 }

@@ -14,8 +14,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             Task? taskConnection;
             TcpListener? tcpListener;
             CancellationTokenSource? cancellationTokenSource;
-            bool waitingForData = false;
-            string? receivedData = null;
 
             readonly ILogger<Receiver> _logger;
             readonly ConnectorConfig _config;
@@ -44,16 +42,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 tcpListener?.Stop();
                 tcpListener = null;
                 Dispose();
-            }
-            public async Task<string?> Receive(CancellationToken cancellationToken = default)
-            {
-                _logger.LogTrace("Receive");
-                waitingForData = true;
-                while (receivedData == null && !cancellationToken.IsCancellationRequested)
-                {
-                    await Task.Delay(10, cancellationToken);
-                }
-                return receivedData;
             }
 
             async Task ReceiveData(CancellationToken cancellationToken)
@@ -93,22 +81,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                             {
                                 using (var stream = client.GetStream())
                                 {
-                                    using (var memoryStream = new System.IO.MemoryStream())
-                                    {
-                                        var buffer = new byte[1024];
-                                        int bytesRead;
-
-                                        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
-                                            memoryStream.Write(buffer, 0, bytesRead);
-
-                                        var receivedData = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
-                                        _logger.LogTrace("TcpListener Received full data: {0}", receivedData);
-
-                                        if (waitingForData)
-                                        {
-                                            this.receivedData = receivedData;
-                                        }
-                                    }
+                                    var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
+                                    _logger.LogTrace("TcpListener Received full data: {0}", receivedData);
                                 }
                             }
                             finally

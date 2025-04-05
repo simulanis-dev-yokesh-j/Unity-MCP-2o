@@ -15,7 +15,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             var messageBytes = Encoding.UTF8.GetBytes(message);
             var lengthPrefix = BitConverter.GetBytes(messageBytes.Length);
 
-            // Send length and message
             await stream.WriteAsync(lengthPrefix, 0, lengthPrefix.Length, cancellationToken);
             if (cancellationToken.IsCancellationRequested)
             {

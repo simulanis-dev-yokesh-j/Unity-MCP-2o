@@ -43,11 +43,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         }
 
         public Task<string?> Send(string message, CancellationToken cancellationToken = default)
-        {
-            var receiverTask = _receiver.Receive(cancellationToken);
-            _sender.Send(message, cancellationToken);
-            return receiverTask;
-        }
+            => _sender.Send(message, cancellationToken);
 
         public void Disconnect()
         {

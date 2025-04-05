@@ -32,11 +32,17 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 Dispose();
             }
 
-            public async Task<string> Send(string data, CancellationToken cancellationToken = default)
+            public async Task<string?> Send(string data, CancellationToken cancellationToken = default)
             {
                 try
                 {
                     BuildConnectionIfNeeded(cancellationToken).Wait(cancellationToken);
+
+                    if (stream == null || !stream.CanWrite || !stream.CanRead)
+                    {
+                        _logger.LogError("Stream is not available for writing or reading.");
+                        return null;
+                    }
 
                     await TcpUtils.SendAsync(stream, data, cancellationToken);
                     return await TcpUtils.ReadResponseAsync(stream, cancellationToken);

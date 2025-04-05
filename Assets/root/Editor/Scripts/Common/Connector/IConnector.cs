@@ -22,6 +22,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         Connector.Status GetStatus { get; }
         void Disconnect();
-        Task<string> Send(string message, CancellationToken cancellationToken = default);
+        Task<string?> Send(string message, CancellationToken cancellationToken = default);
     }
 }

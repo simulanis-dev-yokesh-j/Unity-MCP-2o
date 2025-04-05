@@ -32,6 +32,7 @@ MonoBehaviour:
     m_Scopes:
     - org.nuget.microsoft.bcl.asyncinterfaces
     - org.nuget.microsoft.bcl.memory
+    - org.nuget.microsoft.bcl.timeprovider
     - org.nuget.microsoft.extensions.caching.abstractions
     - org.nuget.microsoft.extensions.configuration
     - org.nuget.microsoft.extensions.configuration.abstractions
@@ -60,6 +61,7 @@ MonoBehaviour:
     - org.nuget.microsoft.extensions.options
     - org.nuget.microsoft.extensions.options.configurationextensions
     - org.nuget.microsoft.extensions.primitives
+    - org.nuget.r3
     - org.nuget.system.buffers
     - org.nuget.system.componentmodel.annotations
     - org.nuget.system.diagnostics.diagnosticsource
@@ -82,6 +84,6 @@ MonoBehaviour:
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
-    m_UserModificationsInstanceId: -892
-    m_OriginalInstanceId: -894
+    m_UserModificationsInstanceId: -834
+    m_OriginalInstanceId: -838
   m_LoadAssets: 0
