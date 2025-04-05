@@ -34,12 +34,12 @@ namespace com.IvanMurzak.UnityMCP.Common
 
         public static IDataPackage? ParseDataPackage(this string json, JsonSerializerOptions? options = null)
         {
-            return JsonSerializer.Deserialize<IDataPackage>(json, options ?? jsonSerializerOptions);
+            return JsonSerializer.Deserialize<DataPackage>(json, options ?? jsonSerializerOptions);
         }
 
         public static IResponseData? ParseResponseData(this string json, JsonSerializerOptions? options = null)
         {
-            return JsonSerializer.Deserialize<IResponseData>(json, options ?? jsonSerializerOptions);
+            return JsonSerializer.Deserialize<ResponseData>(json, options ?? jsonSerializerOptions);
         }
     }
 }

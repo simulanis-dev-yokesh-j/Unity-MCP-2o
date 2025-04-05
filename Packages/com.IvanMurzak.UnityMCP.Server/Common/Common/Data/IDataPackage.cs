@@ -5,7 +5,7 @@ namespace com.IvanMurzak.UnityMCP.Common.Data
 {
     public interface IDataPackage : IDisposable
     {
-        ICommandData? Command { get; set; }
-        INotificationData? Notification { get; set; }
+        ICommandData? Command { get; }
+        INotificationData? Notification { get; }
     }
 }

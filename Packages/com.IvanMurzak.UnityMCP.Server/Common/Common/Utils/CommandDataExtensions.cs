@@ -19,7 +19,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         }
         public static IDataPackage Build(this ICommandData data) => new DataPackage()
         {
-            Command = data
+            Command = data as CommandData,
         };
     }
 }

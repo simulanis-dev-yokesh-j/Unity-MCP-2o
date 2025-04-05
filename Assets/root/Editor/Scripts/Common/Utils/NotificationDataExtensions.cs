@@ -19,7 +19,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         }
         public static IDataPackage Build(this INotificationData data) => new DataPackage()
         {
-            Notification = data
+            Notification = data as NotificationData,
         };
     }
 }
