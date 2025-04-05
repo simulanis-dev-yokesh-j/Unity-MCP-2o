@@ -13,6 +13,8 @@ namespace com.IvanMurzak.UnityMCP.Common
         public CommandDispatcher(ILogger<CommandDispatcher> logger, Dictionary<string, Command> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger.LogTrace("Ctor.");
+
             _commands = commands ?? throw new ArgumentNullException(nameof(commands));
         }
 
@@ -32,8 +34,10 @@ namespace com.IvanMurzak.UnityMCP.Common
 
             try
             {
+                var message = $"Executing command '{data.Name}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}";
+                _logger.LogInformation(message);
+
                 // Execute the command with the parameters from CommandData
-                _logger.LogInformation($"Executing command '{data.Name}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}");
                 return command.Execute(data.Parameters)
                     .Log(_logger);
             }

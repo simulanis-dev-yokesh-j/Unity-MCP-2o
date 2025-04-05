@@ -22,8 +22,9 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             public Sender(ILogger<Sender> logger, IOptions<ConnectorConfig> configOptions)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _logger.LogTrace("Ctor. {0}", configOptions.Value);
+
                 _config = configOptions.Value ?? throw new ArgumentNullException(nameof(configOptions));
-                _logger.LogTrace("Ctor. {0}", _config);
             }
 
             public void Disconnect()

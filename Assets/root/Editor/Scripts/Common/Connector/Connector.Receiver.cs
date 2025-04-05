@@ -18,19 +18,20 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             CancellationTokenSource? cancellationTokenSource;
 
             readonly ILogger<Receiver> _logger;
+            readonly ICommandDispatcher _commandDispatcher;
             readonly ConnectorConfig _config;
-            readonly Dictionary<string, Command> _commands;
             readonly Subject<string?> _onReceivedData = new();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
             public Observable<string?> OnReceivedData => _onReceivedData;
 
-            public Receiver(ILogger<Receiver> logger, Dictionary<string, Command> commands, IOptions<ConnectorConfig> configOptions)
+            public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IOptions<ConnectorConfig> configOptions)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-                _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+                _logger.LogTrace("Ctor. {0}", configOptions.Value);
+
                 _config = configOptions.Value ?? throw new ArgumentNullException(nameof(configOptions));
-                _logger.LogTrace("Ctor. {0}", _config);
+                _commandDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
             }
 
             public void Connect()
