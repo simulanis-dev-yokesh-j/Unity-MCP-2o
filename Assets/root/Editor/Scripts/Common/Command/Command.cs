@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using com.IvanMurzak.UnityMCP.Common.API;
 
 namespace com.IvanMurzak.UnityMCP.Common
 {
@@ -8,7 +9,7 @@ namespace com.IvanMurzak.UnityMCP.Common
     /// Provides functionality to execute methods dynamically, supporting both static and instance methods.
     /// Allows for parameter passing by position or by name, with support for default parameter values.
     /// </summary>
-    public partial class Command
+    public partial class Command : ICommand
     {
         private readonly MethodInfo _methodInfo;
         private readonly object? _targetInstance;
@@ -78,7 +79,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public object Execute(params object[] parameters)
+        public ICommandResponseData Execute(params object[] parameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -87,7 +88,8 @@ namespace com.IvanMurzak.UnityMCP.Common
             var instance = _targetInstance ?? (_targetType != null ? Activator.CreateInstance(_targetType) : null);
 
             // Invoke the method (static or instance)
-            return _methodInfo.Invoke(instance, BuildParameters(parameters));
+            var result = _methodInfo.Invoke(instance, BuildParameters(parameters));
+            return result as ICommandResponseData ?? CommandResponseData.Success(result.ToString());
         }
 
         /// <summary>
@@ -96,7 +98,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public object Execute(Dictionary<string, object?> namedParameters)
+        public ICommandResponseData Execute(IDictionary<string, object?> namedParameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -105,7 +107,8 @@ namespace com.IvanMurzak.UnityMCP.Common
             var instance = _targetInstance ?? (_targetType != null ? Activator.CreateInstance(_targetType) : null);
 
             // Invoke the method (static or instance)
-            return _methodInfo.Invoke(instance, BuildParameters(namedParameters));
+            var result = _methodInfo.Invoke(instance, BuildParameters(namedParameters));
+            return result as ICommandResponseData ?? CommandResponseData.Success(result.ToString());
         }
 
         object[] BuildParameters(object[] parameters)
@@ -135,7 +138,7 @@ namespace com.IvanMurzak.UnityMCP.Common
             return finalParameters;
         }
 
-        object[] BuildParameters(Dictionary<string, object?> namedParameters)
+        object[] BuildParameters(IDictionary<string, object?> namedParameters)
         {
             var methodParameters = _methodInfo.GetParameters();
 

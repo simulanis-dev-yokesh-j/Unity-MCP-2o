@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,11 +23,11 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
         public Connector(ILogger<Connector> logger, IConnectorReceiver receiver, IConnectorSender sender, IOptions<ConnectorConfig> configOptions)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
 
-            _receiver = receiver;
-            _sender = sender;
+            _receiver = receiver ?? throw new ArgumentNullException(nameof(receiver));
+            _sender = sender ?? throw new ArgumentNullException(nameof(sender));
 
             if (HasInstance)
             {

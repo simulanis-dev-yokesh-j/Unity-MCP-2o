@@ -27,9 +27,9 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
             public Receiver(ILogger<Receiver> logger, Dictionary<string, Command> commands, IOptions<ConnectorConfig> configOptions)
             {
-                _logger = logger;
-                _commands = commands;
-                _config = configOptions.Value;
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+                _config = configOptions.Value ?? throw new ArgumentNullException(nameof(configOptions));
                 _logger.LogTrace("Ctor. {0}", _config);
             }
 
@@ -79,6 +79,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                                 var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
                                 _logger.LogTrace("Received data: {0}", receivedData);
                                 _onReceivedData.OnNext(receivedData);
+
                                 await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Success, cancellationToken);
                             }
                         }
