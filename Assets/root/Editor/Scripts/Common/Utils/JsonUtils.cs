@@ -17,7 +17,9 @@ namespace com.IvanMurzak.UnityMCP.Common
 
         public static string ToJson(this IDataPackage data, JsonSerializerOptions options = null)
         {
-            if (data == null) return "{}";
+            if (data == null)
+                return "{}";
+
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
