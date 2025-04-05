@@ -10,9 +10,9 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             Disconnecting = 3,
             Error = 4
         }
-        public enum ConnectionType
+        public enum ConnectionRole
         {
-            Client = 0,
+            Unity = 0,
             Server = 1
         }
     }

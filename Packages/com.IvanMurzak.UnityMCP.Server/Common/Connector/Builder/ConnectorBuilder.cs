@@ -14,6 +14,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         public ConnectorBuilder(IServiceCollection? services = null)
         {
             _services = services ?? new ServiceCollection();
+            _services.AddTransient<IConnectorReceiver, Connector.Receiver>();
+            _services.AddTransient<IConnectorSender, Connector.Sender>();
             _services.AddTransient<IConnector, Connector>();
         }
 

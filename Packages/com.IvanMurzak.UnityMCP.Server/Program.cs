@@ -45,33 +45,33 @@ namespace com.IvanMurzak.UnityMCP.Server
                 })
                 .WithConfig(config =>
                 {
-                    config.ConnectionType = Connector.ConnectionType.Server;
+                    config.ConnectionType = Connector.ConnectionRole.Server;
                 })
                 .Build()
                 .Connect();
 
-            var server = builder.Services.BuildServiceProvider().GetRequiredService<IMcpServer>();
-            if (server.ServerOptions.Capabilities?.Tools?.ToolCollection != null)
-            {
-                server.ServerOptions.Capabilities.Tools.ToolCollection
-                    .Add(McpServerTool.Create(() =>
-                    {
-                        if (Connector.HasInstance)
-                        {
-                            Connector.Instance?.Send("This is custom command from server!");
-                            return Task.FromResult("This is custom response from server!");
-                        }
-                        return Task.FromResult("Connector is null");
-                    },
-                    new McpServerToolCreateOptions()
-                    {
-                        Name = "CustomCommand",
-                        Description = "This is custom command from server!"
-                    }));
-                // server.ServerOptions.Capabilities.Tools.ListChanged = true;
-            }
-            //server.ClientCapabilities.Roots.ListChanged = true; // .Sampling
-            // server.SendMessageAsync("Hello from server!"); // .Wait();
+            // var server = builder.Services.BuildServiceProvider().GetRequiredService<IMcpServer>();
+            // if (server.ServerOptions.Capabilities?.Tools?.ToolCollection != null)
+            // {
+            //     server.ServerOptions.Capabilities.Tools.ToolCollection
+            //         .Add(McpServerTool.Create(() =>
+            //         {
+            //             if (Connector.HasInstance)
+            //             {
+            //                 Connector.Instance?.Send("This is custom command from server!");
+            //                 return Task.FromResult("This is custom response from server!");
+            //             }
+            //             return Task.FromResult("Connector is null");
+            //         },
+            //         new McpServerToolCreateOptions()
+            //         {
+            //             Name = "CustomCommand",
+            //             Description = "This is custom command from server!"
+            //         }));
+            //     // server.ServerOptions.Capabilities.Tools.ListChanged = true;
+            // }
+            // //server.ClientCapabilities.Roots.ListChanged = true; // .Sampling
+            // // server.SendMessageAsync("Hello from server!"); // .Wait();
 
             await builder.Build().RunAsync();
         }
