@@ -1,3 +1,4 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -89,7 +90,9 @@ namespace com.IvanMurzak.UnityMCP.Common
 
             // Invoke the method (static or instance)
             var result = _methodInfo.Invoke(instance, BuildParameters(parameters));
-            return result as IResponseData ?? ResponseData.Success(result.ToString());
+            // if (result == null)
+            //     return ResponseData.Error("Something went wrong. Result is null.");
+            return result as IResponseData ?? ResponseData.Success(result?.ToString());
         }
 
         /// <summary>
@@ -98,7 +101,7 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public IResponseData Execute(IDictionary<string, object?> namedParameters)
+        public IResponseData Execute(IDictionary<string, object?>? namedParameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -108,15 +111,20 @@ namespace com.IvanMurzak.UnityMCP.Common
 
             // Invoke the method (static or instance)
             var result = _methodInfo.Invoke(instance, BuildParameters(namedParameters));
-            return result as IResponseData ?? ResponseData.Success(result.ToString());
+            // if (result == null)
+            //     return ResponseData.Error("Something went wrong. Result is null.");
+            return result as IResponseData ?? ResponseData.Success(result?.ToString());
         }
 
-        object[] BuildParameters(object[] parameters)
+        object?[]? BuildParameters(object?[]? parameters)
         {
+            if (parameters == null)
+                return null;
+
             var methodParameters = _methodInfo.GetParameters();
 
             // Prepare the final arguments array, filling in default values where necessary
-            var finalParameters = new object[methodParameters.Length];
+            var finalParameters = new object?[methodParameters.Length];
             for (int i = 0; i < methodParameters.Length; i++)
             {
                 if (i < parameters.Length)
@@ -138,12 +146,15 @@ namespace com.IvanMurzak.UnityMCP.Common
             return finalParameters;
         }
 
-        object[] BuildParameters(IDictionary<string, object?> namedParameters)
+        object?[]? BuildParameters(IDictionary<string, object?>? namedParameters)
         {
+            if (namedParameters == null)
+                return null;
+
             var methodParameters = _methodInfo.GetParameters();
 
             // Prepare the final arguments array
-            var finalParameters = new object[methodParameters.Length];
+            var finalParameters = new object?[methodParameters.Length];
             for (int i = 0; i < methodParameters.Length; i++)
             {
                 var parameter = methodParameters[i];

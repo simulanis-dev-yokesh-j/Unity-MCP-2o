@@ -1,3 +1,4 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
 using com.IvanMurzak.UnityMCP.Common.Data;
@@ -28,13 +29,19 @@ namespace com.IvanMurzak.UnityMCP.Common
                 return ResponseData.Error("Command data is null.")
                     .Log(_logger);
 
+            if (data.Name == null)
+                return ResponseData.Error("Command.Name is null.")
+                    .Log(_logger);
+
             if (!_commands.TryGetValue(data.Name, out var command))
                 return ResponseData.Error($"Command with name '{data.Name}' not found.")
                     .Log(_logger);
 
             try
             {
-                var message = $"Executing command '{data.Name}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}";
+                var message = data.Parameters == null
+                    ? $"Executing command '{data.Name}' with no parameters."
+                    : $"Executing command '{data.Name}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}";
                 _logger.LogInformation(message);
 
                 // Execute the command with the parameters from CommandData
