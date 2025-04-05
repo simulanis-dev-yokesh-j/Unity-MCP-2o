@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using R3;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
@@ -17,6 +18,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         Connector.Status GetStatus { get; }
         void Connect();
         void Disconnect();
+        Observable<string?> OnReceivedData { get; }
     }
     public interface IConnectorSender : IDisposable
     {

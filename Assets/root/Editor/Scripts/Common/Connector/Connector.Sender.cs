@@ -29,7 +29,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             public void Disconnect()
             {
                 _logger.LogTrace("Disconnect");
-                Dispose();
+                Clear();
             }
 
             public async Task<string?> Send(string data, CancellationToken cancellationToken = default)

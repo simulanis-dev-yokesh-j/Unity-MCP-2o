@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using R3;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
@@ -16,6 +17,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
         public Status ReceiverStatus => _receiver.GetStatus;
         public Status SenderStatus => _sender.GetStatus;
+
+        public Observable<string?> OnReceivedData => _receiver.OnReceivedData;
 
         public Connector(ILogger<Connector> logger, IConnectorReceiver receiver, IConnectorSender sender, IOptions<ConnectorConfig> configOptions)
         {

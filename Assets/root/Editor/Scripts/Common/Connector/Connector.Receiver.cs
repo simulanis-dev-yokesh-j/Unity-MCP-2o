@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using R3;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
@@ -17,8 +18,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
             readonly ILogger<Receiver> _logger;
             readonly ConnectorConfig _config;
+            readonly Subject<string?> _onReceivedData = new Subject<string?>();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
+            public Observable<string?> OnReceivedData => _onReceivedData;
 
             public Receiver(ILogger<Receiver> logger, IOptions<ConnectorConfig> configOptions)
             {
@@ -41,7 +44,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 cancellationTokenSource?.Cancel();
                 tcpListener?.Stop();
                 tcpListener = null;
-                Dispose();
+                GetStatus = Status.Disconnected;
             }
 
             async Task ReceiveData(CancellationToken cancellationToken)
@@ -83,6 +86,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                                 {
                                     var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
                                     _logger.LogTrace("TcpListener Received full data: {0}", receivedData);
+
                                 }
                             }
                             finally
@@ -122,6 +126,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
             public void Dispose()
             {
+                _onReceivedData.Dispose();
                 cancellationTokenSource?.Cancel();
                 cancellationTokenSource?.Dispose();
                 cancellationTokenSource = null;
