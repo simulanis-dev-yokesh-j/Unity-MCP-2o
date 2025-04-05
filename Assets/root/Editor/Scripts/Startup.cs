@@ -92,5 +92,13 @@ namespace com.IvanMurzak.UnityMCP.Editor
                 }
             }
         }
+
+        [MenuItem("Tools/Unity-MCP/Server/Print Config", priority = 1011)]
+        public static void PrintConfig()
+        {
+            var config = Consts.MCP_Client.ClaudeDesktop.Config.Replace("{0}", ServerExecutablePath.Replace('\\', '/'));
+            Debug.Log($"{Consts.Log.Tag} Copy and paste this config to <color=orange>Claude Desktop</color> config.json");
+            Debug.Log($"{Consts.Log.Tag} Server Config is RIGHT HERE:\n{config}");
+        }
     }
 }

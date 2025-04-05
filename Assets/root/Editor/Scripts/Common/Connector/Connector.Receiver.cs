@@ -60,12 +60,12 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                     {
                         BuildConnectionIfNeeded(port);
 
-                        _logger.LogTrace("Waiting for incoming(sender) connections... {0}:{1}.", _config.IPAddress, port);
                         if (tcpListener == null)
                         {
                             _logger.LogWarning("TcpListener is null. Exiting.");
-                            break;
+                            continue;
                         }
+                        _logger.LogTrace("Waiting for incoming(sender) connections... {0}:{1}.", _config.IPAddress, port);
                         var client = await tcpListener.AcceptTcpClientAsync();
                         _logger.LogInformation("Client(sender) connected, {0}:{1}.", _config.IPAddress, port);
 

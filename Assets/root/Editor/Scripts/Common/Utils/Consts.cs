@@ -11,5 +11,20 @@ namespace com.IvanMurzak.UnityMCP.Common
                 public const string Cancel = "[Cancel]";
             }
         }
+        public static partial class MCP_Client
+        {
+            public static partial class ClaudeDesktop
+            {
+                public const string Config =
+                    "{\r\n" +
+                    "  \"mcpServers\": {\r\n" +
+                    "    \"Unity-MCP\": {\r\n" +
+                    "      \"command\": \"{0}\",\r\n" +
+                    "      \"args\": []\r\n" +
+                    "    }\r\n" +
+                    "  }\r\n" +
+                    "}";
+            }
+        }
     }
 }
