@@ -1,6 +1,8 @@
+using System;
+
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
-    public interface ITool
+    public interface ITool : IDisposable
     {
 
     }

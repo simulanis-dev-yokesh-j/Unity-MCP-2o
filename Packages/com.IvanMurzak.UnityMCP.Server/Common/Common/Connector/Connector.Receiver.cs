@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.UnityMCP.Common.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using R3;
@@ -17,39 +19,42 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             CancellationTokenSource? cancellationTokenSource;
 
             readonly ILogger<Receiver> _logger;
+            readonly ICommandDispatcher _commandDispatcher;
             readonly ConnectorConfig _config;
-            readonly Subject<string?> _onReceivedData = new();
+            readonly Subject<IDataPackage?> _onReceivedData = new();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
-            public Observable<string?> OnReceivedData => _onReceivedData;
+            public Observable<IDataPackage?> OnReceivedData => _onReceivedData;
 
-            public Receiver(ILogger<Receiver> logger, IOptions<ConnectorConfig> configOptions)
+            public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IOptions<ConnectorConfig> configOptions)
             {
-                _logger = logger;
-                _config = configOptions.Value;
-                _logger.LogTrace("Ctor. {0}", _config);
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _logger.LogTrace("Ctor. {0}", configOptions.Value);
+
+                _config = configOptions.Value ?? throw new ArgumentNullException(nameof(configOptions));
+                _commandDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
             }
 
             public void Connect()
             {
-                _logger.LogTrace("Connect");
+                _logger.LogTrace("Connecting...");
                 cancellationTokenSource?.Cancel();
                 cancellationTokenSource = new CancellationTokenSource();
-                taskConnection = Task.Run(() => ReceiveData(cancellationTokenSource.Token));
+                taskConnection = Task.Run(() => ListenInLoop(cancellationTokenSource.Token));
             }
 
             public void Disconnect()
             {
-                _logger.LogTrace("Disconnect");
+                _logger.LogTrace("Disconnecting...");
                 cancellationTokenSource?.Cancel();
                 tcpListener?.Stop();
                 tcpListener = null;
                 GetStatus = Status.Disconnected;
+                _logger.LogInformation("Disconnected");
             }
 
-            async Task ReceiveData(CancellationToken cancellationToken)
+            async Task ListenInLoop(CancellationToken cancellationToken)
             {
-
                 var port = _config.ConnectionType == ConnectionRole.Unity
                     ? _config.PortServer
                     : _config.PortUnity;
@@ -62,42 +67,42 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
                         if (tcpListener == null)
                         {
-                            _logger.LogWarning("TcpListener is null. Exiting.");
+                            _logger.LogWarning("Connection skip. TcpListener is null.");
                             continue;
                         }
-                        _logger.LogTrace("Waiting for incoming(sender) connections... {0}:{1}.", _config.IPAddress, port);
+                        _logger.LogInformation("Waiting for incoming connections {0}:{1}.", _config.IPAddress, port);
                         var client = await tcpListener.AcceptTcpClientAsync();
-                        _logger.LogInformation("Client(sender) connected, {0}:{1}.", _config.IPAddress, port);
+                        _logger.LogInformation("Connected, {0}:{1}.", _config.IPAddress, port);
 
                         try
                         {
                             using (var stream = client.GetStream())
                             {
                                 var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
-                                _logger.LogTrace("TcpListener Received data: {0}", receivedData);
-                                _onReceivedData.OnNext(receivedData);
+                                _logger.LogTrace("Received data: {0}", receivedData);
+                                _onReceivedData.OnNext(receivedData.ParseDataPackage());
+
                                 await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Success, cancellationToken);
                             }
                         }
                         finally
                         {
-                            _logger.LogInformation("Client(sender) disconnected.");
+                            _logger.LogTrace("Data receiving completed.");
                             client.Close();
                         }
                     }
                     catch (ObjectDisposedException ex)
                     {
-                        _logger.LogTrace(ex, "TcpListener disposed object exception. Ignoring.");
-                        Disconnect();
+                        _logger.LogTrace(ex, "TcpListener disposed. Ignoring.");
                     }
                     catch (OperationCanceledException)
                     {
-                        _logger.LogTrace("TcpListener operation canceled.");
+                        _logger.LogTrace("Stop listening. Canceled.");
                         Disconnect();
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "TcpListener failed: {0}", ex.Message);
+                        _logger.LogError(ex, "Stop listening. Error: {0}", ex.Message);
                         Disconnect();
                     }
 
