@@ -18,7 +18,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
             readonly ILogger<Receiver> _logger;
             readonly ConnectorConfig _config;
-            readonly Subject<string?> _onReceivedData = new Subject<string?>();
+            readonly Subject<string?> _onReceivedData = new();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
             public Observable<string?> OnReceivedData => _onReceivedData;
@@ -49,78 +49,76 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
             async Task ReceiveData(CancellationToken cancellationToken)
             {
-                try
+
+                var port = _config.ConnectionType == ConnectionRole.Unity
+                    ? _config.PortServer
+                    : _config.PortUnity;
+
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    var port = _config.ConnectionType == ConnectionRole.Unity
-                        ? _config.PortServer
-                        : _config.PortUnity;
+                    try
+                    {
+                        BuildConnectionIfNeeded(port);
 
-                    if (tcpListener == null)
-                    {
-                        _logger.LogTrace("Initializing TcpListener...");
-                        tcpListener = new TcpListener(_config.IPAddress, port);
-                    }
+                        _logger.LogTrace("Waiting for incoming(sender) connections... {0}:{1}.", _config.IPAddress, port);
+                        if (tcpListener == null)
+                        {
+                            _logger.LogWarning("TcpListener is null. Exiting.");
+                            break;
+                        }
+                        var client = await tcpListener.AcceptTcpClientAsync();
+                        _logger.LogInformation("Client(sender) connected, {0}:{1}.", _config.IPAddress, port);
 
-                    if (tcpListener.Server != null && !tcpListener.Server.IsBound)
-                    {
-                        _logger.LogTrace("Starting TcpListener...");
-                        tcpListener.Start();
-                        _logger.LogInformation("TcpListener started on  {0}:{1}.", _config.IPAddress, port);
-                    }
-                    while (!cancellationToken.IsCancellationRequested)
-                    {
                         try
                         {
-                            _logger.LogTrace("Waiting for incoming(sender) connections... {0}:{1}.", _config.IPAddress, port);
-                            if (tcpListener == null)
+                            using (var stream = client.GetStream())
                             {
-                                _logger.LogWarning("TcpListener is null. Exiting.");
-                                break;
-                            }
-                            var client = await tcpListener.AcceptTcpClientAsync();
-                            _logger.LogInformation("Client(sender) connected, {0}:{1}.", _config.IPAddress, port);
-
-                            try
-                            {
-                                using (var stream = client.GetStream())
-                                {
-                                    var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
-                                    _logger.LogTrace("TcpListener Received full data: {0}", receivedData);
-
-                                }
-                            }
-                            finally
-                            {
-                                _logger.LogInformation("Client(sender) disconnected.");
-                                client.Close();
+                                var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
+                                _logger.LogTrace("TcpListener Received data: {0}", receivedData);
+                                _onReceivedData.OnNext(receivedData);
+                                await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Success, cancellationToken);
                             }
                         }
-                        catch (ObjectDisposedException ex)
+                        finally
                         {
-                            _logger.LogTrace(ex, "TcpListener disposed object exception. Ignoring.");
-                            GetStatus = Status.Disconnected;
+                            _logger.LogInformation("Client(sender) disconnected.");
+                            client.Close();
                         }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, "TcpListener failed: {0}", ex.Message);
-                            GetStatus = Status.Disconnected;
-                        }
-
-                        await Task.Delay(5000, cancellationToken); // Retry every 5 seconds
                     }
+                    catch (ObjectDisposedException ex)
+                    {
+                        _logger.LogTrace(ex, "TcpListener disposed object exception. Ignoring.");
+                        Disconnect();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        _logger.LogTrace("TcpListener operation canceled.");
+                        Disconnect();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "TcpListener failed: {0}", ex.Message);
+                        Disconnect();
+                    }
+
+                    await Task.Delay(5000, cancellationToken); // Retry every 5 seconds
                 }
-                catch (OperationCanceledException)
+            }
+
+            void BuildConnectionIfNeeded(int port)
+            {
+                if (tcpListener == null)
                 {
-                    _logger.LogTrace("TcpListener operation canceled.");
+                    _logger.LogTrace("Initializing TcpListener...");
+                    tcpListener = new TcpListener(_config.IPAddress, port);
                 }
-                catch (Exception ex)
+
+                if (tcpListener.Server != null && !tcpListener.Server.IsBound && GetStatus != Status.Connecting)
                 {
-                    _logger.LogError(ex, "TcpListener failed {0}", ex.Message);
-                }
-                finally
-                {
-                    tcpListener?.Stop();
-                    tcpListener = null;
+                    _logger.LogTrace("Starting TcpListener...");
+                    tcpListener.Start();
+                    GetStatus = Status.Connecting;
+                    _logger.LogInformation("TcpListener started on  {0}:{1}.", _config.IPAddress, port);
                 }
             }
 

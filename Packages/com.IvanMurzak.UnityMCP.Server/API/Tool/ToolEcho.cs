@@ -9,10 +9,7 @@ namespace com.IvanMurzak.UnityMCP.Server.API.Tool
     public static class EchoTool
     {
         [McpServerTool, Description("Echoes the message back to the client.")]
-        public static async Task<string> Echo(string message)
-        {
-            await Connector.Instance.Send($"hello {message}");
-            return "Operation completed";
-        }
+        public static Task<string?> Echo(string message)
+            => Connector.Instance?.Send(message) ?? Task.FromResult<string?>(null);
     }
 }
