@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         public const string Version = "0.1.0";
 
         readonly ILogger<Connector> _logger;
-        readonly ConnectorConfig _config;
         readonly IConnectorReceiver _receiver;
         readonly IConnectorSender _sender;
 
@@ -27,9 +27,6 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 
             _receiver = receiver;
             _sender = sender;
-
-            _config = configOptions.Value;
-            _logger.LogTrace("Options. {0}", _config);
 
             if (HasInstance)
             {

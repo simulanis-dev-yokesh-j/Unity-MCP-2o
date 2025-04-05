@@ -7,9 +7,10 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public class ConnectorBuilder : IConnectorBuilder
     {
-        internal List<Action<IConnector>> buildActions = new();
-
+        readonly Dictionary<string, Command> commands = new();
         readonly IServiceCollection _services;
+
+        public IServiceCollection Services => _services;
 
         public ConnectorBuilder(IServiceCollection? services = null)
         {
@@ -17,6 +18,16 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             _services.AddTransient<IConnectorReceiver, Connector.Receiver>();
             _services.AddTransient<IConnectorSender, Connector.Sender>();
             _services.AddTransient<IConnector, Connector>();
+            _services.AddSingleton(commands);
+        }
+
+        public IConnectorBuilder AddCommand(string fullPath, Command command)
+        {
+            if (commands.ContainsKey(fullPath))
+                throw new ArgumentException($"Command with path {fullPath} already exists.");
+
+            commands.Add(fullPath, command);
+            return this;
         }
 
         public IConnectorBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder)

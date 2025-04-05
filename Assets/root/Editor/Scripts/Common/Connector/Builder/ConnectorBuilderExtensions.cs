@@ -11,27 +11,83 @@ namespace com.IvanMurzak.UnityMCP.Common.API
         public static IConnectorBuilder AddConnector(this IServiceCollection services)
             => new ConnectorBuilder(services);
 
-        public static IConnectorBuilder WithCommands(this IConnectorBuilder builder, params Type[] promptTypes)
-            => WithCommands(builder, promptTypes.ToArray());
+        // Tools --------------------------------------------------------------------------------------------
 
-        public static IConnectorBuilder WithCommands(this IConnectorBuilder builder, IEnumerable<Type> promptTypes)
+        public static IConnectorBuilder WithTools(this IConnectorBuilder builder, params Type[] targetTypes)
+            => WithTools(builder, targetTypes.ToArray());
+
+        public static IConnectorBuilder WithTools(this IConnectorBuilder builder, IEnumerable<Type> targetTypes)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
-            if (promptTypes == null)
-                throw new ArgumentNullException(nameof(promptTypes));
+            if (targetTypes == null)
+                throw new ArgumentNullException(nameof(targetTypes));
 
-            foreach (var promptType in promptTypes)
+            foreach (var targetType in targetTypes)
+                WithTools(builder, targetType);
+
+            return builder;
+        }
+
+        public static IConnectorBuilder WithTools<T>(this IConnectorBuilder builder)
+            => WithTools(builder, typeof(T));
+
+        public static IConnectorBuilder WithTools(this IConnectorBuilder builder, Type targetType)
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+            if (targetType == null)
+                throw new ArgumentNullException(nameof(targetType));
+
+            foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
-                if (promptType is not null)
+                if (method.GetCustomAttribute<ToolAttribute>() is not null)
                 {
-                    foreach (var promptMethod in promptType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
+                    if (method.IsStatic)
+                        builder.AddCommand(method.Name, Command.CreateFromStaticMethod(method));
+                    else
+                        builder.AddCommand(method.Name, Command.CreateFromClassMethod(targetType, method));
+                }
+            }
+            return builder;
+        }
+
+        public static IConnectorBuilder WithToolsFromAssembly(this IConnectorBuilder builder, Assembly? assembly = null)
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+
+            assembly ??= Assembly.GetCallingAssembly();
+
+            return builder.WithTools(
+                from t in assembly.GetTypes()
+                where t.GetCustomAttribute<ToolTypeAttribute>() is not null
+                select t);
+        }
+
+        // Prompt --------------------------------------------------------------------------------------------
+
+        public static IConnectorBuilder WithPrompts(this IConnectorBuilder builder, params Type[] targetTypes)
+            => WithPrompts(builder, targetTypes.ToArray());
+
+        public static IConnectorBuilder WithPrompts(this IConnectorBuilder builder, IEnumerable<Type> targetTypes)
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+            if (targetTypes == null)
+                throw new ArgumentNullException(nameof(targetTypes));
+
+            foreach (var targetType in targetTypes)
+            {
+                if (targetType is not null)
+                {
+                    foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
                     {
-                        if (promptMethod.GetCustomAttribute<PromptAttribute>() is not null)
+                        if (method.GetCustomAttribute<PromptAttribute>() is not null)
                         {
-                            // builder.Services.AddSingleton((Func<IServiceProvider, Prompt>)(promptMethod.IsStatic ?
-                            //     services => McpServerPrompt.Create(promptMethod, options: new() { Services = services }) :
-                            //     services => McpServerPrompt.Create(promptMethod, promptType, new() { Services = services })));
+                            // builder.Services.AddSingleton((Func<IServiceProvider, Prompt>)(method.IsStatic ?
+                            //     services => McpServerPrompt.Create(method, options: new() { Services = services }) :
+                            //     services => McpServerPrompt.Create(method, promptType, new() { Services = services })));
                         }
                     }
                 }
@@ -40,14 +96,14 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             return builder;
         }
 
-        public static IConnectorBuilder WithCommandsFromAssembly(this IConnectorBuilder builder, Assembly? assembly = null)
+        public static IConnectorBuilder WithPromptsFromAssembly(this IConnectorBuilder builder, Assembly? assembly = null)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
 
             assembly ??= Assembly.GetCallingAssembly();
 
-            return builder.WithCommands(
+            return builder.WithPrompts(
                 from t in assembly.GetTypes()
                 where t.GetCustomAttribute<PromptTypeAttribute>() is not null
                 select t);
