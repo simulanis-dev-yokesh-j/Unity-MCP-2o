@@ -9,9 +9,9 @@ namespace com.IvanMurzak.UnityMCP.Common
     public partial class CommandDispatcher : ICommandDispatcher
     {
         readonly ILogger<CommandDispatcher> _logger;
-        readonly Dictionary<string, Command> _commands;
+        readonly IDictionary<string, ICommand> _commands;
 
-        public CommandDispatcher(ILogger<CommandDispatcher> logger, Dictionary<string, Command> commands)
+        public CommandDispatcher(ILogger<CommandDispatcher> logger, IDictionary<string, ICommand> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");

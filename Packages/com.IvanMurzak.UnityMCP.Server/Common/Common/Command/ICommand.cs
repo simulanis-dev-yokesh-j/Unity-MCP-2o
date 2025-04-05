@@ -19,6 +19,6 @@ namespace com.IvanMurzak.UnityMCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        IResponseData Execute(IDictionary<string, object?> namedParameters);
+        IResponseData Execute(IDictionary<string, object?>? namedParameters);
     }
 }

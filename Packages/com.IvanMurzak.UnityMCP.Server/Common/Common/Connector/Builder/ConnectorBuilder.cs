@@ -8,7 +8,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public class ConnectorBuilder : IConnectorBuilder
     {
-        readonly Dictionary<string, Command> commands = new();
+        readonly IDictionary<string, ICommand> commands = new Dictionary<string, ICommand>();
         readonly IServiceCollection _services;
 
         public IServiceCollection Services => _services;
