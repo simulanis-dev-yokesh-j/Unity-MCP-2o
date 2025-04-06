@@ -30,7 +30,7 @@ jobs:
           lfs: false
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.2.x'
+          dotnet-version: '9.x'
       - uses: actions/cache@v4
         with:
           path: ${{ inputs.projectPath }}/Library
