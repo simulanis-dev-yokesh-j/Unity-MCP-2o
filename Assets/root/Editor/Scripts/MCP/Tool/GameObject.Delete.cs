@@ -8,15 +8,15 @@ namespace com.IvanMurzak.UnityMCP.API.Editor
     public partial class Tool_GameObject
     {
         [Tool]
-        public string Delete(string path) => MainThread.Run(() =>
+        public string Delete(string fullPath) => MainThread.Run(() =>
         {
-            var go = GameObject.Find(path);
+            var go = GameObject.Find(fullPath);
             if (go == null)
-                return $"[Error] GameObject '{path}' not found.";
+                return $"[Error] GameObject '{fullPath}' not found.";
 
             var scene = go.scene;
-            GameObject.DestroyImmediate(go);
-            return $"[Success] Deleted GameObject '{path}' from scene '{scene.name}'.";
+            Object.DestroyImmediate(go);
+            return $"[Success] Deleted GameObject '{fullPath}' from scene '{scene.name}'.";
         });
     }
 }

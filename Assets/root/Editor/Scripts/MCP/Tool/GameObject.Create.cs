@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace com.IvanMurzak.UnityMCP.API.Editor
 {
-    [ToolType(Path = "GameObject")]
+    [ToolType]
     public partial class Tool_GameObject
     {
         [Tool]
