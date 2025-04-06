@@ -139,6 +139,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 {
                     _logger.LogTrace("Initializing TcpListener...");
                     tcpListener = new TcpListener(_config.IPAddress, port);
+
+                    // Enable socket reuse to avoid "address already in use" errors
+                    tcpListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 }
 
                 if (tcpListener.Server != null && !tcpListener.Server.IsBound && GetStatus != Status.Connecting)
@@ -157,6 +160,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 cancellationTokenSource?.Dispose();
                 cancellationTokenSource = null;
                 tcpListener?.Stop();
+                tcpListener?.Server?.Close();
                 tcpListener = null;
                 GetStatus = Status.Disconnected;
             }
