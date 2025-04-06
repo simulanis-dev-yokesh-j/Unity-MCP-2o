@@ -1,4 +1,4 @@
-name: 6000.0.37f1-Editor
+name: 6000.0.37f1-standalone
 
 on:
   pull_request:
@@ -14,5 +14,5 @@ jobs:
     with:
       projectPath: './'
       unityVersion: '6000.0.37f1'
-      testMode: 'editmode'
+      testMode: 'standalone'
     secrets: inherit

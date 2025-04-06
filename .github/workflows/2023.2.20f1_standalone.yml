@@ -1,4 +1,4 @@
-name: 6000.0.37f1-Player
+name: 2023.2.20f1-standalone
 
 on:
   pull_request:
@@ -13,6 +13,6 @@ jobs:
     uses: ./.github/workflows/main.yml
     with:
       projectPath: './'
-      unityVersion: '6000.0.37f1'
-      testMode: 'playmode'
+      unityVersion: '2023.2.20f1'
+      testMode: 'standalone'
     secrets: inherit
