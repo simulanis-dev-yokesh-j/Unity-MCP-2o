@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using System.IO;
 using UnityEngine;
+using System;
 
 namespace com.IvanMurzak.UnityMCP.Editor
 {
@@ -73,24 +74,31 @@ namespace com.IvanMurzak.UnityMCP.Editor
                 CreateNoWindow = true
             };
 
-            using (var process = new Process { StartInfo = processStartInfo })
+            try
             {
-                Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
-                Debug.Log($"{Consts.Log.Tag} Command: <color=#8CFFD1>{processStartInfo.FileName} {processStartInfo.Arguments}</color>");
-                process.Start();
-
-                // Read the output and error streams
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-
-                process.WaitForExit();
-
-                // Log the results
-                Debug.Log($"{Consts.Log.Tag} Build Output:\n{output}");
-                if (!string.IsNullOrEmpty(error))
+                using (var process = new Process { StartInfo = processStartInfo })
                 {
-                    Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
+                    Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
+                    Debug.Log($"{Consts.Log.Tag} Command: <color=#8CFFD1>{processStartInfo.FileName} {processStartInfo.Arguments}</color>");
+                    process.Start();
+
+                    // Read the output and error streams
+                    var output = process.StandardOutput.ReadToEnd();
+                    var error = process.StandardError.ReadToEnd();
+
+                    process.WaitForExit();
+
+                    // Log the results
+                    Debug.Log($"{Consts.Log.Tag} Build Output:\n{output}");
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"{Consts.Log.Tag} Failed to execute dotnet command. Ensure dotnet CLI is installed and accessible in the environment.\n{ex}");
             }
         }
 
