@@ -11,11 +11,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 {
     static partial class Startup
     {
-        static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", PackageName.ToLower()));
-        static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
-        static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", PackageName));
-        static string ServerExecutablePath => Path.Combine(ServerRootPath, $"bin~/Release/net9.0/{PackageName}.exe");
-        static bool IsServerCompiled => File.Exists(ServerExecutablePath);
+        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", PackageName.ToLower()));
+        public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
+        public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", PackageName));
+        public static string ServerExecutablePath => Path.Combine(ServerRootPath, $"bin~/Release/net9.0/{PackageName}.exe");
+        public static bool IsServerCompiled => File.Exists(ServerExecutablePath);
 
         public static void CompileServerIfNeeded()
         {
@@ -24,7 +24,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             CompileServer();
         }
 
-        [MenuItem("Tools/Unity-MCP/Server/Build", priority = 1010)]
         public static void CompileServer()
         {
             var message = "<b><color=yellow>Server Build</color></b>";
@@ -80,7 +79,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             {
                                 Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
                             }
-                            PrintConfig();
+                            MenuItems.PrintConfig();
                         });
                     }
                 }
@@ -89,14 +88,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     Debug.LogError($"{Consts.Log.Tag} Failed to execute dotnet command. Ensure dotnet CLI is installed and accessible in the environment.\n{ex}");
                 }
             });
-        }
-
-        [MenuItem("Tools/Unity-MCP/Server/Print Config", priority = 1011)]
-        public static void PrintConfig()
-        {
-            var config = Consts.MCP_Client.ClaudeDesktop.Config.Replace("{0}", ServerExecutablePath.Replace('\\', '/'));
-            Debug.Log($"{Consts.Log.Tag} Copy and paste this config to <color=orange>Claude Desktop</color> config.json");
-            Debug.Log($"{Consts.Log.Tag} Server Config is RIGHT HERE:\n{config}");
         }
     }
 }

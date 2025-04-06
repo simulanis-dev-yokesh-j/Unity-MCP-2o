@@ -2,7 +2,6 @@ using UnityEditor;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Common.API;
 using Debug = UnityEngine.Debug;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
@@ -18,7 +17,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             CompileServerIfNeeded();
         }
 
-        [MenuItem("Tools/Unity-MCP/Build and Start", priority = 1000)]
         public static void BuildAndStart()
         {
             var message = "<b><color=yellow>STARTUP</color></b>";
