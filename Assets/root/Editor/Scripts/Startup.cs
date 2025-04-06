@@ -21,7 +21,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
         static Startup()
         {
             BuildAndStart();
-            CompileServerIfNeeded();
+            // CompileServerIfNeeded();
         }
 
         [MenuItem("Tools/Unity-MCP/Build and Start", priority = 1000)]
