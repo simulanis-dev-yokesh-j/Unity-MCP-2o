@@ -1,8 +1,8 @@
+#if !UNITY_EDITOR
 using System;
 using System.Threading.Tasks;
-using UnityEditor;
 
-namespace com.IvanMurzak.UnityMCP.Editor
+namespace com.IvanMurzak.UnityMCP
 {
     public static class MainThread
     {
@@ -11,7 +11,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
         {
             var tcs = new TaskCompletionSource<T>();
 
-            void Execute()
+            MainThreadDispatcher.Enqueue(() =>
             {
                 try
                 {
@@ -22,13 +22,8 @@ namespace com.IvanMurzak.UnityMCP.Editor
                 {
                     tcs.SetException(ex);
                 }
-                finally
-                {
-                    EditorApplication.update -= Execute;
-                }
-            }
+            });
 
-            EditorApplication.update += Execute;
             return tcs.Task;
         }
 
@@ -37,7 +32,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
         {
             var tcs = new TaskCompletionSource<bool>();
 
-            void Execute()
+            MainThreadDispatcher.Enqueue(() =>
             {
                 try
                 {
@@ -48,14 +43,10 @@ namespace com.IvanMurzak.UnityMCP.Editor
                 {
                     tcs.SetException(ex);
                 }
-                finally
-                {
-                    EditorApplication.update -= Execute;
-                }
-            }
+            });
 
-            EditorApplication.update += Execute;
             return tcs.Task;
         }
     }
 }
+#endif
