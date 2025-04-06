@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEditor;
 
-namespace com.IvanMurzak.UnityMCP.Editor
+namespace com.IvanMurzak.Unity.MCP.Editor
 {
     public static class MainThread
     {
