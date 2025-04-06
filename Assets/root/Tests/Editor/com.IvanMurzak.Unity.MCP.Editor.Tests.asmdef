@@ -1,6 +1,6 @@
 {
     "name": "com.IvanMurzak.Unity.MCP.Editor.Tests",
-    "rootNamespace": "com.IvanMurzak.Unity.MCP",
+    "rootNamespace": "com.IvanMurzak.Unity.MCP.Editor.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
