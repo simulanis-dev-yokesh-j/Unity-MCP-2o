@@ -2,7 +2,7 @@ using System;
 using com.IvanMurzak.UnityMCP.Common.API;
 using UnityEngine;
 
-namespace com.IvanMurzak.UnityMCP.Editor
+namespace com.IvanMurzak.UnityMCP.API.Editor
 {
     [ToolType]
     public partial class Tool_GameObject
@@ -12,8 +12,8 @@ namespace com.IvanMurzak.UnityMCP.Editor
         {
             try
             {
-                var targetParent = path == null ? null : GameObject.Find(path);
-                if (targetParent == null && path != null)
+                var targetParent = string.IsNullOrEmpty(path) ? null : GameObject.Find(path);
+                if (targetParent == null && string.IsNullOrEmpty(path))
                 {
                     return $"[Error] Parent GameObject '{path}' not found.";
                 }

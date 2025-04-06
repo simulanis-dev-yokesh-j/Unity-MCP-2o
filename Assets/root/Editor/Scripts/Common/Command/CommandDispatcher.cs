@@ -64,7 +64,7 @@ namespace com.IvanMurzak.UnityMCP.Common
             {
                 // Handle or log the exception as needed
                 return ResponseData.Error($"Failed to execute command '{data.Method}'. Exception: {ex}")
-                    .Log(_logger);
+                    .Log(_logger, ex);
             }
         }
 

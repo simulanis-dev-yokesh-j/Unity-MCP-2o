@@ -4,10 +4,10 @@ using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace com.IvanMurzak.UnityMCP.Server.API
+namespace com.IvanMurzak.UnityMCP.API.Editor
 {
     [McpServerToolType]
-    public class ToolGameObject : ServerTool
+    public class Tool_GameObject : ServerTool
     {
         public override string Method => nameof(Create);
 
