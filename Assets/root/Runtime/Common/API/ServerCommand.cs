@@ -10,11 +10,14 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     {
         public virtual string Class => GetType().FullName ?? "UnknownClass";
         public virtual int Retry => 3;
-        public abstract string Method { get; }
+        public virtual string? Method => null;
 
         protected CancellationTokenSource? _cancellationTokenSource { get; private set; } = new();
 
-        public async Task<string> Execute(Action<ICommandData> configCommand)
+        public Task<string> Execute(Action<ICommandData> configCommand)
+            => Execute(Method, configCommand);
+
+        public async Task<string> Execute(string? method, Action<ICommandData> configCommand)
         {
             if (_cancellationTokenSource == null)
                 return "[Error] Command already executed. Please create a new instance of the command.";
@@ -23,7 +26,11 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             if (connector == null)
                 return "[Error] No connection with Unity established. Please try to establish connection first and try again.";
 
-            var commandData = new CommandData(Class, Method);
+            var finalMethod = method ?? Method;
+            if (string.IsNullOrEmpty(finalMethod))
+                return "[Error] Method name is not specified. Please specify a method name and try again.";
+
+            var commandData = new CommandData(Class, finalMethod);
             try
             {
                 configCommand.Invoke(commandData);

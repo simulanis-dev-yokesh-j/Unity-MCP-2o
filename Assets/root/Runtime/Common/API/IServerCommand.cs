@@ -8,7 +8,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
     public interface IServerCommand : IDisposable
     {
         string Class { get; }
-        string Method { get; }
+        string? Method { get; }
         Task<string> Execute(Action<ICommandData> configCommand);
     }
 }
