@@ -1,0 +1,25 @@
+{
+    "name": "com.IvanMurzak.Unity.MCP.Editor.Tests",
+    "rootNamespace": "com.IvanMurzak.Unity.MCP",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "com.IvanMurzak.Unity.MCP.Runtime",
+        "com.IvanMurzak.Unity.MCP.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,8 +1,8 @@
 using System;
-using com.IvanMurzak.UnityMCP.Common;
+using com.IvanMurzak.Unity.MCP.Common;
 using Microsoft.Extensions.Logging;
 
-namespace com.IvanMurzak.UnityMCP.Editor
+namespace com.IvanMurzak.Unity.MCP.Editor
 {
     public class UnityLogger : ILogger
     {

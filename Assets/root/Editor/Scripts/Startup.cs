@@ -1,23 +1,16 @@
 using UnityEditor;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using com.IvanMurzak.UnityMCP.Common;
-using com.IvanMurzak.UnityMCP.Common.API;
-using System.Diagnostics;
+using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Common.API;
 using Debug = UnityEngine.Debug;
-using System.IO;
-using UnityEngine;
-using System;
-using System.Threading.Tasks;
 
-namespace com.IvanMurzak.UnityMCP.Editor
+namespace com.IvanMurzak.Unity.MCP.Editor
 {
     [InitializeOnLoad]
-    static class Startup
+    static partial class Startup
     {
-        static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Packages/com.IvanMurzak.UnityMCP.Server"));
-        static string ServerExecutablePath => Path.Combine(ServerRootPath, "bin/Release/net9.0/com.IvanMurzak.UnityMCP.Server.exe");
-        static bool IsServerCompiled => File.Exists(ServerExecutablePath);
+        const string PackageName = "com.ivanmurzak.unity.mcp.server";
 
         static Startup()
         {
@@ -29,7 +22,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
         public static void BuildAndStart()
         {
             var message = "<b><color=yellow>STARTUP</color></b>";
-            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>⊂(◉‿◉)つ</color>");
+            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
 
             new ConnectorBuilder()
                 .WithConfig(config =>
@@ -49,74 +42,6 @@ namespace com.IvanMurzak.UnityMCP.Editor
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
                 .Build()
                 .Connect();
-        }
-
-        public static void CompileServerIfNeeded()
-        {
-            if (IsServerCompiled)
-                return;
-            CompileServer();
-        }
-
-        [MenuItem("Tools/Unity-MCP/Server/Build", priority = 1010)]
-        public static void CompileServer()
-        {
-            var message = "<b><color=yellow>Server Build</color></b>";
-            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
-
-            var processStartInfo = new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = "build -c Release",
-                WorkingDirectory = ServerRootPath,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
-            Debug.Log($"{Consts.Log.Tag} Command: <color=#8CFFD1>{processStartInfo.FileName} {processStartInfo.Arguments}</color>");
-
-            Task.Run(() =>
-            {
-                try
-                {
-                    using (var process = new Process { StartInfo = processStartInfo })
-                    {
-                        process.Start();
-
-                        // Read the output and error streams
-                        var output = process.StandardOutput.ReadToEnd();
-                        var error = process.StandardError.ReadToEnd();
-
-                        process.WaitForExit();
-
-                        MainThread.RunAsync(() =>
-                        {
-                            // Log the results
-                            Debug.Log($"{Consts.Log.Tag} Build Output:\n{output}");
-                            if (!string.IsNullOrEmpty(error))
-                            {
-                                Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
-                            }
-                            PrintConfig();
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"{Consts.Log.Tag} Failed to execute dotnet command. Ensure dotnet CLI is installed and accessible in the environment.\n{ex}");
-                }
-            });
-        }
-
-        [MenuItem("Tools/Unity-MCP/Server/Print Config", priority = 1011)]
-        public static void PrintConfig()
-        {
-            var config = Consts.MCP_Client.ClaudeDesktop.Config.Replace("{0}", ServerExecutablePath.Replace('\\', '/'));
-            Debug.Log($"{Consts.Log.Tag} Copy and paste this config to <color=orange>Claude Desktop</color> config.json");
-            Debug.Log($"{Consts.Log.Tag} Server Config is RIGHT HERE:\n{config}");
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using UnityEngine;
 
-namespace com.IvanMurzak.UnityMCP
+namespace com.IvanMurzak.Unity.MCP
 {
     public class MainThreadDispatcher : MonoBehaviour
     {
