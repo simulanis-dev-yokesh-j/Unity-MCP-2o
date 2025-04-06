@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace com.IvanMurzak.UnityMCP.API.Editor
 {
     [McpServerToolType]
-    public class Tool_GameObject : ServerTool
+    public partial class Tool_GameObject : ServerTool
     {
         public override string Method => nameof(Create);
 
