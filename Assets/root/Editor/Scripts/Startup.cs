@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     [InitializeOnLoad]
     static partial class Startup
     {
-        const string PackageName = "com.ivanmurzak.unity.mcp.server";
+        const string PackageName = "com.ivanmurzak.unity.mcp";
 
         static Startup()
         {
