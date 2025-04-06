@@ -84,7 +84,6 @@ namespace com.IvanMurzak.UnityMCP.Editor
                 {
                     using (var process = new Process { StartInfo = processStartInfo })
                     {
-
                         process.Start();
 
                         // Read the output and error streams
@@ -93,12 +92,16 @@ namespace com.IvanMurzak.UnityMCP.Editor
 
                         process.WaitForExit();
 
-                        // Log the results
-                        Debug.Log($"{Consts.Log.Tag} Build Output:\n{output}");
-                        if (!string.IsNullOrEmpty(error))
+                        MainThread.RunAsync(() =>
                         {
-                            Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
-                        }
+                            // Log the results
+                            Debug.Log($"{Consts.Log.Tag} Build Output:\n{output}");
+                            if (!string.IsNullOrEmpty(error))
+                            {
+                                Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
+                            }
+                            PrintConfig();
+                        });
                     }
                 }
                 catch (Exception ex)
