@@ -8,6 +8,8 @@
 ## Build results
 bin/
 obj/
+bin~/
+obj~/
 [Bb]uild/
 [Ll]ogs/
 
@@ -36,3 +38,6 @@ packages/
 
 # Optional: lock file
 #
+
+# Whitelist .csproj files
+!*.csproj
