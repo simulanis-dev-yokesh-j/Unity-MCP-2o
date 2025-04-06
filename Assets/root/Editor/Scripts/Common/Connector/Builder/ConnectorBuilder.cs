@@ -8,7 +8,7 @@ namespace com.IvanMurzak.UnityMCP.Common.API
 {
     public class ConnectorBuilder : IConnectorBuilder
     {
-        readonly IDictionary<string, ICommand> commands = new Dictionary<string, ICommand>();
+        readonly IDictionary<string, IDictionary<string, ICommand>> commands = new Dictionary<string, IDictionary<string, ICommand>>();
         readonly IServiceCollection _services;
 
         public IServiceCollection Services => _services;
@@ -23,12 +23,15 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             _services.AddSingleton(commands);
         }
 
-        public IConnectorBuilder AddCommand(string fullPath, Command command)
+        public IConnectorBuilder AddCommand(string path, string name, Command command)
         {
-            if (commands.ContainsKey(fullPath))
-                throw new ArgumentException($"Command with path {fullPath} already exists.");
+            if (!commands.TryGetValue(path, out var commandGroup))
+                commands[path] = commandGroup = new Dictionary<string, ICommand>();
 
-            commands.Add(fullPath, command);
+            if (commandGroup.ContainsKey(name))
+                throw new ArgumentException($"Command with name {name} already exists in path {path}.");
+
+            commandGroup.Add(name, command);
             return this;
         }
 

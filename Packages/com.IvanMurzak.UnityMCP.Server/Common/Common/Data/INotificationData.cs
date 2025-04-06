@@ -6,6 +6,7 @@ namespace com.IvanMurzak.UnityMCP.Common.Data
 {
     public interface INotificationData : IDisposable
     {
+        string? Path { get; set; }
         string? Name { get; set; }
         IDictionary<string, object?>? Parameters { get; set; }
     }

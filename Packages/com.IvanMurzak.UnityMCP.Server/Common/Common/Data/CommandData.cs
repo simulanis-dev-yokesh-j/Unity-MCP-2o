@@ -5,11 +5,16 @@ namespace com.IvanMurzak.UnityMCP.Common.Data
 {
     public class CommandData : ICommandData
     {
-        public string? Name { get; set; }
+        public string? Class { get; set; }
+        public string? Method { get; set; }
         public IDictionary<string, object?>? Parameters { get; set; } = new Dictionary<string, object?>();
 
         public CommandData() { }
-        public CommandData(string name) : this() => Name = name;
+        public CommandData(string path, string name) : this()
+        {
+            Class = path;
+            Method = name;
+        }
 
         public void Dispose()
         {

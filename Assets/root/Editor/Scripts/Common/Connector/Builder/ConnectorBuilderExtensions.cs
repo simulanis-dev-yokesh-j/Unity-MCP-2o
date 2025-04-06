@@ -45,9 +45,9 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                 if (method.GetCustomAttribute<ToolAttribute>() is not null)
                 {
                     if (method.IsStatic)
-                        builder.AddCommand(method.Name, Command.CreateFromStaticMethod(method));
+                        builder.AddCommand(targetType.FullName, method.Name, Command.CreateFromStaticMethod(method));
                     else
-                        builder.AddCommand(method.Name, Command.CreateFromClassMethod(targetType, method));
+                        builder.AddCommand(targetType.FullName, method.Name, Command.CreateFromClassMethod(targetType, method));
                 }
             }
             return builder;

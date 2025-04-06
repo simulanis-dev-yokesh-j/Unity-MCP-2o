@@ -5,8 +5,16 @@ namespace com.IvanMurzak.UnityMCP.Common.Data
 {
     public class NotificationData : INotificationData
     {
+        public string? Path { get; set; }
         public string? Name { get; set; }
         public IDictionary<string, object?>? Parameters { get; set; } = new Dictionary<string, object?>();
+
+        public NotificationData() { }
+        public NotificationData(string path, string name) : this()
+        {
+            Path = path;
+            Name = name;
+        }
 
         public void Dispose()
         {

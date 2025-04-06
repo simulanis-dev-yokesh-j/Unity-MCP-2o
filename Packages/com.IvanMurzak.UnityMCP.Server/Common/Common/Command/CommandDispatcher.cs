@@ -9,14 +9,18 @@ namespace com.IvanMurzak.UnityMCP.Common
     public partial class CommandDispatcher : ICommandDispatcher
     {
         readonly ILogger<CommandDispatcher> _logger;
-        readonly IDictionary<string, ICommand> _commands;
+        readonly IDictionary<string, IDictionary<string, ICommand>> _commands;
 
-        public CommandDispatcher(ILogger<CommandDispatcher> logger, IDictionary<string, ICommand> commands)
+        public CommandDispatcher(ILogger<CommandDispatcher> logger, IDictionary<string, IDictionary<string, ICommand>> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
 
             _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+
+            _logger.LogTrace("Registered commands [{0}]:", _commands.Count);
+            foreach (var keyValuePair in _commands)
+                _logger.LogTrace("Command: {0}", keyValuePair.Key);
         }
 
         /// <summary>
@@ -29,19 +33,27 @@ namespace com.IvanMurzak.UnityMCP.Common
                 return ResponseData.Error("Command data is null.")
                     .Log(_logger);
 
-            if (data.Name == null)
-                return ResponseData.Error("Command.Name is null.")
+            if (data.Class == null)
+                return ResponseData.Error("Command.Class is null.")
                     .Log(_logger);
 
-            if (!_commands.TryGetValue(data.Name, out var command))
-                return ResponseData.Error($"Command with name '{data.Name}' not found.")
+            if (data.Method == null)
+                return ResponseData.Error("Command.Method is null.")
+                    .Log(_logger);
+
+            if (!_commands.TryGetValue(data.Class, out var commandGroup))
+                return ResponseData.Error($"Command with Class '{data.Class}' not found.")
+                    .Log(_logger);
+
+            if (!commandGroup.TryGetValue(data.Method, out var command))
+                return ResponseData.Error($"Command with Method '{data.Method}' not found.")
                     .Log(_logger);
 
             try
             {
                 var message = data.Parameters == null
-                    ? $"Executing command '{data.Name}' with no parameters."
-                    : $"Executing command '{data.Name}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}";
+                    ? $"Executing command '{data.Method}' with no parameters."
+                    : $"Executing command '{data.Method}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}";
                 _logger.LogInformation(message);
 
                 // Execute the command with the parameters from CommandData
@@ -51,7 +63,7 @@ namespace com.IvanMurzak.UnityMCP.Common
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return ResponseData.Error($"Failed to execute command '{data.Name}'. Exception: {ex}")
+                return ResponseData.Error($"Failed to execute command '{data.Method}'. Exception: {ex}")
                     .Log(_logger);
             }
         }

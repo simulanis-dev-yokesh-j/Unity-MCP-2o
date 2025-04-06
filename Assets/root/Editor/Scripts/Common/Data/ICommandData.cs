@@ -6,7 +6,8 @@ namespace com.IvanMurzak.UnityMCP.Common.Data
 {
     public interface ICommandData : IDisposable
     {
-        string? Name { get; set; }
+        string? Class { get; set; }
+        string? Method { get; set; }
         IDictionary<string, object?>? Parameters { get; set; }
     }
 }

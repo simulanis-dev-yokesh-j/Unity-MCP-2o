@@ -44,10 +44,14 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             {
                 if (method.GetCustomAttribute<ToolAttribute>() is not null)
                 {
+                    var fullName = targetType.FullName;
+                    if (fullName == null)
+                        throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
+
                     if (method.IsStatic)
-                        builder.AddCommand(method.Name, Command.CreateFromStaticMethod(method));
+                        builder.AddCommand(fullName, method.Name, Command.CreateFromStaticMethod(method));
                     else
-                        builder.AddCommand(method.Name, Command.CreateFromClassMethod(targetType, method));
+                        builder.AddCommand(fullName, method.Name, Command.CreateFromClassMethod(targetType, method));
                 }
             }
             return builder;

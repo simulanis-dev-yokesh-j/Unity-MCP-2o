@@ -8,7 +8,7 @@ namespace com.IvanMurzak.UnityMCP.Common
     {
         public static ICommandData SetName(this ICommandData data, string name)
         {
-            data.Name = name;
+            data.Method = name;
             return data;
         }
         public static ICommandData SetOrAddParameter(this ICommandData data, string name, object? value)

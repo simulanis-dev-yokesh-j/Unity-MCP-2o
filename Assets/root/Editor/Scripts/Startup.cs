@@ -43,6 +43,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
                     loggingBuilder.AddProvider(new UnityLoggerProvider());
                     loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 })
+                .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
                 .Build()
                 .Connect();
