@@ -1,4 +1,3 @@
-using UnityEditor;
 using com.IvanMurzak.Unity.MCP.Common;
 using System.Diagnostics;
 using System.IO;
@@ -11,10 +10,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 {
     static partial class Startup
     {
-        const string ServerProjectName = "com.ivanmurzak.unity.mcp.server";
-        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", PackageName.ToLower()));
+        const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
+        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", PackageName, "Server"));
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
-        public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName));
+        public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
         public static string ServerExecutablePath => Path.Combine(ServerRootPath, $"bin~/Release/net9.0/{ServerProjectName}.exe");
         public static bool IsServerCompiled => File.Exists(ServerExecutablePath);
 
