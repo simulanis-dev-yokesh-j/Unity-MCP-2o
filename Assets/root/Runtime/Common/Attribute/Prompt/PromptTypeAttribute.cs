@@ -3,12 +3,11 @@ using System;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    sealed class ToolAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class PromptTypeAttribute : Attribute
     {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public string? Path { get; set; }
 
-        public ToolAttribute() { }
+        public PromptTypeAttribute() { }
     }
 }

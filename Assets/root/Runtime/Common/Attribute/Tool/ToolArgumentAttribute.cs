@@ -3,11 +3,11 @@ using System;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    sealed class ToolTypeAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class ToolArgumentAttribute : Attribute
     {
-        public string? Path { get; set; }
+        public string? Name { get; set; }
 
-        public ToolTypeAttribute() { }
+        public ToolArgumentAttribute() { }
     }
 }

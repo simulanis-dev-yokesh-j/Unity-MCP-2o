@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.UnityMCP.Editor
 {
-    internal class UnityLogger : ILogger
+    public class UnityLogger : ILogger
     {
         readonly string _categoryName;
 
@@ -44,7 +44,7 @@ namespace com.IvanMurzak.UnityMCP.Editor
             }
         }
     }
-    internal class UnityLoggerProvider : ILoggerProvider
+    public class UnityLoggerProvider : ILoggerProvider
     {
         public void Dispose() { /* No resources to dispose of */ }
         ILogger ILoggerProvider.CreateLogger(string categoryName) => new UnityLogger(categoryName);

@@ -3,11 +3,11 @@ using System;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    sealed class PromptTypeAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class PromptArgumentAttribute : Attribute
     {
-        public string? Path { get; set; }
+        public string? Name { get; set; }
 
-        public PromptTypeAttribute() { }
+        public PromptArgumentAttribute() { }
     }
 }

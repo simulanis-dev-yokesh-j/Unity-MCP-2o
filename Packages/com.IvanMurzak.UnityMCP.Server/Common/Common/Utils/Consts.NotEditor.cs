@@ -2,7 +2,7 @@
 #if !UNITY_EDITOR
 namespace com.IvanMurzak.UnityMCP.Common
 {
-    internal static partial class Consts
+    public static partial class Consts
     {
         public static partial class Log
         {

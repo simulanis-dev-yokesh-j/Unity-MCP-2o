@@ -4,7 +4,7 @@ using System;
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
     [AttributeUsage(AttributeTargets.Class)]
-    sealed class PromptTypeAttribute : Attribute
+    public sealed class PromptTypeAttribute : Attribute
     {
         public string? Path { get; set; }
 
