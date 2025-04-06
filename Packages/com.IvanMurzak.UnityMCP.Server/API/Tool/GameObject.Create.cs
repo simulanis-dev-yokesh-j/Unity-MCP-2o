@@ -9,8 +9,6 @@ namespace com.IvanMurzak.UnityMCP.API.Editor
     [McpServerToolType]
     public partial class Tool_GameObject : ServerTool
     {
-        public override string Method => nameof(Create);
-
         [McpServerTool(Name = "CreateGameObject", Title = "Create GameObject")]
         [Description("Create a new GameObject in the current active scene.")]
         public Task<string> Create(
@@ -19,7 +17,7 @@ namespace com.IvanMurzak.UnityMCP.API.Editor
             [Description("Name of the new GameObject.")]
             string name)
         {
-            return Execute(commandData => commandData
+            return Execute(nameof(Create), commandData => commandData
                 .SetOrAddParameter(nameof(path), path)
                 .SetOrAddParameter(nameof(name), name));
         }

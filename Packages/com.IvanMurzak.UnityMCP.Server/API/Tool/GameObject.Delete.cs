@@ -14,7 +14,7 @@ namespace com.IvanMurzak.UnityMCP.API.Editor
             [Description("Full path (including name) to the parent GameObject.")]
             string fullPath)
         {
-            return Execute(commandData => commandData
+            return Execute(nameof(Delete), commandData => commandData
                 .SetOrAddParameter(nameof(fullPath), fullPath));
         }
     }
