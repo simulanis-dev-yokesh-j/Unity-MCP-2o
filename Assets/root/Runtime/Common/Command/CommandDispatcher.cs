@@ -19,8 +19,11 @@ namespace com.IvanMurzak.UnityMCP.Common
             _commands = commands ?? throw new ArgumentNullException(nameof(commands));
 
             _logger.LogTrace("Registered commands [{0}]:", _commands.Count);
-            foreach (var keyValuePair in _commands)
-                _logger.LogTrace("Command: {0}", keyValuePair.Key);
+            foreach (var classKeyValue in _commands)
+            {
+                foreach (var methodKeyValue in classKeyValue.Value)
+                    _logger.LogTrace("Command: {0}.{1}", classKeyValue.Key, methodKeyValue.Key);
+            }
         }
 
         /// <summary>

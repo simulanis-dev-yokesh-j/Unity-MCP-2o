@@ -23,15 +23,15 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             _services.AddSingleton(commands);
         }
 
-        public IConnectorBuilder AddCommand(string path, string name, Command command)
+        public IConnectorBuilder AddCommand(string className, string method, Command command)
         {
-            if (!commands.TryGetValue(path, out var commandGroup))
-                commands[path] = commandGroup = new Dictionary<string, ICommand>();
+            if (!commands.TryGetValue(className, out var commandGroup))
+                commands[className] = commandGroup = new Dictionary<string, ICommand>();
 
-            if (commandGroup.ContainsKey(name))
-                throw new ArgumentException($"Command with name {name} already exists in path {path}.");
+            if (commandGroup.ContainsKey(method))
+                throw new ArgumentException($"Command with name {method} already exists in path {className}.");
 
-            commandGroup.Add(name, command);
+            commandGroup.Add(method, command);
             return this;
         }
 
