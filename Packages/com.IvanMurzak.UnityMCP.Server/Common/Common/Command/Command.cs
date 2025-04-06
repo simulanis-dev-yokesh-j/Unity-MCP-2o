@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.Json;
 using com.IvanMurzak.UnityMCP.Common.Data;
+using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.UnityMCP.Common
 {
@@ -12,45 +14,51 @@ namespace com.IvanMurzak.UnityMCP.Common
     /// </summary>
     public partial class Command : ICommand
     {
-        private readonly MethodInfo _methodInfo;
-        private readonly object? _targetInstance;
-        private readonly Type? _targetType;
+        readonly MethodInfo _methodInfo;
+        readonly object? _targetInstance;
+        readonly Type? _targetType;
+        readonly ILogger _logger;
 
         /// <summary>
         /// Initializes the Command with the target method information.
         /// </summary>
         /// <param name="type">The type containing the static method.</param>
-        public static Command CreateFromStaticMethod(MethodInfo methodInfo)
-            => new Command(methodInfo);
+        public static Command CreateFromStaticMethod(ILogger logger, MethodInfo methodInfo)
+            => new Command(logger, methodInfo);
 
         /// <summary>
         /// Initializes the Command with the target instance method information.
         /// </summary>
         /// <param name="targetInstance">The instance of the object containing the method.</param>
         /// <param name="methodInfo">The MethodInfo of the instance method to execute.</param>
-        public static Command CreateFromInstanceMethod(object targetInstance, MethodInfo methodInfo)
-            => new Command(targetInstance, methodInfo);
+        public static Command CreateFromInstanceMethod(ILogger logger, object targetInstance, MethodInfo methodInfo)
+            => new Command(logger, targetInstance, methodInfo);
 
         /// <summary>
         /// Initializes the Command with the target instance method information.
         /// </summary>
         /// <param name="targetInstance">The instance of the object containing the method.</param>
         /// <param name="methodInfo">The MethodInfo of the instance method to execute.</param>
-        public static Command CreateFromClassMethod(Type targetType, MethodInfo methodInfo)
-            => new Command(targetType, methodInfo);
+        public static Command CreateFromClassMethod(ILogger logger, Type targetType, MethodInfo methodInfo)
+            => new Command(logger, targetType, methodInfo);
 
-        Command(MethodInfo methodInfo)
+        Command(ILogger logger, MethodInfo methodInfo)
         {
+            if (logger == null)
+                throw new ArgumentNullException(nameof(logger));
             if (methodInfo == null)
                 throw new ArgumentNullException(nameof(methodInfo));
             if (!methodInfo.IsStatic)
                 throw new ArgumentException("The provided method must be static.");
 
+            _logger = logger;
             _methodInfo = methodInfo;
         }
 
-        Command(object targetInstance, MethodInfo methodInfo)
+        Command(ILogger logger, object targetInstance, MethodInfo methodInfo)
         {
+            if (logger == null)
+                throw new ArgumentNullException(nameof(logger));
             if (targetInstance == null)
                 throw new ArgumentNullException(nameof(targetInstance));
             if (methodInfo == null)
@@ -58,12 +66,15 @@ namespace com.IvanMurzak.UnityMCP.Common
             if (methodInfo.IsStatic)
                 throw new ArgumentException("The provided method must be an instance method. Use the other constructor for static methods.");
 
+            _logger = logger;
             _targetInstance = targetInstance;
             _methodInfo = methodInfo;
         }
 
-        Command(Type targetType, MethodInfo methodInfo)
+        Command(ILogger logger, Type targetType, MethodInfo methodInfo)
         {
+            if (logger == null)
+                throw new ArgumentNullException(nameof(logger));
             if (targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
             if (methodInfo == null)
@@ -71,6 +82,7 @@ namespace com.IvanMurzak.UnityMCP.Common
             if (methodInfo.IsStatic)
                 throw new ArgumentException("The provided method must be an instance method. Use the other constructor for static methods.");
 
+            _logger = logger;
             _targetType = targetType;
             _methodInfo = methodInfo;
         }
@@ -88,8 +100,20 @@ namespace com.IvanMurzak.UnityMCP.Common
             // If _targetInstance is null and _targetType is set, create an instance of the target type
             var instance = _targetInstance ?? (_targetType != null ? Activator.CreateInstance(_targetType) : null);
 
+            // Build the final parameters array, filling in default values where necessary
+            var finalParameters = BuildParameters(parameters);
+            if (finalParameters != null)
+            {
+                foreach (var parameter in finalParameters)
+                    _logger.LogTrace("Parameter: {0}", parameter);
+            }
+            else
+            {
+                _logger.LogTrace("No parameters provided.");
+            }
+
             // Invoke the method (static or instance)
-            var result = _methodInfo.Invoke(instance, BuildParameters(parameters));
+            var result = _methodInfo.Invoke(instance, finalParameters);
             // if (result == null)
             //     return ResponseData.Error("Something went wrong. Result is null.");
             return result as IResponseData ?? ResponseData.Success(result?.ToString());
@@ -109,8 +133,21 @@ namespace com.IvanMurzak.UnityMCP.Common
             // If _targetInstance is null and _targetType is set, create an instance of the target type
             var instance = _targetInstance ?? (_targetType != null ? Activator.CreateInstance(_targetType) : null);
 
+            // Build the final parameters array, filling in default values where necessary
+            var finalParameters = BuildParameters(namedParameters);
+            if (finalParameters != null)
+            {
+                foreach (var parameter in finalParameters)
+                    _logger.LogTrace("Parameter: {0}", parameter);
+            }
+            else
+            {
+                _logger.LogTrace("No parameters provided.");
+            }
+
             // Invoke the method (static or instance)
-            var result = _methodInfo.Invoke(instance, BuildParameters(namedParameters));
+            var result = _methodInfo.Invoke(instance, finalParameters);
+
             // if (result == null)
             //     return ResponseData.Error("Something went wrong. Result is null.");
             return result as IResponseData ?? ResponseData.Success(result?.ToString());
@@ -129,8 +166,16 @@ namespace com.IvanMurzak.UnityMCP.Common
             {
                 if (i < parameters.Length)
                 {
-                    // Use the provided parameter value
-                    finalParameters[i] = parameters[i];
+                    // Handle JsonElement conversion
+                    if (parameters[i] is JsonElement jsonElement)
+                    {
+                        finalParameters[i] = JsonSerializer.Deserialize(jsonElement.GetRawText(), methodParameters[i].ParameterType);
+                    }
+                    else
+                    {
+                        // Use the provided parameter value
+                        finalParameters[i] = parameters[i];
+                    }
                 }
                 else if (methodParameters[i].HasDefaultValue)
                 {
@@ -161,8 +206,15 @@ namespace com.IvanMurzak.UnityMCP.Common
 
                 if (namedParameters != null && namedParameters.TryGetValue(parameter.Name!, out var value))
                 {
-                    // Use the provided named parameter value
-                    finalParameters[i] = value;
+                    if (value is JsonElement jsonElement)
+                    {
+                        finalParameters[i] = JsonSerializer.Deserialize(jsonElement.GetRawText(), methodParameters[i].ParameterType);
+                    }
+                    else
+                    {
+                        // Use the provided parameter value
+                        finalParameters[i] = value;
+                    }
                 }
                 else if (parameter.HasDefaultValue)
                 {

@@ -13,7 +13,7 @@ namespace com.IvanMurzak.UnityMCP.API.Editor
             try
             {
                 var targetParent = string.IsNullOrEmpty(path) ? null : GameObject.Find(path);
-                if (targetParent == null && string.IsNullOrEmpty(path))
+                if (targetParent == null && !string.IsNullOrEmpty(path))
                 {
                     return $"[Error] Parent GameObject '{path}' not found.";
                 }

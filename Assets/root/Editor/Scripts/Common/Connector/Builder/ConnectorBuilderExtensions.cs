@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.UnityMCP.Common.API
 {
@@ -40,6 +41,8 @@ namespace com.IvanMurzak.UnityMCP.Common.API
             if (targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
 
+            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<Command>();
+
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
                 if (method.GetCustomAttribute<ToolAttribute>() is not null)
@@ -49,9 +52,9 @@ namespace com.IvanMurzak.UnityMCP.Common.API
                         throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
 
                     if (method.IsStatic)
-                        builder.AddCommand(fullName, method.Name, Command.CreateFromStaticMethod(method));
+                        builder.AddCommand(fullName, method.Name, Command.CreateFromStaticMethod(logger, method));
                     else
-                        builder.AddCommand(fullName, method.Name, Command.CreateFromClassMethod(targetType, method));
+                        builder.AddCommand(fullName, method.Name, Command.CreateFromClassMethod(logger, targetType, method));
                 }
             }
             return builder;
