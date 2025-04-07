@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             Routing = Consts.Route.GameObject_CurrentScene,
             Name = "GameObject.CurrentScene",
-            Description = "Get the name of the current scene.",
+            Description = "Get gameObject(s) at the current scene.",
             MimeType = Consts.MimeType.TextPlain
         )]
         public string CurrentScene(string path)
