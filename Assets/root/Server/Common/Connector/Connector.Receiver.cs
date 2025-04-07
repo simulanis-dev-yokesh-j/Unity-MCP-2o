@@ -19,7 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             CancellationTokenSource? cancellationTokenSource;
 
             readonly ILogger<Receiver> _logger;
-            readonly ICommandDispatcher _commandDispatcher;
+            readonly IToolDispatcher _commandDispatcher;
             readonly IResourceDispatcher _resourceDispatcher;
             readonly ConnectorConfig _config;
             readonly Subject<IRequestData?> _onReceivedData = new();
@@ -27,7 +27,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             public Status GetStatus { get; protected set; } = Status.Disconnected;
             public Observable<IRequestData?> OnReceivedData => _onReceivedData;
 
-            public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IResourceDispatcher resourceDispatcher, IOptions<ConnectorConfig> configOptions)
+            public Receiver(ILogger<Receiver> logger, IToolDispatcher commandDispatcher, IResourceDispatcher resourceDispatcher, IOptions<ConnectorConfig> configOptions)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
                 _logger.LogTrace("Ctor. {0}", configOptions.Value);

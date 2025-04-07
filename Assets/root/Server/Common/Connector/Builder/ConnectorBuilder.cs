@@ -18,7 +18,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             _services = services ?? new ServiceCollection();
             _services.AddTransient<IResourceDispatcher, ResourceDispatcher>();
-            _services.AddTransient<ICommandDispatcher, CommandDispatcher>();
+            _services.AddTransient<IToolDispatcher, ToolDispatcher>();
             _services.AddTransient<IConnectorReceiver, Connector.Receiver>();
             _services.AddTransient<IConnectorSender, Connector.Sender>();
             _services.AddTransient<IConnector, Connector>();

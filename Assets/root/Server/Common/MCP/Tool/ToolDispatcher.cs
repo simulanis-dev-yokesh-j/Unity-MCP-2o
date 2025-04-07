@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public partial class CommandDispatcher : ICommandDispatcher
+    public partial class ToolDispatcher : IToolDispatcher
     {
-        readonly ILogger<CommandDispatcher> _logger;
+        readonly ILogger<ToolDispatcher> _logger;
         readonly IDictionary<string, IDictionary<string, ICommand>> _commands;
 
-        public CommandDispatcher(ILogger<CommandDispatcher> logger, IDictionary<string, IDictionary<string, ICommand>> commands)
+        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IDictionary<string, ICommand>> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");

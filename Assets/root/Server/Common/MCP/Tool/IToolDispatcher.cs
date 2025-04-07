@@ -3,7 +3,7 @@ using System;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface ICommandDispatcher : IDisposable
+    public interface IToolDispatcher : IDisposable
     {
         IResponseData Dispatch(ICommandData data);
     }
