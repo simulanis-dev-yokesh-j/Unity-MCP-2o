@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         static Startup()
         {
             BuildAndStart();
-            CompileServerIfNeeded();
+            BuildServerIfNeeded();
         }
 
         public static void BuildAndStart()

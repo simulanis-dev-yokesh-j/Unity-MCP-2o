@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using Debug = UnityEngine.Debug;
+using com.IvanMurzak.Unity.MCP.Common.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
@@ -17,21 +18,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerExecutablePath => Path.Combine(ServerRootPath, $"bin~/Release/net9.0/{ServerProjectName}.exe");
         public static bool IsServerCompiled => File.Exists(ServerExecutablePath);
 
-        public static void CompileServerIfNeeded()
+        public static Task BuildServerIfNeeded()
         {
             if (IsServerCompiled)
-                return;
-            CompileServer();
+                return Task.CompletedTask;
+            return BuildServer();
         }
 
-        public static void CompileServer()
+        public static async Task BuildServer(bool force = true)
         {
             var message = "<b><color=yellow>Server Build</color></b>";
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>⊂(◉‿◉)つ</color>");
 
             CopyServerSources();
 
-            var processStartInfo = new ProcessStartInfo
+            Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
+
+            (string output, string error) = await ProcessUtils.Run(new ProcessStartInfo
             {
                 FileName = "dotnet",
                 Arguments = "build -c Release",
@@ -40,47 +43,60 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
-            };
+            });
 
-            Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
-            Debug.Log($"{Consts.Log.Tag} Command: <color=#8CFFD1>{processStartInfo.FileName} {processStartInfo.Arguments}</color>");
+            await MainThread.RunAsync(() => HandleBuildResult(output, error, force));
+        }
 
-            Task.Run(() =>
+        private static async Task HandleBuildResult(string output, string error, bool force)
+        {
+            if (output.Contains("Build FAILED"))
             {
-                try
+                Debug.LogError($"{Consts.Log.Tag} <color=red>Build failed</color>. Check the output for details:\n{output}");
+                if (force)
                 {
-                    using (var process = new Process { StartInfo = processStartInfo })
+                    if (ErrorUtils.ExtractProcessId(output, out var processId))
                     {
-                        process.Start();
-
-                        // Read the output and error streams
-                        var output = process.StandardOutput.ReadToEnd();
-                        var error = process.StandardError.ReadToEnd();
-
-                        process.WaitForExit();
-
-                        MainThread.RunAsync(() =>
+                        Debug.Log($"{Consts.Log.Tag} Detected another process which locks the file. Killing the process with ID: {processId}");
+                        // Kill the process that locks the file
+                        (string _output, string _error) = await ProcessUtils.Run(new ProcessStartInfo
                         {
-                            // Log the results
-                            Debug.Log($"{Consts.Log.Tag} Build Output:\n{output}");
-                            if (!string.IsNullOrEmpty(error))
-                            {
-                                Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
-                            }
-                            MenuItems.PrintConfig();
+                            FileName = "taskkill",
+                            Arguments = $"/PID {processId} /F",
+                            WorkingDirectory = ServerRootPath,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
                         });
+                        Debug.Log($"{Consts.Log.Tag} Trying to rebuild server one more time");
+                        await BuildServer(force: false);
+                        return;
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"{Consts.Log.Tag} Failed to execute dotnet command. Ensure dotnet CLI is installed and accessible in the environment.\n{ex}");
-                }
-            });
+            }
+            else
+            {
+                Debug.Log($"{Consts.Log.Tag} Build succeeded:\n{output}");
+            }
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
+            }
+            MenuItems.PrintConfig();
         }
+
         public static void CopyServerSources()
         {
             Debug.Log($"{Consts.Log.Tag} Delete sources at: <color=#8CFFD1>{ServerRootPath}</color>");
-            DirectoryUtils.Delete(ServerRootPath, recursive: true);
+            try
+            {
+                DirectoryUtils.Delete(ServerRootPath, recursive: true);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // ignore
+            }
 
             Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourcePath}</color>");
             try
