@@ -31,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Utils
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"{Consts.Log.Tag} Failed execute command: {processStartInfo.FileName} {processStartInfo.Arguments}");
+                    Debug.LogError($"{Consts.Log.Tag} Failed to execute command: {processStartInfo.FileName} {processStartInfo.Arguments}");
                     Debug.LogException(ex);
 
                     error = ex.Message;
