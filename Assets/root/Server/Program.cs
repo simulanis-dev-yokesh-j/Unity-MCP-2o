@@ -23,7 +23,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 .AddMcpServer()
                 .WithStdioServerTransport()
                 .WithPromptsFromAssembly()
-                .WithToolsFromAssembly();
+                .WithToolsFromAssembly()
+                .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates)
+                .WithListResourcesHandler(ResourceRouter.ListResources)
+                .WithReadResourceHandler(ResourceRouter.ReadResource);
 
             builder.Services
                 .AddConnector()

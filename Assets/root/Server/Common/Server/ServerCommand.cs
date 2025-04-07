@@ -39,9 +39,9 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
             {
                 return $"[Error] Failed to configure command: {ex.Message}";
             }
-            var dataPackage = commandData.Build();
+            var requestData = commandData.BuildRequest();
 
-            var response = await connector.Send(dataPackage, Retry, _cancellationTokenSource.Token);
+            var response = await connector.Send(requestData, Retry, _cancellationTokenSource.Token);
             if (response == null)
                 return "[Error] No response from Unity. Please check the connection.";
 

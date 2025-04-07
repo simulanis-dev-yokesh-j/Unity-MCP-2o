@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             data.Parameters[name] = value;
             return data;
         }
-        public static IDataPackage Build(this INotificationData data) => new DataPackage()
+        public static IRequestData Build(this INotificationData data) => new RequestData()
         {
             Notification = data as NotificationData,
         };

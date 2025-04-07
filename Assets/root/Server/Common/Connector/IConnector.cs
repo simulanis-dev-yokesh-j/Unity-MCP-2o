@@ -11,22 +11,22 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         Connector.Status ReceiverStatus { get; }
         Connector.Status SenderStatus { get; }
-        Observable<IDataPackage?> OnReceivedData { get; }
+        Observable<IRequestData?> OnReceivedData { get; }
         void Connect();
         void Disconnect();
-        Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default);
+        Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default);
     }
     public interface IConnectorReceiver : IDisposable
     {
         Connector.Status GetStatus { get; }
         void Connect();
         void Disconnect();
-        Observable<IDataPackage?> OnReceivedData { get; }
+        Observable<IRequestData?> OnReceivedData { get; }
     }
     public interface IConnectorSender : IDisposable
     {
         Connector.Status GetStatus { get; }
         void Disconnect();
-        Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default);
+        Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default);
     }
 }

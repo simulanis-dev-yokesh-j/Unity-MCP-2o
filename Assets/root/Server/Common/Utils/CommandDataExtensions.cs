@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             data.Parameters[name] = value;
             return data;
         }
-        public static IDataPackage Build(this ICommandData data) => new DataPackage()
+        public static IRequestData BuildRequest(this ICommandData data) => new RequestData()
         {
             Command = data as CommandData,
         };

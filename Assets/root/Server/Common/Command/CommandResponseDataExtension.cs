@@ -10,9 +10,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public static IResponseData Log(this IResponseData response, ILogger logger, Exception? ex = null)
         {
             if (response.IsSuccess)
-                logger.LogInformation(ex, response.SuccessMessage ?? "Command executed successfully.");
+                logger.LogInformation(ex, response.Message ?? "Command executed successfully.");
             else
-                logger.LogError(ex, response.ErrorMessage ?? "Command execution failed.");
+                logger.LogError(ex, response.Message ?? "Command execution failed.");
 
             return response;
         }

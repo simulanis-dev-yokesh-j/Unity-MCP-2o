@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             }
         };
 
-        public static string ToJson(this IDataPackage? data, JsonSerializerOptions? options = null)
+        public static string ToJson(this IRequestData? data, JsonSerializerOptions? options = null)
         {
             if (data == null)
                 return "{}";
@@ -32,9 +32,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
-        public static IDataPackage? ParseDataPackage(this string json, JsonSerializerOptions? options = null)
+        public static IRequestData? ParseDataPackage(this string json, JsonSerializerOptions? options = null)
         {
-            return JsonSerializer.Deserialize<DataPackage>(json, options ?? jsonSerializerOptions);
+            return JsonSerializer.Deserialize<RequestData>(json, options ?? jsonSerializerOptions);
         }
 
         public static IResponseData? ParseResponseData(this string json, JsonSerializerOptions? options = null)

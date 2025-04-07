@@ -21,10 +21,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
             readonly ILogger<Receiver> _logger;
             readonly ICommandDispatcher _commandDispatcher;
             readonly ConnectorConfig _config;
-            readonly Subject<IDataPackage?> _onReceivedData = new();
+            readonly Subject<IRequestData?> _onReceivedData = new();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
-            public Observable<IDataPackage?> OnReceivedData => _onReceivedData;
+            public Observable<IRequestData?> OnReceivedData => _onReceivedData;
 
             public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IOptions<ConnectorConfig> configOptions)
             {
