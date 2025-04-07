@@ -35,13 +35,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
         }
 
         public static IRequestData? ParseRequestData(this string json, JsonSerializerOptions? options = null)
-        {
-            return JsonSerializer.Deserialize<RequestData>(json, options ?? jsonSerializerOptions);
-        }
+            => JsonSerializer.Deserialize<RequestData>(json, options ?? jsonSerializerOptions);
 
         public static IResponseData? ParseResponseData(this string json, JsonSerializerOptions? options = null)
-        {
-            return JsonSerializer.Deserialize<ResponseData>(json, options ?? jsonSerializerOptions);
-        }
+            => JsonSerializer.Deserialize<ResponseData>(json, options ?? jsonSerializerOptions);
     }
 }
