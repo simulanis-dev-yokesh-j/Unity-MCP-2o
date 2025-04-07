@@ -18,14 +18,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerExecutablePath => Path.Combine(ServerRootPath, $"bin~/Release/net9.0/{ServerProjectName}.exe");
         public static bool IsServerCompiled => File.Exists(ServerExecutablePath);
 
-        public static async void CompileServerIfNeeded()
+        public static Task BuildServerIfNeeded()
         {
             if (IsServerCompiled)
-                return;
-            await CompileServer();
+                return Task.CompletedTask;
+            return BuildServer();
         }
 
-        public static async Task CompileServer(bool force = true)
+        public static async Task BuildServer(bool force = true)
         {
             var message = "<b><color=yellow>Server Build</color></b>";
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>⊂(◉‿◉)つ</color>");
@@ -45,44 +45,47 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 CreateNoWindow = true
             });
 
-            await MainThread.RunAsync(() =>
+            await MainThread.RunAsync(() => HandleBuildResult(output, error, force));
+        }
+
+        private static async Task HandleBuildResult(string output, string error, bool force)
+        {
+            if (output.Contains("Build FAILED"))
             {
-                if (output.Contains("Build FAILED"))
+                Debug.LogError($"{Consts.Log.Tag} <color=red>Build failed</color>. Check the output for details:\n{output}");
+                if (force)
                 {
-                    Debug.LogError($"{Consts.Log.Tag} <color=red>Build failed</color>. Check the output for details:\n{output}");
-                    if (force)
+                    if (ErrorUtils.ExtractProcessId(output, out var processId))
                     {
-                        if (ErrorUtils.ExtractProcessId(output, out var processId))
+                        Debug.Log($"{Consts.Log.Tag} Detected another process which locks the file. Killing the process with ID: {processId}");
+                        // Kill the process that locks the file
+                        (string _output, string _error) = await ProcessUtils.Run(new ProcessStartInfo
                         {
-                            Debug.Log($"{Consts.Log.Tag} Detected another process which locks the file. Killing the process with ID: {processId}");
-                            // Kill the process that locks the file
-                            (string output, string error) = ProcessUtils.Run(new ProcessStartInfo
-                            {
-                                FileName = "taskkill",
-                                Arguments = $"/PID {processId} /F",
-                                WorkingDirectory = ServerRootPath,
-                                RedirectStandardOutput = true,
-                                RedirectStandardError = true,
-                                UseShellExecute = false,
-                                CreateNoWindow = true
-                            }).Result;
-                            Debug.Log($"{Consts.Log.Tag} Trying to rebuild server one more time");
-                            CompileServer(force: false).Wait();
-                            return;
-                        }
+                            FileName = "taskkill",
+                            Arguments = $"/PID {processId} /F",
+                            WorkingDirectory = ServerRootPath,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        });
+                        Debug.Log($"{Consts.Log.Tag} Trying to rebuild server one more time");
+                        await BuildServer(force: false);
+                        return;
                     }
                 }
-                else
-                {
-                    Debug.Log($"{Consts.Log.Tag} Build succeeded:\n{output}");
-                }
-                if (!string.IsNullOrEmpty(error))
-                {
-                    Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
-                }
-                MenuItems.PrintConfig();
-            });
+            }
+            else
+            {
+                Debug.Log($"{Consts.Log.Tag} Build succeeded:\n{output}");
+            }
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
+            }
+            MenuItems.PrintConfig();
         }
+
         public static void CopyServerSources()
         {
             Debug.Log($"{Consts.Log.Tag} Delete sources at: <color=#8CFFD1>{ServerRootPath}</color>");

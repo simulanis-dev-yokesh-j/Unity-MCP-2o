@@ -27,7 +27,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         }
 
         [MenuItem("Tools/Unity-MCP/Server/Build", priority = 1010)]
-        public static Task CompileServer() => Startup.CompileServer();
+        public static Task CompileServer() => Startup.BuildServer();
 
         [MenuItem("Tools/Unity-MCP/Server/Print Config", priority = 1011)]
         public static void PrintConfig()
