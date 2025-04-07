@@ -45,7 +45,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 CreateNoWindow = true
             });
 
-            await MainThread.RunAsync(async () =>
+            await MainThread.RunAsync(() =>
             {
                 if (output.Contains("Build FAILED"))
                 {
@@ -56,7 +56,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         {
                             Debug.Log($"{Consts.Log.Tag} Detected another process which locks the file. Killing the process with ID: {processId}");
                             // Kill the process that locks the file
-                            (string output, string error) = await ProcessUtils.Run(new ProcessStartInfo
+                            (string output, string error) = ProcessUtils.Run(new ProcessStartInfo
                             {
                                 FileName = "taskkill",
                                 Arguments = $"/PID {processId} /F",
@@ -65,9 +65,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                                 RedirectStandardError = true,
                                 UseShellExecute = false,
                                 CreateNoWindow = true
-                            });
+                            }).Result;
                             Debug.Log($"{Consts.Log.Tag} Trying to rebuild server one more time");
-                            await CompileServer(force: false);
+                            CompileServer(force: false).Wait();
                             return;
                         }
                     }
@@ -90,10 +90,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             {
                 DirectoryUtils.Delete(ServerRootPath, recursive: true);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
-                // UnityEngine.Debug.LogError($"Failed to create directory: {destinationDir}\n{ex}");
-                // return;
+                // ignore
             }
 
             Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourcePath}</color>");
