@@ -32,9 +32,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 commands[className] = commandGroup = new Dictionary<string, ICommand>();
 
             if (commandGroup.ContainsKey(method))
-                throw new ArgumentException($"Command with name {method} already exists in path {className}.");
+                throw new ArgumentException($"Command with name '{method}' already exists in path {className}.");
 
             commandGroup.Add(method, command);
+            return this;
+        }
+
+        public IConnectorBuilder AddResource(string routing, Command command)
+        {
+            if (resources.ContainsKey(routing))
+                throw new ArgumentException($"Resource with routing '{routing}' already exists.");
+
+            resources.Add(routing, command);
             return this;
         }
 

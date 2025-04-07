@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,10 +47,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     if (className == null)
                         throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
 
-                    if (method.IsStatic)
-                        builder.AddCommand(className, method.Name, Command.CreateFromStaticMethod(logger, method));
-                    else
-                        builder.AddCommand(className, method.Name, Command.CreateFromClassMethod(logger, targetType, method));
+                    var command = method.IsStatic
+                        ? Command.CreateFromStaticMethod(logger, method)
+                        : Command.CreateFromClassMethod(logger, targetType, method);
+
+                    builder.AddCommand(className, method.Name, command);
                 }
             }
             return builder;

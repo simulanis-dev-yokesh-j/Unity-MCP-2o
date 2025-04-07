@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using com.IvanMurzak.Unity.MCP.Common.API;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -43,14 +42,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 if (method.GetCustomAttribute<ResourceAttribute>() is not null)
                 {
-                    var className = targetType.GetCustomAttribute<ResourceTypeAttribute>()?.Path ?? targetType.FullName;
-                    if (className == null)
-                        throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
+                    var routing = method.GetCustomAttribute<ResourceAttribute>()?.Routing;
+                    if (routing == null)
+                        throw new InvalidOperationException($"Method {method.Name} does not have a routing.");
 
-                    if (method.IsStatic)
-                        builder.AddCommand(className, method.Name, Command.CreateFromStaticMethod(logger, method));
-                    else
-                        builder.AddCommand(className, method.Name, Command.CreateFromClassMethod(logger, targetType, method));
+                    var command = method.IsStatic
+                        ? Command.CreateFromStaticMethod(logger, method)
+                        : Command.CreateFromClassMethod(logger, targetType, method);
+
+                    builder.AddResource(routing, command);
                 }
             }
             return builder;

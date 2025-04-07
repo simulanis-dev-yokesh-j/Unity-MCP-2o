@@ -9,17 +9,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ResourceDispatcher : IResourceDispatcher
     {
         readonly ILogger<ResourceDispatcher> _logger;
-        readonly IDictionary<string, ICommand> _resources;
+        readonly IDictionary<string, ICommand> _commands;
 
         public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, ICommand> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
 
-            _resources = commands ?? throw new ArgumentNullException(nameof(commands));
+            _commands = commands ?? throw new ArgumentNullException(nameof(commands));
 
-            _logger.LogTrace("Registered resources [{0}]:", _resources.Count);
-            foreach (var keyValuePair in _resources)
+            _logger.LogTrace("Registered resources [{0}]:", _commands.Count);
+            foreach (var keyValuePair in _commands)
                 _logger.LogTrace("Resource: {0}", keyValuePair.Key);
         }
 
@@ -38,7 +38,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 return ResponseData.Error("Resource.Uri is null.")
                     .Log(_logger);
 
-            if (!_resources.TryGetValue(data.Uri, out var resource))
+            // TODO: This is wrong. Need to use Uri in a smart way using some logic to get the resource.
+            if (!_commands.TryGetValue(data.Uri, out var resource))
                 return ResponseData.Error($"Resource with Uri '{data.Uri}' not found.")
                     .Log(_logger);
 
@@ -48,6 +49,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                 // Execute the resource with the parameters from Uri
                 // TODO: Implement the logic to execute the resource with parameters
+                // TODO: parse variables from Uri
                 return resource.Execute(data.Uri)
                     .Log(_logger);
             }
@@ -61,7 +63,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
-            _resources.Clear();
+            _commands.Clear();
         }
     }
 }

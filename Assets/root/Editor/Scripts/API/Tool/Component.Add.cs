@@ -21,7 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (type == null)
                 return $"[Error] Component type '{fullName}' not found.";
 
-            if (!typeof(Component).IsAssignableFrom(type))
+            if (!typeof(UnityEngine.Component).IsAssignableFrom(type))
                 return $"[Error] Type '{fullName}' is not a valid Unity Component.";
 
             return MainThread.Run(() =>

@@ -3,6 +3,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public static partial class Consts
     {
+        public const string All = "*";
+        public const string AllRecursive = "**";
+
         public static partial class Command
         {
             public static partial class ResponseCode
