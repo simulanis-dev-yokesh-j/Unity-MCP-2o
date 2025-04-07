@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,7 +19,7 @@ namespace com.IvanMurzak.Unity.MCP
 
             // Compile ignore patterns into regex
             var ignoreRegexes = ignorePatterns.Select(pattern =>
-                new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase)).ToArray();
+            new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase)).ToArray();
 
             // Helper function to check if a path matches any ignore pattern
             bool IsIgnored(string path) => ignoreRegexes.Any(regex => regex.IsMatch(path));
