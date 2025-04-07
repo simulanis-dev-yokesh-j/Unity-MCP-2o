@@ -6,7 +6,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [ResourceType]
     public partial class Resource_GameObject
     {
-        [Resource(Routing = "gameObject://currentScene/{path}")]
+        [Resource
+        (
+            Routing = Consts.Route.GameObject_CurrentScene,
+            Name = "GameObject.CurrentScene",
+            Description = "Get the name of the current scene.",
+            MimeType = Consts.MimeType.TextPlain
+        )]
         public string CurrentScene(string path)
         {
             if (string.IsNullOrEmpty(path))

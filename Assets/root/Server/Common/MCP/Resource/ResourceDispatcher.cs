@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.Extensions.Logging;
 
@@ -38,9 +39,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 return ResponseData.Error("Resource.Uri is null.")
                     .Log(_logger);
 
-            // TODO: This is wrong. Need to use Uri in a smart way using some logic to get the resource.
-            if (!_commands.TryGetValue(data.Uri, out var resource))
-                return ResponseData.Error($"Resource with Uri '{data.Uri}' not found.")
+
+            var command = FindCommand(data.Uri);
+            if (command == null)
+                return ResponseData.Error($"No route matches the URI: {data.Uri}")
                     .Log(_logger);
 
             try
@@ -50,7 +52,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 // Execute the resource with the parameters from Uri
                 // TODO: Implement the logic to execute the resource with parameters
                 // TODO: parse variables from Uri
-                return resource.Execute(data.Uri)
+                var parameters = ParseUriParameters(data.Uri);
+                return command.Execute(parameters)
                     .Log(_logger);
             }
             catch (Exception ex)
@@ -59,6 +62,44 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 return ResponseData.Error($"Failed to execute resource '{data.Uri}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
+        }
+
+        ICommand? FindCommand(string uri)
+        {
+            foreach (var route in _commands)
+            {
+                if (IsMatch(route.Key, uri))
+                    return route.Value;
+            }
+            return null;
+        }
+
+        bool IsMatch(string pattern, string uri)
+        {
+            // Convert pattern to regex
+            var regexPattern = "^" + Regex.Escape(pattern)
+                .Replace("\\*", ".*")
+                .Replace("\\{.*?\\}", "[^/]+") + "$";
+
+            return Regex.IsMatch(uri, regexPattern);
+        }
+
+        Dictionary<string, object?> ParseUriParameters(string uri)
+        {
+            var parameters = new Dictionary<string, object?>();
+            var regex = new Regex(@"\{(?<name>[^}]+)\}");
+            var matches = regex.Matches(uri);
+
+            foreach (Match match in matches)
+            {
+                var name = match.Groups["name"].Value;
+                if (!parameters.ContainsKey(name))
+                {
+                    parameters[name] = null; // Initialize with null or default value
+                }
+            }
+
+            return parameters;
         }
 
         public void Dispose()

@@ -7,6 +7,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public sealed class ResourceAttribute : Attribute
     {
         public string? Routing { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? MimeType { get; set; }
 
         public ResourceAttribute() { }
     }

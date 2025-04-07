@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.Unity.MCP.Common;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 
@@ -16,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 {
                     new ResourceTemplate()
                     {
-                        UriTemplate = "gameObject://{path}",
+                        UriTemplate = Consts.Route.GameObject_CurrentScene,
                         Name = "GameObject",
                         Description = "GameObject template",
                         MimeType = "plain/text"
