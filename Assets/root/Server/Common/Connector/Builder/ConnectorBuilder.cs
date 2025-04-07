@@ -8,8 +8,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public class ConnectorBuilder : IConnectorBuilder
     {
-        readonly IDictionary<string, IDictionary<string, ICommand>> commands = new Dictionary<string, IDictionary<string, ICommand>>();
-        readonly IDictionary<string, ICommand> resources = new Dictionary<string, ICommand>();
+        readonly IDictionary<string, IDictionary<string, ICommand>> tools = new Dictionary<string, IDictionary<string, ICommand>>();
+        readonly IDictionary<string, IResourceParams> resources = new Dictionary<string, IResourceParams>();
         readonly IServiceCollection _services;
 
         public IServiceCollection Services => _services;
@@ -22,14 +22,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services.AddTransient<IConnectorReceiver, Connector.Receiver>();
             _services.AddTransient<IConnectorSender, Connector.Sender>();
             _services.AddTransient<IConnector, Connector>();
-            _services.AddSingleton(commands);
+            _services.AddSingleton(tools);
             _services.AddSingleton(resources);
         }
 
-        public IConnectorBuilder AddCommand(string className, string method, Command command)
+        public IConnectorBuilder AddTool(string className, string method, Command command)
         {
-            if (!commands.TryGetValue(className, out var commandGroup))
-                commands[className] = commandGroup = new Dictionary<string, ICommand>();
+            if (!tools.TryGetValue(className, out var commandGroup))
+                tools[className] = commandGroup = new Dictionary<string, ICommand>();
 
             if (commandGroup.ContainsKey(method))
                 throw new ArgumentException($"Command with name '{method}' already exists in path {className}.");
@@ -38,12 +38,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return this;
         }
 
-        public IConnectorBuilder AddResource(string routing, Command command)
+        public IConnectorBuilder AddResource(IResourceParams resourceParams)
         {
-            if (resources.ContainsKey(routing))
-                throw new ArgumentException($"Resource with routing '{routing}' already exists.");
+            if (resources == null)
+                throw new ArgumentNullException(nameof(resources));
+            if (resourceParams == null)
+                throw new ArgumentNullException(nameof(resourceParams));
 
-            resources.Add(routing, command);
+            if (resources.ContainsKey(resourceParams.Route))
+                throw new ArgumentException($"Resource with routing '{resourceParams.Route}' already exists.");
+
+            resources.Add(resourceParams.Route, resourceParams);
             return this;
         }
 

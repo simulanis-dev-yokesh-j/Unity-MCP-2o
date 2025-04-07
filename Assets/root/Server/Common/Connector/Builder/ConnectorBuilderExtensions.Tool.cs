@@ -51,7 +51,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         ? Command.CreateFromStaticMethod(logger, method)
                         : Command.CreateFromClassMethod(logger, targetType, method);
 
-                    builder.AddCommand(className, method.Name, command);
+                    builder.AddTool(className, method.Name, command);
                 }
             }
             return builder;

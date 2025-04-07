@@ -10,9 +10,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ResourceDispatcher : IResourceDispatcher
     {
         readonly ILogger<ResourceDispatcher> _logger;
-        readonly IDictionary<string, ICommand> _commands;
+        readonly IDictionary<string, IResourceParams> _commands;
 
-        public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, ICommand> commands)
+        public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, IResourceParams> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
@@ -40,7 +40,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     .Log(_logger);
 
 
-            var command = FindCommand(data.Uri);
+            var command = FindCommand(data.Uri)?.Command;
             if (command == null)
                 return ResponseData.Error($"No route matches the URI: {data.Uri}")
                     .Log(_logger);
@@ -64,7 +64,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             }
         }
 
-        ICommand? FindCommand(string uri)
+        IResourceParams? FindCommand(string uri)
         {
             foreach (var route in _commands)
             {

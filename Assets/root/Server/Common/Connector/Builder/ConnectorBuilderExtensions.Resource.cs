@@ -40,18 +40,22 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
-                if (method.GetCustomAttribute<ResourceAttribute>() is not null)
-                {
-                    var routing = method.GetCustomAttribute<ResourceAttribute>()?.Routing;
-                    if (routing == null)
-                        throw new InvalidOperationException($"Method {method.Name} does not have a routing.");
+                var attribute = method.GetCustomAttribute<ResourceAttribute>();
+                if (attribute == null)
+                    continue;
 
-                    var command = method.IsStatic
+                var resourceParams = new ResourceParams
+                (
+                    route: attribute!.Routing ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'routing'."),
+                    name: attribute.Name ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'name'."),
+                    description: attribute.Description,
+                    mimeType: attribute.MimeType,
+                    command: method.IsStatic
                         ? Command.CreateFromStaticMethod(logger, method)
-                        : Command.CreateFromClassMethod(logger, targetType, method);
+                        : Command.CreateFromClassMethod(logger, targetType, method)
+                );
 
-                    builder.AddResource(routing, command);
-                }
+                builder.AddResource(resourceParams!);
             }
             return builder;
         }

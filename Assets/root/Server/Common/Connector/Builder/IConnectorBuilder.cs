@@ -8,8 +8,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public interface IConnectorBuilder
     {
         IServiceCollection Services { get; }
-        IConnectorBuilder AddCommand(string className, string method, Command command);
-        IConnectorBuilder AddResource(string routing, Command command);
+        IConnectorBuilder AddTool(string className, string method, Command command);
+        IConnectorBuilder AddResource(IResourceParams resourceParams);
         IConnectorBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder);
         IConnectorBuilder WithConfig(Action<ConnectorConfig> config);
         IConnector Build();
