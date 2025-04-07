@@ -20,14 +20,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         UriTemplate = Consts.Route.GameObject_CurrentScene,
                         Name = "GameObject",
                         Description = "GameObject template",
-                        MimeType = "plain/text"
+                        MimeType = Consts.MimeType.TextPlain
                     },
                     new ResourceTemplate()
                     {
                         UriTemplate = "component://{name}",
                         Name = "Component",
                         Description = "Component is attachable to GameObject C# class",
-                        MimeType = "plain/text"
+                        MimeType = Consts.MimeType.TextPlain
                     }
                 }
             });
