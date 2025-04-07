@@ -32,7 +32,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
-        public static IRequestData? ParseDataPackage(this string json, JsonSerializerOptions? options = null)
+        public static IRequestData? ParseRequestData(this string json, JsonSerializerOptions? options = null)
         {
             return JsonSerializer.Deserialize<RequestData>(json, options ?? jsonSerializerOptions);
         }

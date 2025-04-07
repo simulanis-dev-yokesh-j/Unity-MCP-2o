@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
             var error = new TextResourceContents()
             {
-                Uri = "uri",
+                Uri = uri,
                 MimeType = "plain/text",
                 Text = message
             };

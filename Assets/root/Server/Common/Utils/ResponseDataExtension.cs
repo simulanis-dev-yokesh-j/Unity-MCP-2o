@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public static class CommandResponseDataExtension
+    public static class ResponseDataExtension
     {
         public static IResponseData Log(this IResponseData response, ILogger logger, Exception? ex = null)
         {

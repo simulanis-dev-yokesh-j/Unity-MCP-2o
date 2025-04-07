@@ -36,6 +36,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             Debug.Log($"{Consts.Log.Tag} Copy and paste this config to <color=orange>Claude Desktop</color> config.json");
             Debug.Log($"{Consts.Log.Tag} Server Config is RIGHT HERE:\n{config}");
         }
+
+        [MenuItem("Tools/Unity-MCP/Server/Open Logs", priority = 1012)]
+        public static void OpenLogs()
+        {
+            if (System.IO.File.Exists(Startup.ServerLogsPath))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = Startup.ServerLogsPath,
+                    UseShellExecute = true // Ensures the file opens with the default application
+                });
+            }
+            else
+            {
+                Debug.LogError($"{Consts.Log.Tag} Log file not found at: {Startup.ServerLogsPath}");
+            }
+        }
     }
 }
 #endif

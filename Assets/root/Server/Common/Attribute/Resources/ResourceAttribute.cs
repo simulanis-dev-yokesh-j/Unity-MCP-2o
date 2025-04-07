@@ -4,10 +4,10 @@ using System;
 namespace com.IvanMurzak.Unity.MCP.Common.API
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class ResourcesAttribute : Attribute
+    public sealed class ResourceAttribute : Attribute
     {
         public string? Name { get; set; }
 
-        public ResourcesAttribute() { }
+        public ResourceAttribute() { }
     }
 }

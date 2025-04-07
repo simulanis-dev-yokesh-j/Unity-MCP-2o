@@ -16,13 +16,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
         public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
         public static string ServerExecutablePath => Path.Combine(ServerRootPath, $"bin~/Release/net9.0/{ServerProjectName}.exe");
+        public static string ServerLogsPath => Path.Combine(ServerExecutablePath, $"bin~/Release/net9.0/logs/logs.txt");
         public static bool IsServerCompiled => File.Exists(ServerExecutablePath);
 
-        public static Task BuildServerIfNeeded()
+        public static Task BuildServerIfNeeded(bool force = true)
         {
             if (IsServerCompiled)
                 return Task.CompletedTask;
-            return BuildServer();
+            return BuildServer(force);
         }
 
         public static async Task BuildServer(bool force = true)

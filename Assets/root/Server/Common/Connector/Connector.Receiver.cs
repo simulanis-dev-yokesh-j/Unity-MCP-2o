@@ -20,19 +20,21 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             readonly ILogger<Receiver> _logger;
             readonly ICommandDispatcher _commandDispatcher;
+            readonly IResourceDispatcher _resourceDispatcher;
             readonly ConnectorConfig _config;
             readonly Subject<IRequestData?> _onReceivedData = new();
 
             public Status GetStatus { get; protected set; } = Status.Disconnected;
             public Observable<IRequestData?> OnReceivedData => _onReceivedData;
 
-            public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IOptions<ConnectorConfig> configOptions)
+            public Receiver(ILogger<Receiver> logger, ICommandDispatcher commandDispatcher, IResourceDispatcher resourceDispatcher, IOptions<ConnectorConfig> configOptions)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
                 _logger.LogTrace("Ctor. {0}", configOptions.Value);
 
                 _config = configOptions.Value ?? throw new ArgumentNullException(nameof(configOptions));
                 _commandDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
+                _resourceDispatcher = resourceDispatcher ?? throw new ArgumentNullException(nameof(resourceDispatcher));
             }
 
             public void Connect()
@@ -81,21 +83,26 @@ namespace com.IvanMurzak.Unity.MCP.Common
                                 var receivedData = await TcpUtils.ReadResponseAsync(stream, cancellationToken);
                                 _logger.LogTrace("Received data: {0}", receivedData);
 
-                                var dataPackage = receivedData.ParseDataPackage();
-                                if (dataPackage == null)
+                                var requestData = receivedData.ParseRequestData();
+                                if (requestData == null)
                                 {
                                     _logger.LogWarning("Received data is null. Ignoring.");
                                     continue;
                                 }
 
-                                _onReceivedData.OnNext(dataPackage);
+                                _onReceivedData.OnNext(requestData);
 
-                                if (dataPackage?.Command != null)
+                                if (requestData?.Command != null)
                                 {
-                                    var result = _commandDispatcher.Dispatch(dataPackage.Command);
+                                    var result = _commandDispatcher.Dispatch(requestData.Command);
                                     await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
                                 }
-                                else if (dataPackage?.Notification != null)
+                                else if (requestData?.Resource != null)
+                                {
+                                    var result = _resourceDispatcher.Dispatch(requestData.Resource);
+                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                }
+                                else if (requestData?.Notification != null)
                                 {
                                     // var result = _notificationDispatcher.Dispatch(dataPackage.Response);
                                     // await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);

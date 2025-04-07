@@ -9,6 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public class ConnectorBuilder : IConnectorBuilder
     {
         readonly IDictionary<string, IDictionary<string, ICommand>> commands = new Dictionary<string, IDictionary<string, ICommand>>();
+        readonly IDictionary<string, ICommand> resources = new Dictionary<string, ICommand>();
         readonly IServiceCollection _services;
 
         public IServiceCollection Services => _services;
@@ -16,11 +17,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public ConnectorBuilder(IServiceCollection? services = null)
         {
             _services = services ?? new ServiceCollection();
+            _services.AddTransient<IResourceDispatcher, ResourceDispatcher>();
             _services.AddTransient<ICommandDispatcher, CommandDispatcher>();
             _services.AddTransient<IConnectorReceiver, Connector.Receiver>();
             _services.AddTransient<IConnectorSender, Connector.Sender>();
             _services.AddTransient<IConnector, Connector>();
             _services.AddSingleton(commands);
+            _services.AddSingleton(resources);
         }
 
         public IConnectorBuilder AddCommand(string className, string method, Command command)
