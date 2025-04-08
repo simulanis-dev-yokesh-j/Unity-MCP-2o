@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new ListResourcesResult().SetError("[Error] Connector is null");
 
-            var requestData = new RequestData(new RequestListResources());
+            var requestData = new RequestData(new RequestListResources(request?.Params?.Cursor));
 
             var resource = await connector.Send(requestData, cancellationToken: cancellationToken);
             if (resource == null)

@@ -67,7 +67,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public IResponseData Dispatch(IRequestListResources data)
         {
-            return ResponseData.Error($"'ListResources' not yet implemented.")
+            return ResponseData.Error($"'ListResources' not yet implemented. Cursor '{data.Cursor}'")
                 .Log(_logger);
         }
 

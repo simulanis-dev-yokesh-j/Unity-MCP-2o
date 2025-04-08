@@ -4,7 +4,13 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public class RequestListResources : IRequestListResources
     {
+        public string? Cursor { get; set; }
+
         public RequestListResources() { }
+        public RequestListResources(string? cursor)
+        {
+            Cursor = cursor;
+        }
 
         public virtual void Dispose()
         {
