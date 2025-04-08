@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         };
         public static ResponseData Error(string? message = null) => new(isSuccess: false)
         {
-            Message = "[Error]" + message
+            Message = "[Error] " + message
         };
         public static ResponseData CreateResources(string? message, ResponseResourceContent[]? resources) => new(isSuccess: true)
         {
