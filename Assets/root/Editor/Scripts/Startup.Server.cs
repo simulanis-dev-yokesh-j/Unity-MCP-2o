@@ -11,13 +11,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 {
     static partial class Startup
     {
-        const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
+        public const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
         public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", PackageName, "Server"));
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
         public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
-        public static string ServerExecutablePath => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0", $"{ServerProjectName}.exe");
-        public static string ServerLogsPath => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0", "logs", "logs.txt");
-        public static bool IsServerCompiled => File.Exists(ServerExecutablePath);
+        public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");
+        public static string ServerExecutableFile => Path.Combine(ServerExecutableFolder, $"{ServerProjectName}");
+        public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "logs.txt");
+        public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
 
         public static Task BuildServerIfNeeded(bool force = true)
         {
