@@ -5,6 +5,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
     {
         bool IsSuccess { get; set; }
         string? Message { get; set; }
-        IResponseResource?[]? Data { get; }
+        IResponseResourceContent[]? ResourceContents { get; }
+        IResponseListResources[]? ListResources { get; }
+        IResponseListResourceTemplates[]? ListResourceTemplates { get; }
     }
 }

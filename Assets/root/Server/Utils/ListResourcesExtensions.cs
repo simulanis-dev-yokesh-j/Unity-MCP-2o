@@ -1,0 +1,25 @@
+using System;
+using com.IvanMurzak.Unity.MCP.Common.Data;
+using ModelContextProtocol.Protocol.Types;
+
+namespace com.IvanMurzak.Unity.MCP.Server
+{
+    public static class ListResourcesExtensions
+    {
+        public static ListResourcesResult SetError(this ListResourcesResult target, string message)
+        {
+            throw new Exception(message);
+        }
+
+        public static Resource ToResource(this IResponseListResources response)
+        {
+            return new Resource()
+            {
+                Uri = response.uri,
+                Name = response.name,
+                Description = response.description,
+                MimeType = response.mimeType
+            };
+        }
+    }
+}

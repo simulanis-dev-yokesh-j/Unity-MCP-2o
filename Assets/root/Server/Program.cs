@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using com.IvanMurzak.Unity.MCP.Common;
 using NLog.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
@@ -16,20 +15,20 @@ namespace com.IvanMurzak.Unity.MCP.Server
     {
         public static async Task Main(string[] args)
         {
+            Console.Error.WriteLine("Location: " + Environment.CurrentDirectory);
             // Configure NLog
             var logger = LogManager.Setup().LoadConfigurationFromFile("NLog.config").GetCurrentClassLogger();
             try
             {
                 var builder = Host.CreateApplicationBuilder(args);
-                builder.Logging.AddConsole(consoleLogOptions =>
-                {
-                    // Configure all logs to go to stderr
-                    consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
-                });
+                // Configure all logs to go to stderr. This is needed for MCP STDIO server to work properly.
+                builder.Logging.AddConsole(consoleLogOptions => consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace);
+
                 // Replace default logging with NLog
                 // builder.Logging.ClearProviders();
                 builder.Logging.AddNLog();
 
+                // Setup MCP server ---------------------------------------------------------------
                 builder.Services
                     .AddMcpServer()
                     .WithStdioServerTransport()
@@ -39,15 +38,23 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .WithListResourcesHandler(ResourceRouter.ListResources)
                     .WithReadResourceHandler(ResourceRouter.ReadResource);
 
+                // Setup SignalR connection builder -----------------------------------------------
+                // TODO: Replace raw TCP with SignalR
+                // builder.Services.AddSingleton(new HubConnectionBuilder()
+                //     .WithUrl(Environment.GetEnvironmentVariable("UNITY_URL") ?? Consts.Remote.URL)
+                //     .WithAutomaticReconnect()
+                //     .AddJsonProtocol()
+                //     .ConfigureLogging(logging =>
+                //     {
+                //         logging.AddNLog();
+                //         logging.SetMinimumLevel(LogLevel.Information);
+                //     }));
+
+                // Setup Connector ----------------------------------------------------------------
                 builder.Services
                     .AddConnector()
                     .AddLogging(logging =>
                     {
-                        logging.AddConsole(consoleLogOptions =>
-                        {
-                            // Ensure logs are sent to stdout
-                            consoleLogOptions.FormatterName = ConsoleFormatterNames.Systemd;
-                        });
                         logging.AddNLog();
                         logging.SetMinimumLevel(LogLevel.Information);
                     })
@@ -55,31 +62,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     {
                         config.ConnectionType = Connector.ConnectionRole.Server;
                     })
-                    .Build()
+                    .Build() // TODO: Build it right now is not the best idea
                     .Connect();
-
-                // var server = builder.Services.BuildServiceProvider().GetRequiredService<IMcpServer>();
-                // if (server.ServerOptions.Capabilities?.Tools?.ToolCollection != null)
-                // {
-                //     server.ServerOptions.Capabilities.Tools.ToolCollection
-                //         .Add(McpServerTool.Create(() =>
-                //         {
-                //             if (Connector.HasInstance)
-                //             {
-                //                 Connector.Instance?.Send("This is custom command from server!");
-                //                 return Task.FromResult("This is custom response from server!");
-                //             }
-                //             return Task.FromResult("Connector is null");
-                //         },
-                //         new McpServerToolCreateOptions()
-                //         {
-                //             Name = "CustomCommand",
-                //             Description = "This is custom command from server!"
-                //         }));
-                //     // server.ServerOptions.Capabilities.Tools.ListChanged = true;
-                // }
-                // //server.ClientCapabilities.Roots.ListChanged = true; // .Sampling
-                // // server.SendMessageAsync("Hello from server!"); // .Wait();
 
                 await builder.Build().RunAsync();
             }

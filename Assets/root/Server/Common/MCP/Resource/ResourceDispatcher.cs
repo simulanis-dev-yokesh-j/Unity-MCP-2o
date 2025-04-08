@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="data">The ResourceData containing the resource Uri and parameters.</param>
         /// <returns>ResponseData containing the result of the resource retrieval.</returns>
-        public IResponseData Dispatch(IRequestResourceData data)
+        public IResponseData Dispatch(IRequestResourceContent data)
         {
             if (data == null)
                 return ResponseData.Error("Resource data is null.")
@@ -64,6 +65,31 @@ namespace com.IvanMurzak.Unity.MCP.Common
             }
         }
 
+        public IResponseData Dispatch(IRequestListResources data)
+        {
+            return ResponseData.Error($"'ListResources' not yet implemented.")
+                .Log(_logger);
+        }
+
+        public IResponseData Dispatch(IRequestListResourceTemplates data)
+        {
+            try
+            {
+                var templates = _commands.Values
+                    .Select(resource => new ResponseResourceTemplates(resource.Route, resource.Name, resource.Description, resource.MimeType))
+                    .ToArray();
+
+                return ResponseData.CreateListResourceTemplates("[Success]", templates)
+                    .Log(_logger);
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception as needed
+                return ResponseData.Error($"Failed to execute 'ListResourceTemplates'. Exception: {ex}")
+                    .Log(_logger, ex);
+            }
+        }
+
         IResourceParams? FindCommand(string uri)
         {
             foreach (var route in _commands)
@@ -84,7 +110,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return Regex.IsMatch(uri, regexPattern);
         }
 
-        Dictionary<string, object?> ParseUriParameters(string uri)
+        IDictionary<string, object?> ParseUriParameters(string uri)
         {
             var parameters = new Dictionary<string, object?>();
             var regex = new Regex(@"\{(?<name>[^}]+)\}");

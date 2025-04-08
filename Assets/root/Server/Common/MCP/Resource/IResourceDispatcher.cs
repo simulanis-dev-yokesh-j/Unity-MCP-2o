@@ -5,6 +5,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public interface IResourceDispatcher : IDisposable
     {
-        IResponseData Dispatch(IRequestResourceData data);
+        IResponseData Dispatch(IRequestResourceContent data);
+        IResponseData Dispatch(IRequestListResources data);
+        IResponseData Dispatch(IRequestListResourceTemplates data);
     }
 }

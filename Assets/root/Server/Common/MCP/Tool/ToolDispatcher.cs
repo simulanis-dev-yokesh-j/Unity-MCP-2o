@@ -30,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// Executes a command based on the provided CommandData.
         /// </summary>
         /// <param name="data">The CommandData containing the command name and parameters.</param>
-        public IResponseData Dispatch(ICommandData data)
+        public IResponseData Dispatch(IRequestCommand data)
         {
             if (data == null)
                 return ResponseData.Error("Command data is null.")

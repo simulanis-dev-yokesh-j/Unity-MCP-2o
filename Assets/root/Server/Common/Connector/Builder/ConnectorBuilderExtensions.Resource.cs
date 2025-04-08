@@ -46,7 +46,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                 var resourceParams = new ResourceParams
                 (
-                    route: attribute!.Routing ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'routing'."),
+                    route: attribute!.Route ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'routing'."),
                     name: attribute.Name ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'name'."),
                     description: attribute.Description,
                     mimeType: attribute.MimeType,

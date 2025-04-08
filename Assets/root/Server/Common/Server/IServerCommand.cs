@@ -9,6 +9,6 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
     {
         string Class { get; }
         string? Method { get; }
-        Task<string> Execute(Action<ICommandData> configCommand);
+        Task<string> Execute(Action<IRequestCommand> configCommand);
     }
 }

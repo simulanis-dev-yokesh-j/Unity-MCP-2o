@@ -102,6 +102,16 @@ namespace com.IvanMurzak.Unity.MCP.Common
                                     var result = _resourceDispatcher.Dispatch(requestData.Resource);
                                     await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
                                 }
+                                else if (requestData?.ListResources != null)
+                                {
+                                    var result = _resourceDispatcher.Dispatch(requestData.ListResources);
+                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                }
+                                else if (requestData?.ListResourceTemplates != null)
+                                {
+                                    var result = _resourceDispatcher.Dispatch(requestData.ListResourceTemplates);
+                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                }
                                 else if (requestData?.Notification != null)
                                 {
                                     // var result = _notificationDispatcher.Dispatch(dataPackage.Response);

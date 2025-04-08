@@ -8,7 +8,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [Resource
         (
-            Routing = Consts.Route.GameObject_CurrentScene,
+            Route = Consts.Route.GameObject_CurrentScene,
             MimeType = Consts.MimeType.TextPlain,
             Name = "GameObject.CurrentScene",
             Description = "Get gameObject(s) at the current scene. * - means to get children, ** - means to get all children recursively."

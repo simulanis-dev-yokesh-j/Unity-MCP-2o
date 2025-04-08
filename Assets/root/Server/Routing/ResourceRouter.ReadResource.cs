@@ -19,7 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Connector is null");
 
-            var requestData = new RequestData(new RequestResourceData(request.Params.Uri));
+            var requestData = new RequestData(new RequestResourceContent(request.Params.Uri));
 
             var resource = await connector.Send(requestData, cancellationToken: cancellationToken);
             if (resource == null)
@@ -28,16 +28,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (!resource.IsSuccess)
                 return new ReadResourceResult().SetError(request.Params.Uri, resource.Message ?? "[Error] Unknown error");
 
-            if (resource.Data == null)
+            if (resource.ResourceContents == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Resource data is null");
-
-            // ModelContextProtocol.Protocol.Types.______
 
             return new ReadResourceResult()
             {
-                Contents = resource.Data
+                Contents = resource.ResourceContents
                     .Where(x => x != null)
-                    .Where(x => x!.Text != null || x!.Blob != null)
+                    .Where(x => x!.text != null || x!.blob != null)
                     .Select(x => x!.ToResourceContents())
                     .ToList()
             };

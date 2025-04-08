@@ -14,10 +14,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
 
         protected CancellationTokenSource? _cancellationTokenSource { get; private set; } = new();
 
-        public Task<string> Execute(Action<ICommandData> configCommand)
+        public Task<string> Execute(Action<IRequestCommand> configCommand)
             => Execute(Method, configCommand);
 
-        public async Task<string> Execute(string? method, Action<ICommandData> configCommand)
+        public async Task<string> Execute(string? method, Action<IRequestCommand> configCommand)
         {
             if (_cancellationTokenSource == null)
                 return "[Error] Command already executed. Please create a new instance of the command.";
@@ -30,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
             if (string.IsNullOrEmpty(finalMethod))
                 return "[Error] Method name is not specified. Please specify a method name and try again.";
 
-            var commandData = new CommandData(Class, finalMethod);
+            var commandData = new RequestCommand(Class, finalMethod);
             try
             {
                 configCommand.Invoke(commandData);

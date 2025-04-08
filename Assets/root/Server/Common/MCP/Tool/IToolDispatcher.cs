@@ -5,6 +5,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public interface IToolDispatcher : IDisposable
     {
-        IResponseData Dispatch(ICommandData data);
+        IResponseData Dispatch(IRequestCommand data);
     }
 }

@@ -5,8 +5,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public interface IRequestData : IDisposable
     {
-        ICommandData? Command { get; }
-        IRequestResourceData? Resource { get; }
-        INotificationData? Notification { get; }
+        IRequestCommand? Command { get; }
+        IRequestResourceContent? Resource { get; }
+        IRequestListResources? ListResources { get; }
+        IRequestListResourceTemplates? ListResourceTemplates { get; }
+        IRequestNotification? Notification { get; }
     }
 }

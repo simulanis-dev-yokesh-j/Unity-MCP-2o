@@ -5,29 +5,45 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public class RequestData : IRequestData
     {
-        public CommandData? Command { get; set; }
-        public RequestResourceData? Resource { get; set; }
-        public NotificationData? Notification { get; set; }
+        public RequestCommand? Command { get; set; }
+        public RequestResourceContent? Resource { get; set; }
+        public RequestListResources? ListResources { get; set; }
+        public RequestListResourceTemplates? ListResourceTemplates { get; set; }
+        public RequestNotification? Notification { get; set; }
 
         [JsonIgnore]
-        ICommandData? IRequestData.Command => Command;
+        IRequestCommand? IRequestData.Command => Command;
 
         [JsonIgnore]
-        IRequestResourceData? IRequestData.Resource => Resource;
+        IRequestResourceContent? IRequestData.Resource => Resource;
 
         [JsonIgnore]
-        INotificationData? IRequestData.Notification => Notification;
+        IRequestListResources? IRequestData.ListResources => ListResources;
+
+        [JsonIgnore]
+        IRequestListResourceTemplates? IRequestData.ListResourceTemplates => ListResourceTemplates;
+
+        [JsonIgnore]
+        IRequestNotification? IRequestData.Notification => Notification;
 
         public RequestData() { }
-        public RequestData(CommandData command) : this()
+        public RequestData(RequestCommand command) : this()
         {
             Command = command;
         }
-        public RequestData(RequestResourceData resource) : this()
+        public RequestData(RequestResourceContent resource) : this()
         {
             Resource = resource;
         }
-        public RequestData(NotificationData notification) : this()
+        public RequestData(RequestListResources listResources) : this()
+        {
+            ListResources = listResources;
+        }
+        public RequestData(RequestListResourceTemplates listResourceTemplates) : this()
+        {
+            ListResourceTemplates = listResourceTemplates;
+        }
+        public RequestData(RequestNotification notification) : this()
         {
             Notification = notification;
         }
@@ -35,6 +51,9 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         public void Dispose()
         {
             Command?.Dispose();
+            Resource?.Dispose();
+            ListResources?.Dispose();
+            ListResourceTemplates?.Dispose();
             Notification?.Dispose();
         }
         ~RequestData() => Dispose();
