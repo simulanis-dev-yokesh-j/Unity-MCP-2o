@@ -39,5 +39,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public static IResponseData? ParseResponseData(this string json, JsonSerializerOptions? options = null)
             => JsonSerializer.Deserialize<ResponseData>(json, options ?? jsonSerializerOptions);
+
+        public static class Resource
+        {
+            public static string ToJson(object data)
+                => JsonSerializer.Serialize(data, jsonSerializerOptions);
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
 
-            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<Command>();
+            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<RunResourceContent>();
 
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
@@ -44,15 +44,23 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 if (attribute == null)
                     continue;
 
-                var resourceParams = new ResourceParams
+                var listContextMethodName = attribute.ListResources ?? throw new InvalidOperationException($"Method {method.Name} does not have a 'ListResources'.");
+                var listContextMethod = targetType.GetMethod(listContextMethodName);
+                if (listContextMethod == null)
+                    throw new InvalidOperationException($"Method {listContextMethodName} not found in type {targetType.Name}.");
+
+                var resourceParams = new RunResource
                 (
-                    route: attribute!.Route ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'routing'."),
-                    name: attribute.Name ?? throw new InvalidOperationException($"Method {method.Name} does not have a resource 'name'."),
+                    route: attribute!.Route ?? throw new InvalidOperationException($"Method {method.Name} does not have a 'routing'."),
+                    name: attribute.Name ?? throw new InvalidOperationException($"Method {method.Name} does not have a 'name'."),
                     description: attribute.Description,
                     mimeType: attribute.MimeType,
-                    command: method.IsStatic
-                        ? Command.CreateFromStaticMethod(logger, method)
-                        : Command.CreateFromClassMethod(logger, targetType, method)
+                    runnerGetContent: method.IsStatic
+                        ? RunResourceContent.CreateFromStaticMethod(logger, method)
+                        : RunResourceContent.CreateFromClassMethod(logger, targetType, method),
+                    runnerListContext: listContextMethod.IsStatic
+                        ? RunResourceContext.CreateFromStaticMethod(logger, listContextMethod)
+                        : RunResourceContext.CreateFromClassMethod(logger, targetType, listContextMethod)
                 );
 
                 builder.AddResource(resourceParams!);

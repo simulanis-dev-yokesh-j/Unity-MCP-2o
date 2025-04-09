@@ -11,7 +11,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             throw new Exception(message);
         }
 
-        public static Resource ToResource(this IResponseListResources response)
+        public static Resource ToResource(this IResponseListResource response)
         {
             return new Resource()
             {

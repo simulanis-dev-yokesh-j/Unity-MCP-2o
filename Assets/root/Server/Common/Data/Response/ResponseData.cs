@@ -1,4 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System.Linq;
+using Microsoft.Extensions.Logging;
+
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public class ResponseData : IResponseData
@@ -6,12 +9,12 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         public bool IsSuccess { get; set; } = false;
         public string? Message { get; set; }
         public ResponseResourceContent[]? ResourceContents { get; set; }
-        public ResponseListResources[]? ListResources { get; set; }
-        public ResponseResourceTemplates[]? ListResourceTemplates { get; set; }
+        public ResponseListResource[]? ListResources { get; set; }
+        public ResponseResourceTemplate[]? ListResourceTemplates { get; set; }
 
         IResponseResourceContent[]? IResponseData.ResourceContents => ResourceContents;
-        IResponseListResources[]? IResponseData.ListResources => ListResources;
-        IResponseListResourceTemplates[]? IResponseData.ListResourceTemplates => ListResourceTemplates;
+        IResponseListResource[]? IResponseData.ListResources => ListResources;
+        IResponseResourceTemplate[]? IResponseData.ListResourceTemplates => ListResourceTemplates;
 
         public ResponseData() { }
         public ResponseData(bool isSuccess)
@@ -27,20 +30,20 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         {
             Message = "[Error] " + message
         };
-        public static ResponseData CreateResources(string? message, ResponseResourceContent[]? resources) => new(isSuccess: true)
+        public static ResponseData CreateResourceContents(string? message, IResponseResourceContent[] resourceContents) => new(isSuccess: true)
         {
             Message = message,
-            ResourceContents = resources
+            ResourceContents = resourceContents.Cast<ResponseResourceContent>().ToArray()
         };
-        public static ResponseData CreateListResources(string? message, ResponseResourceTemplates[]? resourcesTemplate) => new(isSuccess: true)
+        public static ResponseData CreateListResources(string? message, IResponseListResource[] listResources) => new(isSuccess: true)
         {
             Message = message,
-            ListResourceTemplates = resourcesTemplate
+            ListResources = listResources.Cast<ResponseListResource>().ToArray()
         };
-        public static ResponseData CreateListResourceTemplates(string? message, ResponseResourceTemplates[]? resourcesTemplate) => new(isSuccess: true)
+        public static ResponseData CreateListResourceTemplates(string? message, IResponseResourceTemplate[] resourceTemplates) => new(isSuccess: true)
         {
             Message = message,
-            ListResourceTemplates = resourcesTemplate
+            ListResourceTemplates = resourceTemplates.Cast<ResponseResourceTemplate>().ToArray()
         };
     }
 }

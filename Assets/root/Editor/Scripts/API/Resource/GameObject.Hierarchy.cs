@@ -1,4 +1,8 @@
+using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Common.Data;
+using com.IvanMurzak.Unity.MCP.Common.Utils;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
@@ -8,8 +12,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [Resource
         (
-            Route = Consts.Route.GameObject_CurrentScene,
-            MimeType = Consts.MimeType.TextPlain,
+            Route = "gameObject://currentScene/{path}",
+            MimeType = Consts.MimeType.TextJson,
+            ListResources = nameof(CurrentSceneAll),
             Name = "GameObject.CurrentScene",
             Description = "Get gameObject(s) at the current scene. * - means to get children, ** - means to get all children recursively."
         )]
@@ -33,8 +38,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 if (go == null)
                     return $"[Error] GameObject '{path}' not found.";
 
-                return go.name;
+                var components = go.GetComponents<Component>();
+                return JsonUtils.Resource.ToJson(components);
             });
         }
+
+        public ResponseListResource[] CurrentSceneAll() => MainThread.Run(()
+            => EditorSceneManager.GetActiveScene().GetRootGameObjects()
+                .SelectMany(root => GameObjectUtils.GetAllRecursively(root))
+                .Select(kvp => new ResponseListResource($"gameObject://currentScene/{kvp.Key}", kvp.Value.name, Consts.MimeType.TextJson))
+                .ToArray());
     }
 }

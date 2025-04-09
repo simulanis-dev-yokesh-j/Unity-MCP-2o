@@ -37,7 +37,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
 
-            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<Command>();
+            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<RunTool>();
 
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
@@ -48,8 +48,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
 
                     var command = method.IsStatic
-                        ? Command.CreateFromStaticMethod(logger, method)
-                        : Command.CreateFromClassMethod(logger, targetType, method);
+                        ? RunTool.CreateFromStaticMethod(logger, method)
+                        : RunTool.CreateFromClassMethod(logger, targetType, method);
 
                     builder.AddTool(className, method.Name, command);
                 }

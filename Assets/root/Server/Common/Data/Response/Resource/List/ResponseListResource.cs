@@ -1,7 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public class ResponseListResources : IResponseListResources
+    public class ResponseListResource : IResponseListResource
     {
         public string uri { get; set; } = string.Empty;
         public string name { get; set; } = string.Empty;
@@ -9,8 +9,9 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         public string? description { get; set; }
         public long? size { get; set; }
 
-        public ResponseListResources() { }
-        public ResponseListResources(string uri, string name, string? mimeType = null, string? description = null, long? size = null)
+        public ResponseListResource() { }
+        public
+        ResponseListResource(string uri, string name, string? mimeType = null, string? description = null, long? size = null)
         {
             this.uri = uri;
             this.name = name;

@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,9 +73,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
                             _logger.LogWarning("Connection skip. TcpListener is null.");
                             continue;
                         }
-                        _logger.LogInformation("Waiting for incoming connections {0}:{1}.", _config.IPAddress, port);
+                        _logger.LogDebug("Waiting for incoming connections {0}:{1}.", _config.IPAddress, port);
                         var client = await tcpListener.AcceptTcpClientAsync();
-                        _logger.LogInformation("Connected, {0}:{1}.", _config.IPAddress, port);
+                        _logger.LogDebug("Connected, {0}:{1}.", _config.IPAddress, port);
 
                         try
                         {
@@ -97,20 +98,28 @@ namespace com.IvanMurzak.Unity.MCP.Common
                                     var result = _commandDispatcher.Dispatch(requestData.Command);
                                     await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
                                 }
-                                else if (requestData?.Resource != null)
+                                else if (requestData?.ResourceContents != null)
                                 {
-                                    var result = _resourceDispatcher.Dispatch(requestData.Resource);
-                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                    var result = _resourceDispatcher.Dispatch(requestData.ResourceContents);
+                                    _logger.LogTrace("Resource contents: {0}", result.Length);
+                                    var response = ResponseData.CreateResourceContents(message: "[Success]", result);
+                                    await TcpUtils.SendAsync(stream, response.ToJson(), cancellationToken);
                                 }
                                 else if (requestData?.ListResources != null)
                                 {
                                     var result = _resourceDispatcher.Dispatch(requestData.ListResources);
-                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                    _logger.LogDebug("List resources: {0}", result.Length);
+                                    foreach (var item in result)
+                                        _logger.LogDebug("List resource: {0}", item.uri);
+                                    var response = ResponseData.CreateListResources(message: "[Success]", result);
+                                    await TcpUtils.SendAsync(stream, response.ToJson(), cancellationToken);
                                 }
                                 else if (requestData?.ListResourceTemplates != null)
                                 {
                                     var result = _resourceDispatcher.Dispatch(requestData.ListResourceTemplates);
-                                    await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
+                                    _logger.LogTrace("List resource templates: {0}", result.Length);
+                                    var response = ResponseData.CreateListResourceTemplates(message: "[Success]", result);
+                                    await TcpUtils.SendAsync(stream, response.ToJson(), cancellationToken);
                                 }
                                 else if (requestData?.Notification != null)
                                 {

@@ -11,9 +11,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ResourceDispatcher : IResourceDispatcher
     {
         readonly ILogger<ResourceDispatcher> _logger;
-        readonly IDictionary<string, IResourceParams> _commands;
+        readonly IDictionary<string, IRunResource> _commands;
 
-        public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, IResourceParams> commands)
+        public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, IRunResource> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
@@ -30,67 +30,38 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="data">The ResourceData containing the resource Uri and parameters.</param>
         /// <returns>ResponseData containing the result of the resource retrieval.</returns>
-        public IResponseData Dispatch(IRequestResourceContent data)
+        public IResponseResourceContent[] Dispatch(IRequestResourceContent data)
         {
             if (data == null)
-                return ResponseData.Error("Resource data is null.")
-                    .Log(_logger);
+                throw new ArgumentException("Resource data is null.");
 
             if (data.Uri == null)
-                return ResponseData.Error("Resource.Uri is null.")
-                    .Log(_logger);
+                throw new ArgumentException("Resource.Uri is null.");
 
+            var runner = FindRunner(data.Uri)?.RunGetContent;
+            if (runner == null)
+                throw new ArgumentException($"No route matches the URI: {data.Uri}");
 
-            var command = FindCommand(data.Uri)?.Command;
-            if (command == null)
-                return ResponseData.Error($"No route matches the URI: {data.Uri}")
-                    .Log(_logger);
+            _logger.LogInformation("Executing resource '{0}'.", data.Uri);
 
-            try
-            {
-                _logger.LogInformation("Executing resource '{0}'.", data.Uri);
-
-                // Execute the resource with the parameters from Uri
-                // TODO: Implement the logic to execute the resource with parameters
-                // TODO: parse variables from Uri
-                var parameters = ParseUriParameters(data.Uri);
-                return command.Execute(parameters)
-                    .Log(_logger);
-            }
-            catch (Exception ex)
-            {
-                // Handle or log the exception as needed
-                return ResponseData.Error($"Failed to execute resource '{data.Uri}'. Exception: {ex}")
-                    .Log(_logger, ex);
-            }
+            // Execute the resource with the parameters from Uri
+            // TODO: Implement the logic to execute the resource with parameters
+            // TODO: parse variables from Uri
+            var parameters = ParseUriParameters(data.Uri);
+            return runner.Run(parameters);
         }
 
-        public IResponseData Dispatch(IRequestListResources data)
-        {
-            return ResponseData.Error($"'ListResources' not yet implemented. Cursor '{data.Cursor}'")
-                .Log(_logger);
-        }
+        public IResponseListResource[] Dispatch(IRequestListResources data)
+            => _commands.Values
+                .SelectMany(resource => resource.RunListContext.Run())
+                .ToArray();
 
-        public IResponseData Dispatch(IRequestListResourceTemplates data)
-        {
-            try
-            {
-                var templates = _commands.Values
-                    .Select(resource => new ResponseResourceTemplates(resource.Route, resource.Name, resource.Description, resource.MimeType))
-                    .ToArray();
+        public IResponseResourceTemplate[] Dispatch(IRequestListResourceTemplates data)
+            => _commands.Values
+                .Select(resource => new ResponseResourceTemplate(resource.Route, resource.Name, resource.Description, resource.MimeType))
+                .ToArray();
 
-                return ResponseData.CreateListResourceTemplates("[Success]", templates)
-                    .Log(_logger);
-            }
-            catch (Exception ex)
-            {
-                // Handle or log the exception as needed
-                return ResponseData.Error($"Failed to execute 'ListResourceTemplates'. Exception: {ex}")
-                    .Log(_logger, ex);
-            }
-        }
-
-        IResourceParams? FindCommand(string uri)
+        IRunResource? FindRunner(string uri)
         {
             foreach (var route in _commands)
             {

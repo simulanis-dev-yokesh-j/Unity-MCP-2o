@@ -15,7 +15,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         IRequestCommand? IRequestData.Command => Command;
 
         [JsonIgnore]
-        IRequestResourceContent? IRequestData.Resource => Resource;
+        IRequestResourceContent? IRequestData.ResourceContents => Resource;
 
         [JsonIgnore]
         IRequestListResources? IRequestData.ListResources => ListResources;

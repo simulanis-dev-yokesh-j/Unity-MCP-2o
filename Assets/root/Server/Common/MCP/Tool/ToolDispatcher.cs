@@ -9,9 +9,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ToolDispatcher : IToolDispatcher
     {
         readonly ILogger<ToolDispatcher> _logger;
-        readonly IDictionary<string, IDictionary<string, ICommand>> _commands;
+        readonly IDictionary<string, IDictionary<string, IRunTool>> _commands;
 
-        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IDictionary<string, ICommand>> commands)
+        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IDictionary<string, IRunTool>> commands)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
@@ -60,7 +60,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 _logger.LogInformation(message);
 
                 // Execute the command with the parameters from CommandData
-                return command.Execute(data.Parameters)
+                return command.Run(data.Parameters)
                     .Log(_logger);
             }
             catch (Exception ex)

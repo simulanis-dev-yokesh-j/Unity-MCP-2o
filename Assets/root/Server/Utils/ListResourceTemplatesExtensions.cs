@@ -11,7 +11,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             throw new Exception(message);
         }
 
-        public static ResourceTemplate ToResourceTemplate(this IResponseListResourceTemplates response)
+        public static ResourceTemplate ToResourceTemplate(this IResponseResourceTemplate response)
         {
             return new ResourceTemplate()
             {
