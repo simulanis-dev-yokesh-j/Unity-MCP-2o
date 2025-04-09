@@ -18,7 +18,11 @@ namespace com.IvanMurzak.Unity.Runtime
                 if (component == null)
                     continue;
 
-                stringBuilder.Append(Serialize(component));
+                var json = Serialize(component);
+                if (string.IsNullOrEmpty(json))
+                    continue;
+
+                stringBuilder.Append(json);
                 if (i < components.Length - 1)
                     stringBuilder.Append(",");
             }
@@ -34,38 +38,67 @@ namespace com.IvanMurzak.Unity.Runtime
         public static string Serialize(Component component)
         {
             if (component == null)
-                return "{}";
-            var dict = new Dictionary<string, object>();
+                return null;
+
+            var list = InternalSerialize(component);
+            var json = JsonUtility.ToJson(list);
+            Debug.Log($"{component.name}.{component.GetType().Name} : {json}");
+            return json;
+            // return JsonUtils.JsonSerialize(InternalSerialize(component));
+        }
+        static List<Pair> InternalSerialize(Component component)
+        {
+            if (component == null)
+                return null;
+
+            var dict = new List<Pair>();
             var type = component.GetType();
             var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
             foreach (var field in type.GetFields(flags))
             {
                 var value = field.GetValue(component);
-                dict[field.Name] = value;
+                dict.Add(new Pair(field.Name, value));
             }
 
             foreach (var prop in type.GetProperties(flags))
             {
-                if (prop.CanRead && prop.GetIndexParameters().Length == 0)
+                if (prop.CanRead)
                 {
                     try
                     {
                         var value = prop.GetValue(component);
-                        dict[prop.Name] = value;
+                        if (value is UnityEngine.Object obj)
+                        {
+                            dict.Add(new Pair(prop.Name, new InstanceId(obj)));
+                            continue;
+                        }
+                        dict.Add(new Pair(prop.Name, value));
                     }
                     catch { /* skip inaccessible properties */ }
                 }
             }
 
-            return JsonUtility.ToJson(new SerializationWrapper(dict), true);
+            return dict;
         }
-
-        [System.Serializable]
-        private class SerializationWrapper
+    }
+    [System.Serializable]
+    public class InstanceId
+    {
+        public int instanceId;
+        public InstanceId() { }
+        public InstanceId(int id) => instanceId = id;
+        public InstanceId(UnityEngine.Object obj) : this(obj.GetInstanceID()) { }
+    }
+    [System.Serializable]
+    public class Pair
+    {
+        public string key;
+        public object obj;
+        public Pair(string key, object obj)
         {
-            public Dictionary<string, object> data;
-            public SerializationWrapper(Dictionary<string, object> d) => data = d;
+            this.key = key;
+            this.obj = obj;
         }
     }
 }
