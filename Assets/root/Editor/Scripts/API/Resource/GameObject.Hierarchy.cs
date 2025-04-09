@@ -16,21 +16,19 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             MimeType = Consts.MimeType.TextJson,
             ListResources = nameof(CurrentSceneAll),
             Name = "GameObject.CurrentScene",
-            Description = "Get gameObject(s) at the current scene. * - means to get children, ** - means to get all children recursively."
+            Description = "Get gameObject's components and the values of each explicit property."
         )]
         public string CurrentScene(string path)
         {
             if (string.IsNullOrEmpty(path))
                 return "[Error] Path to the GameObject is empty.";
 
-            if (path == Consts.AllRecursive)
-            {
-
-            }
-            if (path == Consts.All)
-            {
-
-            }
+            // if (path == Consts.AllRecursive)
+            // {
+            // }
+            // if (path == Consts.All)
+            // {
+            // }
 
             return MainThread.Run(() =>
             {
