@@ -17,10 +17,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
             this.blob = blob;
         }
 
-        public static ResponseResourceContent CreateText(string uri, string text)
-            => new ResponseResourceContent(uri, text: text);
+        public static ResponseResourceContent CreateText(string uri, string text, string? mimeType = null)
+            => new ResponseResourceContent(uri, mimeType: mimeType, text: text);
 
-        public static ResponseResourceContent CreateBlob(string uri, string blob)
-            => new ResponseResourceContent(uri, blob: blob);
+        public static ResponseResourceContent CreateBlob(string uri, string blob, string? mimeType = null)
+            => new ResponseResourceContent(uri, mimeType: mimeType, blob: blob);
     }
 }

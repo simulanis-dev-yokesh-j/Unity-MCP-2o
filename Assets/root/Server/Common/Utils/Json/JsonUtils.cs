@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using com.IvanMurzak.Unity.MCP.Common.Data;
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,6 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, // Ignore null fields
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            // TypeInfoResolver = new IgnoreDeprecatedPropertiesResolver(), // Use custom resolver
             ReferenceHandler = ReferenceHandler.Preserve,
             WriteIndented = false,
             Converters =
@@ -18,6 +20,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 new JsonStringEnumConverter()
             }
         };
+
+        public static void AddConverter(JsonConverter converter)
+        {
+            if (converter == null)
+                throw new ArgumentNullException(nameof(converter));
+
+            jsonSerializerOptions.Converters.Add(converter);
+        }
 
         public static string ToJson(this IRequestData? data, JsonSerializerOptions? options = null)
         {
@@ -31,6 +41,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (data == null)
                 return "{}";
+
+            return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
+        }
+
+        public static string JsonSerialize(this object? data, JsonSerializerOptions? options = null)
+        {
+            if (data == null)
+                return "null";
 
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }

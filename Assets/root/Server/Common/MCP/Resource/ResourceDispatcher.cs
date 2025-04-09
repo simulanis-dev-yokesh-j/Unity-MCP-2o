@@ -39,7 +39,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 throw new ArgumentException("Resource.Uri is null.");
 
             var runner = FindRunner(data.Uri, out var uriTemplate)?.RunGetContent;
-            if (runner == null)
+            if (runner == null || uriTemplate == null)
                 throw new ArgumentException($"No route matches the URI: {data.Uri}");
 
             _logger.LogInformation("Executing resource '{0}'.", data.Uri);
@@ -47,7 +47,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             // Execute the resource with the parameters from Uri
             // TODO: Implement the logic to execute the resource with parameters
             // TODO: parse variables from Uri
-            var parameters = ParseUriParameters(uriTemplate, data.Uri);
+            var parameters = ParseUriParameters(uriTemplate!, data.Uri);
             PrintParameters(parameters);
             return runner.Run(parameters);
         }

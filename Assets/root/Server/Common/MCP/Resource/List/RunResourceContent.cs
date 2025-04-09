@@ -50,6 +50,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public IResponseResourceContent[] Run(params object?[] parameters)
         {
             var result = Invoke(parameters);
+
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace("Result: {result}", result.JsonSerialize());
+
             return result as IResponseResourceContent[] ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseResourceContent)} array.");
         }
 
@@ -62,6 +66,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public IResponseResourceContent[] Run(IDictionary<string, object?>? namedParameters)
         {
             var result = Invoke(namedParameters);
+
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace("Result: {result}", result.JsonSerialize());
+
             return result as IResponseResourceContent[] ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseResourceContent)} array.");
         }
     }

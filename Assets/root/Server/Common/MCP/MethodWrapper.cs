@@ -177,7 +177,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
 
             return finalParameters;
         }
-        void PrintParameters(object?[] parameters)
+        void PrintParameters(object?[]? parameters)
         {
             if (!_logger.IsEnabled(LogLevel.Debug))
                 return;
@@ -192,7 +192,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             {
                 var parameterType = i < methodParameters.Length ? methodParameters[i].ParameterType.ToString() : "N/A";
                 var parameterName = i < methodParameters.Length ? methodParameters[i].Name : "N/A";
-                var parameterValue = i < (parameters?.Length ?? 0) ? parameters[i]?.ToString() ?? "null" : "null";
+                var parameterValue = i < (parameters?.Length ?? 0) ? parameters?[i]?.ToString() ?? "null" : "null";
 
                 result[i] = $"{parameterType} {parameterName} = {parameterValue}";
             }
