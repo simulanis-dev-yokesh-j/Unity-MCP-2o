@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public class RequestCommand : IRequestCommand
+    public class RequestTool : IRequestTool
     {
         public string? Class { get; set; }
         public string? Method { get; set; }
         public IDictionary<string, object?>? Parameters { get; set; } = new Dictionary<string, object?>();
 
-        public RequestCommand() { }
-        public RequestCommand(string path, string name) : this()
+        public RequestTool() { }
+        public RequestTool(string path, string name) : this()
         {
             Class = path;
             Method = name;
@@ -20,6 +20,6 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         {
             Parameters?.Clear();
         }
-        ~RequestCommand() => Dispose();
+        ~RequestTool() => Dispose();
     }
 }

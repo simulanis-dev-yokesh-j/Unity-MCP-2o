@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -44,15 +45,23 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 if (attribute == null)
                     continue;
 
+                if (!method.ReturnType.IsArray ||
+                    !typeof(IResponseResourceContent).IsAssignableFrom(method.ReturnType.GetElementType()))
+                    throw new InvalidOperationException($"Method {targetType.FullName}{method.Name} must return {nameof(IResponseResourceContent)} array.");
+
                 var listContextMethodName = attribute.ListResources ?? throw new InvalidOperationException($"Method {method.Name} does not have a 'ListResources'.");
                 var listContextMethod = targetType.GetMethod(listContextMethodName);
                 if (listContextMethod == null)
-                    throw new InvalidOperationException($"Method {listContextMethodName} not found in type {targetType.Name}.");
+                    throw new InvalidOperationException($"Method {targetType.FullName}{listContextMethodName} not found in type {targetType.Name}.");
+
+                if (!listContextMethod.ReturnType.IsArray ||
+                    !typeof(IResponseListResource).IsAssignableFrom(listContextMethod.ReturnType.GetElementType()))
+                    throw new InvalidOperationException($"Method {targetType.FullName}{listContextMethod.Name} must return {nameof(IResponseListResource)} array.");
 
                 var resourceParams = new RunResource
                 (
-                    route: attribute!.Route ?? throw new InvalidOperationException($"Method {method.Name} does not have a 'routing'."),
-                    name: attribute.Name ?? throw new InvalidOperationException($"Method {method.Name} does not have a 'name'."),
+                    route: attribute!.Route ?? throw new InvalidOperationException($"Method {targetType.FullName}{method.Name} does not have a 'routing'."),
+                    name: attribute.Name ?? throw new InvalidOperationException($"Method {targetType.FullName}{method.Name} does not have a 'name'."),
                     description: attribute.Description,
                     mimeType: attribute.MimeType,
                     runnerGetContent: method.IsStatic

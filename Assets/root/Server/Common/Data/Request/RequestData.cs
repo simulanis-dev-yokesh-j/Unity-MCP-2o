@@ -5,17 +5,17 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public class RequestData : IRequestData
     {
-        public RequestCommand? Command { get; set; }
-        public RequestResourceContent? Resource { get; set; }
+        public RequestTool? Tool { get; set; }
+        public RequestResourceContent? ResourceContents { get; set; }
         public RequestListResources? ListResources { get; set; }
         public RequestListResourceTemplates? ListResourceTemplates { get; set; }
         public RequestNotification? Notification { get; set; }
 
         [JsonIgnore]
-        IRequestCommand? IRequestData.Command => Command;
+        IRequestTool? IRequestData.Tool => Tool;
 
         [JsonIgnore]
-        IRequestResourceContent? IRequestData.ResourceContents => Resource;
+        IRequestResourceContent? IRequestData.ResourceContents => ResourceContents;
 
         [JsonIgnore]
         IRequestListResources? IRequestData.ListResources => ListResources;
@@ -27,13 +27,13 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
         IRequestNotification? IRequestData.Notification => Notification;
 
         public RequestData() { }
-        public RequestData(RequestCommand command) : this()
+        public RequestData(RequestTool command) : this()
         {
-            Command = command;
+            Tool = command;
         }
         public RequestData(RequestResourceContent resource) : this()
         {
-            Resource = resource;
+            ResourceContents = resource;
         }
         public RequestData(RequestListResources listResources) : this()
         {
@@ -50,8 +50,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 
         public void Dispose()
         {
-            Command?.Dispose();
-            Resource?.Dispose();
+            Tool?.Dispose();
+            ResourceContents?.Dispose();
             ListResources?.Dispose();
             ListResourceTemplates?.Dispose();
             Notification?.Dispose();

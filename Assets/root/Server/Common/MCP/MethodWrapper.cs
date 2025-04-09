@@ -92,15 +92,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
 
             // Build the final parameters array, filling in default values where necessary
             var finalParameters = BuildParameters(namedParameters);
-            if (finalParameters != null)
-            {
-                foreach (var parameter in finalParameters)
-                    _logger.LogTrace("Parameter: {0}", parameter);
-            }
-            else
-            {
-                _logger.LogTrace("No parameters provided.");
-            }
+            PrintParameters(finalParameters);
 
             // Invoke the method (static or instance)
             return _methodInfo.Invoke(instance, finalParameters);
@@ -184,6 +176,29 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             }
 
             return finalParameters;
+        }
+        void PrintParameters(object?[] parameters)
+        {
+            if (!_logger.IsEnabled(LogLevel.Debug))
+                return;
+
+            _logger.LogDebug("Invoke method: {0} {1}, Class: {2}", _methodInfo.ReturnType.Name, _methodInfo.Name, _targetType?.Name ?? "null");
+
+            var methodParameters = _methodInfo.GetParameters();
+            var maxLength = Math.Max(methodParameters.Length, parameters?.Length ?? 0);
+            var result = new string[maxLength];
+
+            for (var i = 0; i < maxLength; i++)
+            {
+                var parameterType = i < methodParameters.Length ? methodParameters[i].ParameterType.ToString() : "N/A";
+                var parameterName = i < methodParameters.Length ? methodParameters[i].Name : "N/A";
+                var parameterValue = i < (parameters?.Length ?? 0) ? parameters[i]?.ToString() ?? "null" : "null";
+
+                result[i] = $"{parameterType} {parameterName} = {parameterValue}";
+            }
+
+            var parameterLogs = string.Join(Environment.NewLine, result);
+            _logger.LogDebug("Invoke method: Parameters. Input: {0}, Provided: {1}\n{2}", methodParameters.Length, parameters?.Length, parameterLogs);
         }
     }
 }

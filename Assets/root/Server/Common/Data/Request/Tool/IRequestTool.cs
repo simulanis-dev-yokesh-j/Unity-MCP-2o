@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public interface IRequestCommand : IDisposable
+    public interface IRequestTool : IDisposable
     {
         string? Class { get; set; }
         string? Method { get; set; }

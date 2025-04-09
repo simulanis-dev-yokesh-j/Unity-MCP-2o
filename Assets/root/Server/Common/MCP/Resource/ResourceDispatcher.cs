@@ -11,17 +11,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ResourceDispatcher : IResourceDispatcher
     {
         readonly ILogger<ResourceDispatcher> _logger;
-        readonly IDictionary<string, IRunResource> _commands;
+        readonly IDictionary<string, IRunResource> _runners;
 
-        public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, IRunResource> commands)
+        public ResourceDispatcher(ILogger<ResourceDispatcher> logger, IDictionary<string, IRunResource> runners)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
 
-            _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+            _runners = runners ?? throw new ArgumentNullException(nameof(runners));
 
-            _logger.LogTrace("Registered resources [{0}]:", _commands.Count);
-            foreach (var keyValuePair in _commands)
+            _logger.LogTrace("Registered resources [{0}]:", _runners.Count);
+            foreach (var keyValuePair in _runners)
                 _logger.LogTrace("Resource: {0}", keyValuePair.Key);
         }
 
@@ -38,7 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (data.Uri == null)
                 throw new ArgumentException("Resource.Uri is null.");
 
-            var runner = FindRunner(data.Uri)?.RunGetContent;
+            var runner = FindRunner(data.Uri, out var uriTemplate)?.RunGetContent;
             if (runner == null)
                 throw new ArgumentException($"No route matches the URI: {data.Uri}");
 
@@ -47,61 +47,79 @@ namespace com.IvanMurzak.Unity.MCP.Common
             // Execute the resource with the parameters from Uri
             // TODO: Implement the logic to execute the resource with parameters
             // TODO: parse variables from Uri
-            var parameters = ParseUriParameters(data.Uri);
+            var parameters = ParseUriParameters(uriTemplate, data.Uri);
+            PrintParameters(parameters);
             return runner.Run(parameters);
         }
 
         public IResponseListResource[] Dispatch(IRequestListResources data)
-            => _commands.Values
+            => _runners.Values
                 .SelectMany(resource => resource.RunListContext.Run())
                 .ToArray();
 
         public IResponseResourceTemplate[] Dispatch(IRequestListResourceTemplates data)
-            => _commands.Values
+            => _runners.Values
                 .Select(resource => new ResponseResourceTemplate(resource.Route, resource.Name, resource.Description, resource.MimeType))
                 .ToArray();
 
-        IRunResource? FindRunner(string uri)
+        IRunResource? FindRunner(string uri, out string? uriTemplate)
         {
-            foreach (var route in _commands)
+            foreach (var route in _runners)
             {
                 if (IsMatch(route.Key, uri))
+                {
+                    uriTemplate = route.Key;
                     return route.Value;
+                }
             }
+            uriTemplate = null;
             return null;
         }
 
-        bool IsMatch(string pattern, string uri)
+        bool IsMatch(string uriTemplate, string uri)
         {
             // Convert pattern to regex
-            var regexPattern = "^" + Regex.Escape(pattern)
-                .Replace("\\*", ".*")
-                .Replace("\\{.*?\\}", "[^/]+") + "$";
+            var regexPattern = "^" + Regex.Replace(uriTemplate, @"\{(\w+)\}", @"(?<$1>[^/]+)") + "$";
 
             return Regex.IsMatch(uri, regexPattern);
         }
 
-        IDictionary<string, object?> ParseUriParameters(string uri)
+        IDictionary<string, object?> ParseUriParameters(string pattern, string uri)
         {
             var parameters = new Dictionary<string, object?>();
-            var regex = new Regex(@"\{(?<name>[^}]+)\}");
-            var matches = regex.Matches(uri);
 
-            foreach (Match match in matches)
+            // Convert pattern to regex
+            var regexPattern = "^" + Regex.Replace(pattern, @"\{(\w+)\}", @"(?<$1>[^/]+)") + "$";
+
+            var regex = new Regex(regexPattern);
+            var match = regex.Match(uri);
+
+            if (match.Success)
             {
-                var name = match.Groups["name"].Value;
-                if (!parameters.ContainsKey(name))
+                foreach (var groupName in regex.GetGroupNames())
                 {
-                    parameters[name] = null; // Initialize with null or default value
+                    if (groupName != "0") // Skip the entire match group
+                    {
+                        parameters[groupName] = match.Groups[groupName].Value;
+                    }
                 }
             }
 
             return parameters;
         }
 
+        void PrintParameters(IDictionary<string, object?> parameters)
+        {
+            if (!_logger.IsEnabled(LogLevel.Debug))
+                return;
+
+            var parameterLogs = string.Join(Environment.NewLine, parameters.Select(kvp => $"{kvp.Key} = {kvp.Value ?? "null"}"));
+            _logger.LogDebug("Parsed Parameters [{0}]:\n{1}", parameters.Count, parameterLogs);
+        }
+
         public void Dispose()
         {
-            _commands.Clear();
+            _runners.Clear();
         }
     }
 }

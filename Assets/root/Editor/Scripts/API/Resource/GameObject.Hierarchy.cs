@@ -18,10 +18,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             Name = "GameObject.CurrentScene",
             Description = "Get gameObject's components and the values of each explicit property."
         )]
-        public string CurrentScene(string path)
+        public IResponseResourceContent[] CurrentScene(string uri, string path)
         {
             if (string.IsNullOrEmpty(path))
-                return "[Error] Path to the GameObject is empty.";
+                throw new System.Exception("[Error] Path to the GameObject is empty.");
 
             // if (path == Consts.AllRecursive)
             // {
@@ -34,14 +34,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             {
                 var go = GameObject.Find(path);
                 if (go == null)
-                    return $"[Error] GameObject '{path}' not found.";
+                    throw new System.Exception($"[Error] GameObject '{path}' not found.");
 
                 var components = go.GetComponents<Component>();
-                return JsonUtils.Resource.ToJson(components);
+                return ResponseResourceContent.CreateText(uri, JsonUtils.Resource.ToJson(components)).MakeArray();
             });
         }
 
-        public ResponseListResource[] CurrentSceneAll() => MainThread.Run(()
+        public IResponseListResource[] CurrentSceneAll() => MainThread.Run(()
             => EditorSceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(root => GameObjectUtils.GetAllRecursively(root))
                 .Select(kvp => new ResponseListResource($"gameObject://currentScene/{kvp.Key}", kvp.Value.name, Consts.MimeType.TextJson))

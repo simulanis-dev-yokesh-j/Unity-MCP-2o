@@ -9,17 +9,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ToolDispatcher : IToolDispatcher
     {
         readonly ILogger<ToolDispatcher> _logger;
-        readonly IDictionary<string, IDictionary<string, IRunTool>> _commands;
+        readonly IDictionary<string, IDictionary<string, IRunTool>> _runners;
 
-        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IDictionary<string, IRunTool>> commands)
+        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IDictionary<string, IRunTool>> runners)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
 
-            _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+            _runners = runners ?? throw new ArgumentNullException(nameof(runners));
 
-            _logger.LogTrace("Registered commands [{0}]:", _commands.Count);
-            foreach (var classKeyValue in _commands)
+            _logger.LogTrace("Registered commands [{0}]:", _runners.Count);
+            foreach (var classKeyValue in _runners)
             {
                 foreach (var methodKeyValue in classKeyValue.Value)
                     _logger.LogTrace("Command: {0}.{1}", classKeyValue.Key, methodKeyValue.Key);
@@ -30,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// Executes a command based on the provided CommandData.
         /// </summary>
         /// <param name="data">The CommandData containing the command name and parameters.</param>
-        public IResponseData Dispatch(IRequestCommand data)
+        public IResponseData Dispatch(IRequestTool data)
         {
             if (data == null)
                 return ResponseData.Error("Command data is null.")
@@ -44,7 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 return ResponseData.Error("Command.Method is null.")
                     .Log(_logger);
 
-            if (!_commands.TryGetValue(data.Class, out var commandGroup))
+            if (!_runners.TryGetValue(data.Class, out var commandGroup))
                 return ResponseData.Error($"Command with Class '{data.Class}' not found.")
                     .Log(_logger);
 
@@ -73,7 +73,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
-            _commands.Clear();
+            _runners.Clear();
         }
     }
 }

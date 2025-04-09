@@ -20,7 +20,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             CancellationTokenSource? cancellationTokenSource;
 
             readonly ILogger<Receiver> _logger;
-            readonly IToolDispatcher _commandDispatcher;
+            readonly IToolDispatcher _toolDispatcher;
             readonly IResourceDispatcher _resourceDispatcher;
             readonly ConnectorConfig _config;
             readonly Subject<IRequestData?> _onReceivedData = new();
@@ -34,7 +34,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 _logger.LogTrace("Ctor. {0}", configOptions.Value);
 
                 _config = configOptions.Value ?? throw new ArgumentNullException(nameof(configOptions));
-                _commandDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
+                _toolDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
                 _resourceDispatcher = resourceDispatcher ?? throw new ArgumentNullException(nameof(resourceDispatcher));
             }
 
@@ -93,9 +93,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                                 _onReceivedData.OnNext(requestData);
 
-                                if (requestData?.Command != null)
+                                if (requestData?.Tool != null)
                                 {
-                                    var result = _commandDispatcher.Dispatch(requestData.Command);
+                                    var result = _toolDispatcher.Dispatch(requestData.Tool);
                                     await TcpUtils.SendAsync(stream, result.ToJson(), cancellationToken);
                                 }
                                 else if (requestData?.ResourceContents != null)
@@ -129,7 +129,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                                 }
                                 else
                                 {
-                                    _logger.LogWarning("Received data is not a command or notification. Ignoring.");
+                                    _logger.LogWarning("Received unknown command. Ignoring it. Here is what I got: {0}", requestData.ToJson());
                                     await TcpUtils.SendAsync(stream, Consts.Command.ResponseCode.Error, cancellationToken);
                                 }
                             }

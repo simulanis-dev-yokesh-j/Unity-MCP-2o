@@ -1,10 +1,9 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System;
-using com.IvanMurzak.Unity.MCP.Common.Data;
+
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IToolDispatcher : IDisposable
+    public static class ObjectUtils
     {
-        IResponseData Dispatch(IRequestTool data);
+        public static T[] MakeArray<T>(this T item) => new T[] { item };
     }
 }
