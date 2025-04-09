@@ -55,24 +55,10 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-# Crashlytics generated file
-crashlytics-build.properties
+# MCP Server sln file
+Assets/root/Server/com.IvanMurzak.Unity.MCP.Server.sln
+Assets/root/Server/com.IvanMurzak.Unity.MCP.Server.sln.meta
 
-*/AndroidLogcatSettings.asset
-/Assets/StreamingAssets
-
-# Crashlytics generated file
-crashlytics-build.properties
-
-# ODIN Ignore the auto-generated AOT compatibility dll.
-/Assets/Plugins/Sirenix/Assemblies/AOT/*
-/Assets/Plugins/Sirenix/Assemblies/AOT**
-
-# ODIN Ignore all unpacked demos.
-/Assets/Plugins/Sirenix/Demos/*
-
-# ODIN plugin
-/Assets/Plugins/Sirenix**
 
 # Unity Editor layouts
 UserSettings/Layouts/*
