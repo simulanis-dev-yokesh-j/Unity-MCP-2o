@@ -34,12 +34,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             return MainThread.Run(() =>
             {
                 var go = GameObject.Find(path);
-                //go.transform.rigidbody.transform
                 if (go == null)
                     throw new System.Exception($"[Error] GameObject '{path}' not found.");
 
+                // go.transform.position
+
                 var components = go.GetComponents<Component>();
-                return ResponseResourceContent.CreateText(uri, JsonUtility.ToJson(components), Consts.MimeType.TextJson).MakeArray();
+                return ResponseResourceContent.CreateText(uri, ComponentSerializer.Serialize(components), Consts.MimeType.TextJson).MakeArray();
                 // return ResponseResourceContent.CreateText(uri, ComponentSerializer.Serialize(components)).MakeArray();
                 // return ResponseResourceContent.CreateText(uri, JsonUtils.Resource.ToJson(components)).MakeArray();
             });
