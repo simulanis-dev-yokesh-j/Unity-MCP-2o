@@ -9,9 +9,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = false,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, // Ignore null fields
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            ReferenceHandler = ReferenceHandler.Preserve,
+            WriteIndented = false,
             Converters =
             {
                 new JsonStringEnumConverter()

@@ -86,7 +86,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         IDictionary<string, object?> ParseUriParameters(string pattern, string uri)
         {
-            var parameters = new Dictionary<string, object?>();
+            var parameters = new Dictionary<string, object?>()
+            {
+                { "uri", uri }
+            };
 
             // Convert pattern to regex
             var regexPattern = "^" + Regex.Replace(pattern, @"\{(\w+)\}", @"(?<$1>[^/]+)") + "$";
