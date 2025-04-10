@@ -8,7 +8,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [ToolType]
     public partial class Tool_Component
     {
-        [Tool]
+        [Tool(Name = "Add", Description = "Add a component to a GameObject.")]
         public string Add(string path, string fullName)
         {
             if (string.IsNullOrEmpty(path))
@@ -21,7 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (type == null)
                 return $"[Error] Component type '{fullName}' not found.";
 
-            if (!typeof(Component).IsAssignableFrom(type))
+            if (!typeof(UnityEngine.Component).IsAssignableFrom(type))
                 return $"[Error] Type '{fullName}' is not a valid Unity Component.";
 
             return MainThread.Run(() =>

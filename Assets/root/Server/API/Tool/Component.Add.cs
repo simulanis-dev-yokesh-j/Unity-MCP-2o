@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [McpServerToolType]
     public partial class Tool_Component : ServerTool
     {
-        [McpServerTool(Name = "Component.Add", Title = "Add Component")]
+        [McpServerTool(Name = "Component_Add", Title = "Add Component")]
         [Description("Add new Component instance to a target GameObject.")]
         public Task<string> Add(
             [Description("Path to the GameObject.")]

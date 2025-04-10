@@ -1,8 +1,8 @@
-using UnityEditor;
-using Microsoft.Extensions.Logging;
-using System.Net;
 using com.IvanMurzak.Unity.MCP.Common;
 using Debug = UnityEngine.Debug;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using UnityEditor;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         static Startup()
         {
             BuildAndStart();
-            BuildServerIfNeeded();
+            BuildServerIfNeeded(force: true);
         }
 
         public static void BuildAndStart()
@@ -38,6 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 })
                 .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
+                .WithResourcesFromAssembly(typeof(Startup).Assembly)
                 .Build()
                 .Connect();
         }

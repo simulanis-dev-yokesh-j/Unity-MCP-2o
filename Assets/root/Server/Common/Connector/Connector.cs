@@ -20,7 +20,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Status ReceiverStatus => _receiver.GetStatus;
         public Status SenderStatus => _sender.GetStatus;
 
-        public Observable<IDataPackage?> OnReceivedData => _receiver.OnReceivedData;
+        public Observable<IRequestData?> OnReceivedData => _receiver.OnReceivedData;
 
         public Connector(ILogger<Connector> logger, IConnectorReceiver receiver, IConnectorSender sender, IOptions<ConnectorConfig> configOptions)
         {
@@ -44,7 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _receiver.Connect();
         }
 
-        public Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default)
+        public Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default)
             => _sender.Send(data, retry, cancellationToken);
 
         public void Disconnect()

@@ -14,10 +14,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
 
         protected CancellationTokenSource? _cancellationTokenSource { get; private set; } = new();
 
-        public Task<string> Execute(Action<ICommandData> configCommand)
+        public Task<string> Execute(Action<IRequestTool> configCommand)
             => Execute(Method, configCommand);
 
-        public async Task<string> Execute(string? method, Action<ICommandData> configCommand)
+        public async Task<string> Execute(string? method, Action<IRequestTool> configCommand)
         {
             if (_cancellationTokenSource == null)
                 return "[Error] Command already executed. Please create a new instance of the command.";
@@ -30,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
             if (string.IsNullOrEmpty(finalMethod))
                 return "[Error] Method name is not specified. Please specify a method name and try again.";
 
-            var commandData = new CommandData(Class, finalMethod);
+            var commandData = new RequestTool(Class, finalMethod);
             try
             {
                 configCommand.Invoke(commandData);
@@ -39,9 +39,9 @@ namespace com.IvanMurzak.Unity.MCP.Common.Server
             {
                 return $"[Error] Failed to configure command: {ex.Message}";
             }
-            var dataPackage = commandData.Build();
+            var requestData = commandData.BuildRequest();
 
-            var response = await connector.Send(dataPackage, Retry, _cancellationTokenSource.Token);
+            var response = await connector.Send(requestData, Retry, _cancellationTokenSource.Token);
             if (response == null)
                 return "[Error] No response from Unity. Please check the connection.";
 

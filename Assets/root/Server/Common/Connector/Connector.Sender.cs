@@ -35,7 +35,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 Clear();
             }
 
-            public async Task<IResponseData?> Send(IDataPackage data, int retry = 10, CancellationToken cancellationToken = default)
+            public async Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default)
             {
                 try
                 {

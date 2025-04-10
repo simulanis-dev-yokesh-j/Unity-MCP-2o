@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [McpServerToolType]
     public partial class Tool_GameObject : ServerTool
     {
-        [McpServerTool(Name = "GameObject.Create", Title = "Create GameObject")]
+        [McpServerTool(Name = "GameObject_Create", Title = "Create GameObject")]
         [Description("Create a new GameObject in the current active scene.")]
         public Task<string> Create(
             [Description("Path to the parent GameObject.")]

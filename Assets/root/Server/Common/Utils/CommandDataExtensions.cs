@@ -6,20 +6,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public static class CommandDataExtensions
     {
-        public static ICommandData SetName(this ICommandData data, string name)
+        public static IRequestTool SetName(this IRequestTool data, string name)
         {
             data.Method = name;
             return data;
         }
-        public static ICommandData SetOrAddParameter(this ICommandData data, string name, object? value)
+        public static IRequestTool SetOrAddParameter(this IRequestTool data, string name, object? value)
         {
             data.Parameters ??= new Dictionary<string, object?>();
             data.Parameters[name] = value;
             return data;
         }
-        public static IDataPackage Build(this ICommandData data) => new DataPackage()
-        {
-            Command = data as CommandData,
-        };
+        public static IRequestData BuildRequest(this IRequestTool data)
+            => new RequestData(data as RequestTool ?? throw new System.InvalidOperationException("CommandData is null"));
     }
 }

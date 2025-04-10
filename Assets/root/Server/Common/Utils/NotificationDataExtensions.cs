@@ -6,20 +6,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public static class NotificationDataExtensions
     {
-        public static INotificationData SetName(this INotificationData data, string name)
+        public static IRequestNotification SetName(this IRequestNotification data, string name)
         {
             data.Name = name;
             return data;
         }
-        public static INotificationData SetOrAddParameter(this INotificationData data, string name, object? value)
+        public static IRequestNotification SetOrAddParameter(this IRequestNotification data, string name, object? value)
         {
             data.Parameters ??= new Dictionary<string, object?>();
             data.Parameters[name] = value;
             return data;
         }
-        public static IDataPackage Build(this INotificationData data) => new DataPackage()
-        {
-            Notification = data as NotificationData,
-        };
+        public static IRequestData Build(this IRequestNotification data)
+            => new RequestData(data as RequestNotification ?? throw new System.InvalidOperationException("NotificationData is null"));
     }
 }
