@@ -79,7 +79,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         bool IsMatch(string uriTemplate, string uri)
         {
             // Convert pattern to regex
-            var regexPattern = "^" + Regex.Replace(uriTemplate, @"\{(\w+)\}", @"(?<$1>[^/]+)") + "$";
+            var regexPattern = "^" + Regex.Replace(uriTemplate, @"\{(\w+)\}", @"(?<$1>[^/]+)") + "(?:/.*)?$";
 
             return Regex.IsMatch(uri, regexPattern);
         }
@@ -92,7 +92,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             };
 
             // Convert pattern to regex
-            var regexPattern = "^" + Regex.Replace(pattern, @"\{(\w+)\}", @"(?<$1>[^/]+)") + "$";
+            var regexPattern = "^" + Regex.Replace(pattern, @"\{(\w+)\}", @"(?<$1>.+)") + "(?:/.*)?$";
 
             var regex = new Regex(regexPattern);
             var match = regex.Match(uri);

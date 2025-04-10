@@ -1,8 +1,5 @@
-using System.Reflection;
-using UnityEngine;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
-using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using System.Linq;
 
 namespace com.IvanMurzak.Unity.Runtime
@@ -34,7 +31,7 @@ namespace com.IvanMurzak.Unity.Runtime
             public static string Serialize(UnityEngine.GameObject go)
             {
                 var jsonResult = JsonUtils.JsonSerialize(BuildData(go));
-                Debug.Log($"{go.name}.{go.GetType().Name} : {jsonResult}");
+                // Debug.Log($"{go.name}.{go.GetType().Name} : {jsonResult}");
                 return jsonResult;
             }
         }

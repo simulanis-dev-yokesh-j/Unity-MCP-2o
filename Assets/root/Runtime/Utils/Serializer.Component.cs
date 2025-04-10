@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.Runtime
 
                 var list = BuildData(component);
                 var json = JsonUtils.JsonSerialize(list);
-                Debug.Log($"{component.name}.{component.GetType().Name} : {json}");
+                // Debug.Log($"{component.name}.{component.GetType().Name} : {json}");
                 return json;
             }
             internal static ComponentData BuildData(UnityEngine.Component component)
