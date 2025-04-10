@@ -28,6 +28,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 // builder.Logging.ClearProviders();
                 builder.Logging.AddNLog();
 
+
+
                 // Setup MCP server ---------------------------------------------------------------
                 builder.Services
                     .AddMcpServer()

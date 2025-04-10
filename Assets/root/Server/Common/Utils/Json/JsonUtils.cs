@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using com.IvanMurzak.Unity.MCP.Common.Data;
+using com.IvanMurzak.Unity.MCP.Common.Json;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,12 +13,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, // Ignore null fields
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            // TypeInfoResolver = new IgnoreDeprecatedPropertiesResolver(), // Use custom resolver
-            ReferenceHandler = ReferenceHandler.Preserve,
-            WriteIndented = false,
+            //ReferenceHandler = ReferenceHandler.Preserve,
+            WriteIndented = true,
             Converters =
             {
-                new JsonStringEnumConverter()
+                new JsonStringEnumConverter(),
+                new SerializedMemberConverter(),
+                new InstanceIdConverter()
             }
         };
 

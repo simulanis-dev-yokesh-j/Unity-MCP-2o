@@ -152,7 +152,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Stop listening. Error: {0}", ex.Message);
-                        Disconnect();
+                        await Task.Delay(500, cancellationToken); // Retry after 500ms
+                        // Disconnect();
                     }
 
                     await Task.Yield();  // (5000, cancellationToken); // Retry every 5 seconds

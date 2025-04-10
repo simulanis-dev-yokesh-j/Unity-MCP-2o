@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             Route = "gameObject://currentScene/{path}",
             MimeType = Consts.MimeType.TextJson,
             ListResources = nameof(CurrentSceneAll),
-            Name = "GameObject.CurrentScene",
+            Name = "GameObject_CurrentScene",
             Description = "Get gameObject's components and the values of each explicit property."
         )]
         public IResponseResourceContent[] CurrentScene(string uri, string path)
@@ -37,12 +37,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 if (go == null)
                     throw new System.Exception($"[Error] GameObject '{path}' not found.");
 
-                // go.transform.position
-
-                var components = go.GetComponents<Component>();
-                return ResponseResourceContent.CreateText(uri, ComponentSerializer.Serialize(components), Consts.MimeType.TextJson).MakeArray();
-                // return ResponseResourceContent.CreateText(uri, ComponentSerializer.Serialize(components)).MakeArray();
-                // return ResponseResourceContent.CreateText(uri, JsonUtils.Resource.ToJson(components)).MakeArray();
+                return ResponseResourceContent.CreateText(uri, Serializer.GameObject.Serialize(go), Consts.MimeType.TextJson).MakeArray();
             });
         }
 
