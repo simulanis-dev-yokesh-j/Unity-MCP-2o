@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         IRemoteServer? RemoteServer { get; }
         IRemoteApp? RemoteApp { get; }
         ILocalApp LocalApp { get; }
-        void Connect();
+        Task Connect();
         void Disconnect();
     }
     public interface ILocalApp : IToolRunner, IResourceRunner, IDisposable

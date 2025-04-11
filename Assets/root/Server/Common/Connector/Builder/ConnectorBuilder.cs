@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,15 +35,29 @@ namespace com.IvanMurzak.Unity.MCP.Common
             // _services.AddTransient<IConnectionFactory, HttpConnectionFactory>();
             // _services.Add
 
-            _services.AddSingleton(new HubConnectionBuilder()
-                .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
-                .WithAutomaticReconnect());
+            // _services.AddSingleton(new HubConnectionBuilder()
+            //     .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
+            //     .WithAutomaticReconnect());
 
             _services.AddTransient<ILocalApp, LocalApp>();
             _services.AddTransient<IConnector, Connector>();
 
             _services.AddSingleton(tools);
             _services.AddSingleton(resources);
+
+            _services.AddSingleton<Func<Task<HubConnection>>>(() =>
+            {
+                return new HubConnectionBuilder()
+                    .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
+                    .WithAutomaticReconnect()
+                    .AddJsonProtocol(options =>
+                    {
+                        options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+                        options.PayloadSerializerOptions.DictionaryKeyPolicy = null;
+                    })
+                    .Build()
+                    .TaskFromResult();
+            });
         }
 
         public IConnectorBuilder AddTool(string name, IRunTool runner)

@@ -44,6 +44,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 if (attribute == null)
                     continue;
 
+                if (string.IsNullOrEmpty(attribute.Name))
+                    throw new ArgumentException($"Tool name cannot be null or empty. Type: {targetType.Name}, Method: {method.Name}");
+
                 var className = targetType.GetCustomAttribute<ToolTypeAttribute>()?.Path ?? targetType.FullName;
                 if (className == null)
                     throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");

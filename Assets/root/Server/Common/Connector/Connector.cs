@@ -1,5 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.Threading.Tasks;
+using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 
@@ -10,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<Connector> _logger;
-        readonly IHubConnectionBuilder _hubBuilder;
+        readonly Func<Task<HubConnection>> _hubBuilder;
 
         HubConnection? hubConnection;
 
@@ -20,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public Connector(ILogger<Connector> logger, IHubConnectionBuilder hubBuilder, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
+        public Connector(ILogger<Connector> logger, Func<Task<HubConnection>> hubBuilder, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
@@ -40,9 +42,25 @@ namespace com.IvanMurzak.Unity.MCP.Common
             instance = this;
         }
 
-        public void Connect()
+        public async Task Connect()
         {
-            hubConnection ??= _hubBuilder.Build();
+            if (hubConnection == null)
+            {
+                hubConnection = await _hubBuilder();
+                if (hubConnection == null)
+                {
+                    _logger.LogError("Can't establish connection with Remote.");
+                    return;
+                }
+
+                hubConnection.On<IRequestListTool>(Consts.RCP.RunListTool, message => _logger.LogInformation("List Tool called"));
+            }
+
+            if (hubConnection.State == HubConnectionState.Connected ||
+                hubConnection.State == HubConnectionState.Reconnecting)
+                return;
+
+            await hubConnection.StartAsync();
         }
 
         public void Disconnect()
