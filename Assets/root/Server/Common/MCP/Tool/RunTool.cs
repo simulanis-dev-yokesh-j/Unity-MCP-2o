@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.Json;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using com.IvanMurzak.Unity.MCP.Common.MCP;
 using Microsoft.Extensions.Logging;
@@ -59,7 +60,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public IResponseData Run(IDictionary<string, object?>? namedParameters)
+        public IResponseData Run(IDictionary<string, JsonElement>? namedParameters)
         {
             var result = Invoke(namedParameters);
             return result as IResponseData ?? ResponseData.Success(result?.ToString());

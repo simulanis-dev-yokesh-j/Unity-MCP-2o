@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     [McpServerToolType]
-    public partial class Tool_GameObject : ServerTool
+    public partial class Tool_GameObject// : ServerTool
     {
         [McpServerTool(Name = "GameObject_Create", Title = "Create GameObject")]
         [Description("Create a new GameObject in the current active scene.")]
@@ -18,9 +18,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             [Description("Name of the new GameObject.")]
             string name)
         {
-            return Execute(nameof(Create), commandData => commandData
-                .SetOrAddParameter(nameof(path), path)
-                .SetOrAddParameter(nameof(name), name));
+            return Task.Run(() => string.Empty);
+            // return Execute(nameof(Create), commandData => commandData
+            //     .SetOrAddParameter(nameof(path), path)
+            //     .SetOrAddParameter(nameof(name), name));
         }
     }
 }

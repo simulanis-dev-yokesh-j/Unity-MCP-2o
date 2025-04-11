@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -19,8 +20,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services = services ?? new ServiceCollection();
             _services.AddTransient<IResourceDispatcher, ResourceDispatcher>();
             _services.AddTransient<IToolDispatcher, ToolDispatcher>();
-            _services.AddTransient<IConnectorReceiver, Connector.Receiver>();
-            _services.AddTransient<IConnectorSender, Connector.Sender>();
+
+            //_services.Add
+
+            // _services.AddTransient<IConnectorReceiver, SignalRConnectorReceiver>(); // Replace with SignalR implementation
+            // _services.AddTransient<IConnectorServer, SignalRConnectorSender>();     // Replace with SignalR implementation
+            _services.AddTransient<IHubConnectionBuilder, HubConnectionBuilder>(); // SignalR HubConnectionBuilder
+
             _services.AddTransient<IConnector, Connector>();
             _services.AddSingleton(tools);
             _services.AddSingleton(resources);

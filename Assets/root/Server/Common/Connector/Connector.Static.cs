@@ -6,6 +6,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
         static Connector? instance;
 
         public static bool HasInstance => instance != null;
-        public static Connector? Instance => instance;
+        public static IConnector? Instance => instance;
+        // public static IConnectorServer? Server => instance;
+        // public static IConnectorApp? App => instance;
+
+        public static void StaticDispose()
+        {
+            instance?.Dispose();
+            instance = null;
+        }
     }
 }

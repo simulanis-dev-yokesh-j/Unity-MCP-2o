@@ -7,5 +7,21 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         public static IConnectorBuilder AddConnector(this IServiceCollection services)
             => new ConnectorBuilder(services);
+
+        public static IConnectorBuilder AddRemoteApp(this IConnectorBuilder builder)
+        {
+            builder.Services.AddTransient<IConnectorRemoteApp, ConnectorRemoteApp>();
+            return builder;
+        }
+        public static IConnectorBuilder AddLocalApp(this IConnectorBuilder builder)
+        {
+            builder.Services.AddTransient<IConnectorLocalApp, ConnectorLocalApp>();
+            return builder;
+        }
+        public static IConnectorBuilder AddRemoteServer(this IConnectorBuilder builder)
+        {
+            builder.Services.AddTransient<IConnectorRemoteServer, ConnectorRemoteServer>();
+            return builder;
+        }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     [McpServerToolType]
-    public partial class Tool_Component : ServerTool
+    public partial class Tool_Component //  : ServerTool
     {
         [McpServerTool(Name = "Component_Add", Title = "Add Component")]
         [Description("Add new Component instance to a target GameObject.")]
@@ -18,9 +18,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             [Description("Component class full name.")]
             string fullName)
         {
-            return Execute(nameof(Add), commandData => commandData
-                .SetOrAddParameter(nameof(path), path)
-                .SetOrAddParameter(nameof(fullName), fullName));
+            return Task.Run(() => string.Empty);
+            // return Execute(nameof(Add), commandData => commandData
+            //     .SetOrAddParameter(nameof(path), path)
+            //     .SetOrAddParameter(nameof(fullName), fullName));
         }
     }
 }

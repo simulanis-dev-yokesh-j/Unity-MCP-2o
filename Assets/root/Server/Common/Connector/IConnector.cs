@@ -1,32 +1,41 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
-using R3;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
     public interface IConnector : IDisposable
     {
-        Connector.Status ReceiverStatus { get; }
-        Connector.Status SenderStatus { get; }
-        Observable<IRequestData?> OnReceivedData { get; }
+        HubConnectionState GetStatus { get; }
+        IConnectorRemoteServer? Server { get; }
+        IConnectorRemoteApp? App { get; }
+        IConnectorLocalApp AppLocal { get; }
         void Connect();
         void Disconnect();
-        Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default);
     }
-    public interface IConnectorReceiver : IDisposable
+
+    public interface IConnectorRemoteApp
     {
-        Connector.Status GetStatus { get; }
-        void Connect();
-        void Disconnect();
-        Observable<IRequestData?> OnReceivedData { get; }
+        Task<IResponseCallTool> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default);
+        Task<List<IResponseListTool>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default);
+
+        Task<List<IResponseResourceContent>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default);
+        Task<List<IResponseListResource>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default);
+        Task<List<IResponseResourceTemplate>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default);
     }
-    public interface IConnectorSender : IDisposable
+    public interface IConnectorLocalApp : IConnectorRemoteApp
     {
-        Connector.Status GetStatus { get; }
-        void Disconnect();
-        Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default);
+        bool HasTool(string name);
+        bool HasResource(string name);
+    }
+
+    public interface IConnectorRemoteServer
+    {
+        Task UpdateTools(CancellationToken cancellationToken = default);
+        Task UpdateResources(CancellationToken cancellationToken = default);
     }
 }

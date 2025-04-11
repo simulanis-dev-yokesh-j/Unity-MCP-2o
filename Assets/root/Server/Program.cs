@@ -28,14 +28,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 // builder.Logging.ClearProviders();
                 builder.Logging.AddNLog();
 
-
-
                 // Setup MCP server ---------------------------------------------------------------
                 builder.Services
                     .AddMcpServer()
                     .WithStdioServerTransport()
                     .WithPromptsFromAssembly()
                     .WithToolsFromAssembly()
+                    .WithCallToolHandler(ToolRouter.Call)
+                    .WithListToolsHandler(ToolRouter.ListAll)
                     .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates)
                     .WithListResourcesHandler(ResourceRouter.ListResources)
                     .WithReadResourceHandler(ResourceRouter.ReadResource);
@@ -76,6 +76,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             }
             finally
             {
+                Connector.StaticDispose();
                 LogManager.Shutdown();
             }
         }

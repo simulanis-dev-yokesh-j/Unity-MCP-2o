@@ -5,10 +5,10 @@ using com.IvanMurzak.Unity.MCP.Common.Data;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Server
 {
-    public interface IServerCommand : IDisposable
-    {
-        string Class { get; }
-        string? Method { get; }
-        Task<string> Execute(Action<IRequestTool> configCommand);
-    }
+    // public interface IServerCommand<TRequest, TResponse> : IDisposable
+    // {
+    //     string Class { get; }
+    //     string? Method { get; }
+    //     Task<TResponse> Call(Action<TRequest> configCommand);
+    // }
 }

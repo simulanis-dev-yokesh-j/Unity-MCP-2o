@@ -39,6 +39,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
                 .WithResourcesFromAssembly(typeof(Startup).Assembly)
+                .AddRemoteServer()
+                .AddLocalApp()
                 .Build()
                 .Connect();
         }

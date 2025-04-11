@@ -31,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             jsonSerializerOptions.Converters.Add(converter);
         }
 
-        public static string ToJson(this IRequestData? data, JsonSerializerOptions? options = null)
+        public static string ToJson(this IRequestCallTool? data, JsonSerializerOptions? options = null)
         {
             if (data == null)
                 return "{}";
@@ -55,8 +55,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
-        public static IRequestData? ParseRequestData(this string json, JsonSerializerOptions? options = null)
-            => JsonSerializer.Deserialize<RequestData>(json, options ?? jsonSerializerOptions);
+        public static IRequestCallTool? ParseRequestData(this string json, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize<IRequestCallTool>(json, options ?? jsonSerializerOptions);
 
         public static IResponseData? ParseResponseData(this string json, JsonSerializerOptions? options = null)
             => JsonSerializer.Deserialize<ResponseData>(json, options ?? jsonSerializerOptions);

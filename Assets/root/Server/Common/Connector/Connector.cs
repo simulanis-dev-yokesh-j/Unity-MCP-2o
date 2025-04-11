@@ -1,11 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
-using System.Threading;
-using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common.Data;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
@@ -14,21 +10,26 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<Connector> _logger;
-        readonly IConnectorReceiver _receiver;
-        readonly IConnectorSender _sender;
+        readonly IHubConnectionBuilder _hubBuilder;
 
-        public Status ReceiverStatus => _receiver.GetStatus;
-        public Status SenderStatus => _sender.GetStatus;
+        HubConnection? hubConnection;
 
-        public Observable<IRequestData?> OnReceivedData => _receiver.OnReceivedData;
+        public IConnectorRemoteServer? Server { get; private set; } = null;
+        public IConnectorRemoteApp? App { get; private set; } = null;
+        public IConnectorLocalApp AppLocal { get; private set; }
+        public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
-        public Connector(ILogger<Connector> logger, IConnectorReceiver receiver, IConnectorSender sender, IOptions<ConnectorConfig> configOptions)
+        // IOptions<ConnectorConfig> configOptions
+        public Connector(ILogger<Connector> logger, IHubConnectionBuilder hubBuilder, IConnectorLocalApp appLocal, IConnectorRemoteApp? app = null, IConnectorRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
 
-            _receiver = receiver ?? throw new ArgumentNullException(nameof(receiver));
-            _sender = sender ?? throw new ArgumentNullException(nameof(sender));
+            _hubBuilder = hubBuilder ?? throw new ArgumentNullException(nameof(hubBuilder));
+
+            AppLocal = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
+            App = app;
+            Server = server;
 
             if (HasInstance)
             {
@@ -41,22 +42,24 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Connect()
         {
-            _receiver.Connect();
+            hubConnection ??= _hubBuilder.Build();
         }
-
-        public Task<IResponseData?> Send(IRequestData data, int retry = 10, CancellationToken cancellationToken = default)
-            => _sender.Send(data, retry, cancellationToken);
 
         public void Disconnect()
         {
-            _receiver.Disconnect();
-            _sender.Disconnect();
+            if (hubConnection == null)
+                return;
+
+            hubConnection.StopAsync().Wait();
         }
 
         public void Dispose()
         {
-            _receiver.Dispose();
-            _sender.Dispose();
+            if (hubConnection == null)
+                return;
+
+            hubConnection.StopAsync().Wait();
+            hubConnection.DisposeAsync().AsTask().Wait();
         }
         ~Connector() => Dispose();
     }

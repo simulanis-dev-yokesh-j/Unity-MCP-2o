@@ -9,20 +9,20 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public partial class ToolDispatcher : IToolDispatcher
     {
         readonly ILogger<ToolDispatcher> _logger;
-        readonly IDictionary<string, IDictionary<string, IRunTool>> _runners;
+        readonly IDictionary<string, IRunTool> _runners;
 
-        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IDictionary<string, IRunTool>> runners)
+        public ToolDispatcher(ILogger<ToolDispatcher> logger, IDictionary<string, IRunTool> runners)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
 
             _runners = runners ?? throw new ArgumentNullException(nameof(runners));
 
-            _logger.LogTrace("Registered commands [{0}]:", _runners.Count);
-            foreach (var classKeyValue in _runners)
+            if (_logger.IsEnabled(LogLevel.Trace))
             {
-                foreach (var methodKeyValue in classKeyValue.Value)
-                    _logger.LogTrace("Command: {0}.{1}", classKeyValue.Key, methodKeyValue.Key);
+                _logger.LogTrace("Registered commands [{0}]:", _runners.Count);
+                foreach (var methodKeyValue in _runners)
+                    _logger.LogTrace("Command: {1}", methodKeyValue.Key);
             }
         }
 
@@ -30,43 +30,35 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// Executes a command based on the provided CommandData.
         /// </summary>
         /// <param name="data">The CommandData containing the command name and parameters.</param>
-        public IResponseData Dispatch(IRequestTool data)
+        public IResponseData Dispatch(IRequestCallTool data)
         {
             if (data == null)
-                return ResponseData.Error("Command data is null.")
+                return ResponseData.Error("Tool data is null.")
                     .Log(_logger);
 
-            if (data.Class == null)
-                return ResponseData.Error("Command.Class is null.")
+            if (string.IsNullOrEmpty(data.Name))
+                return ResponseData.Error("Tool.Name is null.")
                     .Log(_logger);
 
-            if (data.Method == null)
-                return ResponseData.Error("Command.Method is null.")
-                    .Log(_logger);
-
-            if (!_runners.TryGetValue(data.Class, out var commandGroup))
-                return ResponseData.Error($"Command with Class '{data.Class}' not found.")
-                    .Log(_logger);
-
-            if (!commandGroup.TryGetValue(data.Method, out var command))
-                return ResponseData.Error($"Command with Method '{data.Method}' not found.")
+            if (!_runners.TryGetValue(data.Name, out var runner))
+                return ResponseData.Error($"Tool with Name '{data.Name}' not found.")
                     .Log(_logger);
 
             try
             {
-                var message = data.Parameters == null
-                    ? $"Executing command '{data.Method}' with no parameters."
-                    : $"Executing command '{data.Method}' with parameters[{data.Parameters.Count}]:\n{string.Join(",\n", data.Parameters)}";
+                var message = data.Arguments == null
+                    ? $"Run tool '{data.Name}' with no parameters."
+                    : $"Run tool '{data.Name}' with parameters[{data.Arguments.Count}]:\n{string.Join(",\n", data.Arguments)}";
                 _logger.LogInformation(message);
 
                 // Execute the command with the parameters from CommandData
-                return command.Run(data.Parameters)
+                return runner.Run(data.Arguments)
                     .Log(_logger);
             }
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return ResponseData.Error($"Failed to execute command '{data.Method}'. Exception: {ex}")
+                return ResponseData.Error($"Failed to run tool '{data.Name}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }

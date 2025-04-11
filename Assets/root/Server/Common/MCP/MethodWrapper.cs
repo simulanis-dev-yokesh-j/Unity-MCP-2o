@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -82,7 +83,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             return _methodInfo.Invoke(instance, finalParameters);
         }
 
-        protected virtual object? Invoke(IDictionary<string, object?>? namedParameters)
+        protected virtual object? Invoke(IDictionary<string, JsonElement>? namedParameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -136,7 +137,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             return finalParameters;
         }
 
-        protected object?[]? BuildParameters(IDictionary<string, object?>? namedParameters)
+        protected object?[]? BuildParameters(IDictionary<string, JsonElement>? namedParameters)
         {
             if (namedParameters == null)
                 return null;
