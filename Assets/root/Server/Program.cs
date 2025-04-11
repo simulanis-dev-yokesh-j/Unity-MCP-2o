@@ -33,7 +33,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .AddMcpServer()
                     .WithStdioServerTransport()
                     .WithPromptsFromAssembly()
-                    .WithToolsFromAssembly()
+                    // .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
                     .WithListToolsHandler(ToolRouter.ListAll)
                     .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates)
@@ -66,7 +66,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     })
                     .AddRemoteApp()
                     .Build() // TODO: Build it right now is not the best idea
-                    .Connect();
+                    .Connect()
+                    .GetAwaiter();
 
                 await builder.Build().RunAsync();
             }

@@ -7,7 +7,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [ToolType]
     public partial class Tool_GameObject
     {
-        [Tool(Name = "Create", Description = "Create a new GameObject.")]
+        [Tool(Name = "Create GameObject", Description = "Create a new GameObject.")]
         public string Create(string path, string name) => MainThread.Run(() =>
         {
             var targetParent = string.IsNullOrEmpty(path) ? null : GameObject.Find(path);

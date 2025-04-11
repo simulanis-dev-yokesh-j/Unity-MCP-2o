@@ -1,17 +1,24 @@
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
+using NLog;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
     public static partial class ToolRouter
     {
+        static Logger? logger;
+        static Logger Logger => logger ?? LogManager.GetCurrentClassLogger();
+
         public static async Task<ListToolsResult> ListAll(RequestContext<ListToolsRequestParams> request, CancellationToken cancellationToken)
         {
+            Logger.Trace("ListAll called");
+
             var connector = Connector.Instance;
             if (connector == null)
                 return new ListToolsResult().SetError("[Error] Connector is null");
@@ -32,13 +39,16 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (response.Value == null)
                 return new ListToolsResult().SetError("[Error] Resource value is null");
 
-            return new ListToolsResult()
+            var result = new ListToolsResult()
             {
                 Tools = response.Value
                     .Where(x => x != null)
                     .Select(x => x!.ToTool())
                     .ToList()
             };
+
+            Logger.Trace("ListAll, result: {0}", JsonSerializer.Serialize(result));
+            return result;
         }
     }
 }
