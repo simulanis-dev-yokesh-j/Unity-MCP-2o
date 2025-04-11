@@ -52,7 +52,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     ? RunTool.CreateFromStaticMethod(logger, method)
                     : RunTool.CreateFromClassMethod(logger, targetType, method);
 
-                builder.AddTool(className, method.Name, runner);
+                builder.AddTool(attribute.Name, runner);
             }
             return builder;
         }

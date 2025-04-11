@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public class ConnectorBuilder : IConnectorBuilder
     {
-        readonly IDictionary<string, IDictionary<string, IRunTool>> tools = new Dictionary<string, IDictionary<string, IRunTool>>();
+        readonly IDictionary<string, IRunTool> tools = new Dictionary<string, IRunTool>();
         readonly IDictionary<string, IRunResource> resources = new Dictionary<string, IRunResource>();
         readonly IServiceCollection _services;
 
@@ -45,15 +45,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services.AddSingleton(resources);
         }
 
-        public IConnectorBuilder AddTool(string className, string method, RunTool runner)
+        public IConnectorBuilder AddTool(string name, IRunTool runner)
         {
-            if (!tools.TryGetValue(className, out var commandGroup))
-                tools[className] = commandGroup = new Dictionary<string, IRunTool>();
+            if (tools.ContainsKey(name))
+                throw new ArgumentException($"Tool with name '{name}' already exists.");
 
-            if (commandGroup.ContainsKey(method))
-                throw new ArgumentException($"Command with name '{method}' already exists in path {className}.");
-
-            commandGroup.Add(method, runner);
+            tools.Add(name, runner);
             return this;
         }
 
