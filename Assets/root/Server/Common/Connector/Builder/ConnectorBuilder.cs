@@ -18,8 +18,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public ConnectorBuilder(IServiceCollection? services = null)
         {
             _services = services ?? new ServiceCollection();
-            _services.AddTransient<IResourceDispatcher, ResourceDispatcher>();
-            _services.AddTransient<IToolDispatcher, ToolDispatcher>();
 
             // _services.AddOptions<HttpConnectionOptions>()
             //     .Configure(options =>
