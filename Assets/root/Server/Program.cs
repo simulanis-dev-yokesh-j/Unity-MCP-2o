@@ -64,6 +64,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     {
                         config.ConnectionType = Connector.ConnectionRole.Server;
                     })
+                    .AddRemoteApp()
                     .Build() // TODO: Build it right now is not the best idea
                     .Connect();
 

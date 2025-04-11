@@ -24,20 +24,26 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new CallToolResponse().SetError("[Error] Connector is null");
 
-            var app = connector.AppLocal.HasTool(request.Params.Name)
-                ? connector.AppLocal
-                : connector.App;
+            var app = connector.LocalApp.HasTool(request.Params.Name)
+                ? connector.LocalApp as IToolRunner
+                : connector.RemoteApp;
 
             if (app == null)
                 return new CallToolResponse().SetError("[Error] Remote App is null");
 
             var requestData = new RequestCallTool(request.Params.Name, request.Params.Arguments);
 
-            var result = await app.RunCallTool(requestData, cancellationToken);
-            if (result == null)
+            var response = await app.RunCallTool(requestData, cancellationToken);
+            if (response == null)
                 return new CallToolResponse().SetError("[Error] Resource is null");
 
-            return result.ToCallToolRespose();
+            if (response.IsError)
+                return new CallToolResponse().SetError(response.Message ?? "[Error] Got an error during reading resources");
+
+            if (response.Value == null)
+                return new CallToolResponse().SetError("[Error] Tool returned null value");
+
+            return response.Value.ToCallToolRespose();
         }
     }
 }

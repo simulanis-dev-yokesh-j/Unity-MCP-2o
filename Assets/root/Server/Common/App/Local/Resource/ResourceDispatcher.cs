@@ -20,9 +20,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             _runners = runners ?? throw new ArgumentNullException(nameof(runners));
 
-            _logger.LogTrace("Registered resources [{0}]:", _runners.Count);
-            foreach (var keyValuePair in _runners)
-                _logger.LogTrace("Resource: {0}", keyValuePair.Key);
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Registered resources [{0}]:", _runners.Count);
+                foreach (var keyValuePair in _runners)
+                    _logger.LogTrace("Resource: {0}", keyValuePair.Key);
+            }
         }
 
         /// <summary>
@@ -49,12 +52,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
             // TODO: parse variables from Uri
             var parameters = ParseUriParameters(uriTemplate!, data.Uri);
             PrintParameters(parameters);
-            return runner.Run(parameters);
+            return runner.Run(parameters).Result.ToArray();
         }
 
         public IResponseListResource[] Dispatch(IRequestListResources data)
             => _runners.Values
-                .SelectMany(resource => resource.RunListContext.Run())
+                .SelectMany(resource => resource.RunListContext.Run().Result)
                 .ToArray();
 
         public IResponseResourceTemplate[] Dispatch(IRequestListResourceTemplates data)

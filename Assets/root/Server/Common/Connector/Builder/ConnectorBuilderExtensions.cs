@@ -10,17 +10,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public static IConnectorBuilder AddRemoteApp(this IConnectorBuilder builder)
         {
-            builder.Services.AddTransient<IConnectorRemoteApp, ConnectorRemoteApp>();
+            builder.Services.AddTransient<IRemoteApp, RemoteApp>();
             return builder;
         }
         public static IConnectorBuilder AddLocalApp(this IConnectorBuilder builder)
         {
-            builder.Services.AddTransient<IConnectorLocalApp, ConnectorLocalApp>();
+            builder.Services.AddTransient<ILocalApp, LocalApp>();
             return builder;
         }
         public static IConnectorBuilder AddRemoteServer(this IConnectorBuilder builder)
         {
-            builder.Services.AddTransient<IConnectorRemoteServer, ConnectorRemoteServer>();
+            builder.Services.AddTransient<IRemoteServer, RemoteServer>();
             return builder;
         }
     }

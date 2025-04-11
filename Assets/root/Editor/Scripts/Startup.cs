@@ -36,11 +36,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     loggingBuilder.AddProvider(new UnityLoggerProvider());
                     loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 })
+                .AddRemoteServer()
                 .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
                 .WithResourcesFromAssembly(typeof(Startup).Assembly)
-                .AddRemoteServer()
-                .AddLocalApp()
                 .Build()
                 .Connect();
         }

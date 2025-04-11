@@ -4,10 +4,11 @@ using com.IvanMurzak.Unity.MCP.Common.Json;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public static class JsonUtils
+    public static partial class JsonUtils
     {
         static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -15,6 +16,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             //ReferenceHandler = ReferenceHandler.Preserve,
             WriteIndented = true,
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(
+                new DefaultJsonTypeInfoResolver() // Add custom resolvers if needed
+            ),
             Converters =
             {
                 new JsonStringEnumConverter(),
@@ -27,7 +31,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (converter == null)
                 throw new ArgumentNullException(nameof(converter));
-
             jsonSerializerOptions.Converters.Add(converter);
         }
 
@@ -35,15 +38,20 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (data == null)
                 return "{}";
-
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
-        public static string ToJson(this IResponseData? data, JsonSerializerOptions? options = null)
+        public static string ToJson(this IResponseListTool? data, JsonSerializerOptions? options = null)
         {
             if (data == null)
                 return "{}";
+            return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
+        }
 
+        public static string ToJson<T>(this IResponseData<T>? data, JsonSerializerOptions? options = null)
+        {
+            if (data == null)
+                return "{}";
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
@@ -51,15 +59,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (data == null)
                 return "null";
-
             return JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
         }
 
         public static IRequestCallTool? ParseRequestData(this string json, JsonSerializerOptions? options = null)
             => JsonSerializer.Deserialize<IRequestCallTool>(json, options ?? jsonSerializerOptions);
 
-        public static IResponseData? ParseResponseData(this string json, JsonSerializerOptions? options = null)
-            => JsonSerializer.Deserialize<ResponseData>(json, options ?? jsonSerializerOptions);
+        public static IResponseData<T>? ParseResponseData<T>(this string json, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize<ResponseData<T>>(json, options ?? jsonSerializerOptions);
 
         public static class Resource
         {

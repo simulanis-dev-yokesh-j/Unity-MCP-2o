@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 
 namespace com.IvanMurzak.Unity.MCP.Common
@@ -11,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        IResponseResourceContent[] Run(params object?[] parameters);
+        Task<List<IResponseResourceContent>> Run(params object?[] parameters);
 
         /// <summary>
         /// Executes the target method with named parameters.
@@ -19,6 +20,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        IResponseResourceContent[] Run(IDictionary<string, object?>? namedParameters);
+        Task<List<IResponseResourceContent>> Run(IDictionary<string, object?>? namedParameters);
     }
 }

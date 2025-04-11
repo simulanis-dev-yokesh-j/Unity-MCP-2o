@@ -19,19 +19,25 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Connector is null");
 
-            var remoteApp = connector.App;
+            var remoteApp = connector.RemoteApp;
             if (remoteApp == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Remote App is null");
 
             var requestData = new RequestResourceContent(request.Params.Uri);
 
-            var resource = await remoteApp.RunResourceContent(requestData, cancellationToken: cancellationToken);
-            if (resource == null)
+            var response = await remoteApp.RunResourceContent(requestData, cancellationToken: cancellationToken);
+            if (response == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Resource is null");
+
+            if (response.IsError)
+                return new ReadResourceResult().SetError(request.Params.Uri, response.Message ?? "[Error] Got an error during reading resources");
+
+            if (response.Value == null)
+                return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Resource value is null");
 
             return new ReadResourceResult()
             {
-                Contents = resource
+                Contents = response.Value
                     .Where(x => x != null)
                     .Where(x => x!.text != null || x!.blob != null)
                     .Select(x => x!.ToResourceContents())

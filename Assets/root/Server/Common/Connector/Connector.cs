@@ -14,22 +14,22 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         HubConnection? hubConnection;
 
-        public IConnectorRemoteServer? Server { get; private set; } = null;
-        public IConnectorRemoteApp? App { get; private set; } = null;
-        public IConnectorLocalApp AppLocal { get; private set; }
+        public IRemoteServer? RemoteServer { get; private set; } = null;
+        public IRemoteApp? RemoteApp { get; private set; } = null;
+        public ILocalApp LocalApp { get; private set; }
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public Connector(ILogger<Connector> logger, IHubConnectionBuilder hubBuilder, IConnectorLocalApp appLocal, IConnectorRemoteApp? app = null, IConnectorRemoteServer? server = null)
+        public Connector(ILogger<Connector> logger, IHubConnectionBuilder hubBuilder, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
 
             _hubBuilder = hubBuilder ?? throw new ArgumentNullException(nameof(hubBuilder));
 
-            AppLocal = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
-            App = app;
-            Server = server;
+            LocalApp = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
+            RemoteApp = app;
+            RemoteServer = server;
 
             if (HasInstance)
             {

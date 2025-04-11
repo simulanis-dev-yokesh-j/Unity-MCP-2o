@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class ConnectorRemoteServer : IConnectorRemoteServer
+    public class RemoteServer : IRemoteServer
     {
+
         public Task UpdateResources(CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
@@ -14,6 +15,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Task UpdateTools(CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

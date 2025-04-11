@@ -21,18 +21,33 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services.AddTransient<IResourceDispatcher, ResourceDispatcher>();
             _services.AddTransient<IToolDispatcher, ToolDispatcher>();
 
-            //_services.Add
+            // _services.AddOptions<HttpConnectionOptions>()
+            //     .Configure(options =>
+            //     {
+            //         options.Transports = HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents;
+            //         options.Url = new Uri("http://localhost:60606/connector");
+            //         options.SkipNegotiation = false;
+            //         options.WebSocketConfiguration = wsOptions =>
+            //         {
+            //             wsOptions.KeepAliveInterval = TimeSpan.FromSeconds(30);
+            //         };
+            //         // options.WebSockets.ClientWebSocketOptions.KeepAliveInterval = TimeSpan.FromSeconds(30);
+            //     });
+            // _services.AddTransient<IConnectionFactory, HttpConnectionFactory>();
+            // _services.Add
 
-            // _services.AddTransient<IConnectorReceiver, SignalRConnectorReceiver>(); // Replace with SignalR implementation
-            // _services.AddTransient<IConnectorServer, SignalRConnectorSender>();     // Replace with SignalR implementation
-            _services.AddTransient<IHubConnectionBuilder, HubConnectionBuilder>(); // SignalR HubConnectionBuilder
+            _services.AddSingleton(new HubConnectionBuilder()
+                .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
+                .WithAutomaticReconnect());
 
+            _services.AddTransient<ILocalApp, LocalApp>();
             _services.AddTransient<IConnector, Connector>();
+
             _services.AddSingleton(tools);
             _services.AddSingleton(resources);
         }
 
-        public IConnectorBuilder AddTool(string className, string method, RunTool command)
+        public IConnectorBuilder AddTool(string className, string method, RunTool runner)
         {
             if (!tools.TryGetValue(className, out var commandGroup))
                 tools[className] = commandGroup = new Dictionary<string, IRunTool>();
@@ -40,7 +55,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (commandGroup.ContainsKey(method))
                 throw new ArgumentException($"Command with name '{method}' already exists in path {className}.");
 
-            commandGroup.Add(method, command);
+            commandGroup.Add(method, runner);
             return this;
         }
 

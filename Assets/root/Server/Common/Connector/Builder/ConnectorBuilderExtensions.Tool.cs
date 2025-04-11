@@ -40,18 +40,19 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
-                if (method.GetCustomAttribute<ToolAttribute>() is not null)
-                {
-                    var className = targetType.GetCustomAttribute<ToolTypeAttribute>()?.Path ?? targetType.FullName;
-                    if (className == null)
-                        throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
+                var attribute = method.GetCustomAttribute<ToolAttribute>();
+                if (attribute == null)
+                    continue;
 
-                    var command = method.IsStatic
-                        ? RunTool.CreateFromStaticMethod(logger, method)
-                        : RunTool.CreateFromClassMethod(logger, targetType, method);
+                var className = targetType.GetCustomAttribute<ToolTypeAttribute>()?.Path ?? targetType.FullName;
+                if (className == null)
+                    throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
 
-                    builder.AddTool(className, method.Name, command);
-                }
+                var runner = method.IsStatic
+                    ? RunTool.CreateFromStaticMethod(logger, method)
+                    : RunTool.CreateFromClassMethod(logger, targetType, method);
+
+                builder.AddTool(className, method.Name, runner);
             }
             return builder;
         }

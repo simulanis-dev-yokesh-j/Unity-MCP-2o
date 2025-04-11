@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new ListToolsResult().SetError("[Error] Connector is null");
 
-            var remoteApp = connector.App;
+            var remoteApp = connector.RemoteApp;
             if (remoteApp == null)
                 return new ListToolsResult().SetError("[Error] Remote App is null");
 
@@ -26,9 +26,15 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (response == null)
                 return new ListToolsResult().SetError("[Error] Resource is null");
 
+            if (response.IsError)
+                return new ListToolsResult().SetError(response.Message ?? "[Error] Got an error during reading resources");
+
+            if (response.Value == null)
+                return new ListToolsResult().SetError("[Error] Resource value is null");
+
             return new ListToolsResult()
             {
-                Tools = response
+                Tools = response.Value
                     .Where(x => x != null)
                     .Select(x => x!.ToTool())
                     .ToList()

@@ -1,9 +1,11 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common.MCP
@@ -13,7 +15,13 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
         protected readonly MethodInfo _methodInfo;
         protected readonly object? _targetInstance;
         protected readonly Type? _targetType;
+
+        protected readonly string? _description;
         protected readonly ILogger _logger;
+        protected readonly JsonNode? _inputSchema;
+
+        public JsonNode? InputSchema => _inputSchema;
+        public string? Description => _description;
 
         protected MethodWrapper(ILogger logger, MethodInfo methodInfo)
         {
@@ -26,6 +34,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
 
             _logger = logger;
             _methodInfo = methodInfo;
+            _description = methodInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            _inputSchema = JsonUtils.GetSchema(methodInfo);
         }
 
         protected MethodWrapper(ILogger logger, object targetInstance, MethodInfo methodInfo)
@@ -42,6 +52,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             _logger = logger;
             _targetInstance = targetInstance;
             _methodInfo = methodInfo;
+            _description = methodInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            _inputSchema = JsonUtils.GetSchema(methodInfo);
         }
 
         protected MethodWrapper(ILogger logger, Type targetType, MethodInfo methodInfo)
@@ -58,9 +70,11 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             _logger = logger;
             _targetType = targetType;
             _methodInfo = methodInfo;
+            _description = methodInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            _inputSchema = JsonUtils.GetSchema(methodInfo);
         }
 
-        protected virtual object? Invoke(params object?[] parameters)
+        protected virtual async Task<object?> Invoke(params object?[] parameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -70,20 +84,26 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
 
             // Build the final parameters array, filling in default values where necessary
             var finalParameters = BuildParameters(parameters);
-            if (finalParameters != null)
-            {
-                foreach (var parameter in finalParameters)
-                    _logger.LogTrace("Parameter: {0}", parameter);
-            }
-            else
-            {
-                _logger.LogTrace("No parameters provided.");
-            }
+            PrintParameters(finalParameters);
+
             // Invoke the method (static or instance)
-            return _methodInfo.Invoke(instance, finalParameters);
+            var result = _methodInfo.Invoke(instance, finalParameters);
+
+            // Handle Task, Task<T>, or synchronous return types
+            if (result is Task task)
+            {
+                await task.ConfigureAwait(false);
+
+                // If it's a Task<T>, extract the result
+                var resultProperty = task.GetType().GetProperty("Result");
+                return resultProperty?.GetValue(task);
+            }
+
+            // For synchronous methods, return the result directly
+            return result;
         }
 
-        protected virtual object? Invoke(IDictionary<string, JsonElement>? namedParameters)
+        protected virtual async Task<object?> Invoke(IDictionary<string, JsonElement>? namedParameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -96,7 +116,20 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             PrintParameters(finalParameters);
 
             // Invoke the method (static or instance)
-            return _methodInfo.Invoke(instance, finalParameters);
+            var result = _methodInfo.Invoke(instance, finalParameters);
+
+            // Handle Task, Task<T>, or synchronous return types
+            if (result is Task task)
+            {
+                await task.ConfigureAwait(false);
+
+                // If it's a Task<T>, extract the result
+                var resultProperty = task.GetType().GetProperty("Result");
+                return resultProperty?.GetValue(task);
+            }
+
+            // For synchronous methods, return the result directly
+            return result;
         }
 
         protected object?[]? BuildParameters(object?[]? parameters)

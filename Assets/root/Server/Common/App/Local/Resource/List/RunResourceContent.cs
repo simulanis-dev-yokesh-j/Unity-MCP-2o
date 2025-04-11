@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using com.IvanMurzak.Unity.MCP.Common.MCP;
 using Microsoft.Extensions.Logging;
@@ -47,14 +48,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public IResponseResourceContent[] Run(params object?[] parameters)
+        public async Task<List<IResponseResourceContent>> Run(params object?[] parameters)
         {
-            var result = Invoke(parameters);
+            var result = await Invoke(parameters);
 
             if (_logger.IsEnabled(LogLevel.Trace))
                 _logger.LogTrace("Result: {result}", result.JsonSerialize());
 
-            return result as IResponseResourceContent[] ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseResourceContent)} array.");
+            return result as List<IResponseResourceContent> ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseResourceContent)} array.");
         }
 
         /// <summary>
@@ -63,14 +64,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public IResponseResourceContent[] Run(IDictionary<string, object?>? namedParameters)
+        public async Task<List<IResponseResourceContent>> Run(IDictionary<string, object?>? namedParameters)
         {
-            var result = Invoke(namedParameters);
+            var result = await Invoke(namedParameters);
 
             if (_logger.IsEnabled(LogLevel.Trace))
                 _logger.LogTrace("Result: {result}", result.JsonSerialize());
 
-            return result as IResponseResourceContent[] ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseResourceContent)} array.");
+            return result as List<IResponseResourceContent> ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseResourceContent)} array.");
         }
     }
 }

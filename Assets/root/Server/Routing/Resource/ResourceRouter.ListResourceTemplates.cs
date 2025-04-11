@@ -16,19 +16,25 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new ListResourceTemplatesResult().SetError("[Error] Connector is null");
 
-            var remoteApp = connector.App;
+            var remoteApp = connector.RemoteApp;
             if (remoteApp == null)
                 return new ListResourceTemplatesResult().SetError("[Error] Remote App is null");
 
             var requestData = new RequestListResourceTemplates();
 
-            var resource = await remoteApp.RunResourceTemplates(requestData, cancellationToken: cancellationToken);
-            if (resource == null)
+            var response = await remoteApp.RunResourceTemplates(requestData, cancellationToken: cancellationToken);
+            if (response == null)
                 return new ListResourceTemplatesResult().SetError("[Error] Resource is null");
+
+            if (response.IsError)
+                return new ListResourceTemplatesResult().SetError(response.Message ?? "[Error] Got an error during getting resource templates");
+
+            if (response.Value == null)
+                return new ListResourceTemplatesResult().SetError("[Error] Resource template value is null");
 
             return new ListResourceTemplatesResult()
             {
-                ResourceTemplates = resource
+                ResourceTemplates = response.Value
                     .Where(x => x != null)
                     .Select(x => x!.ToResourceTemplate())
                     .ToList()
