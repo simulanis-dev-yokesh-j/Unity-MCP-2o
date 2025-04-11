@@ -5,18 +5,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class ConnectorBuilder : IConnectorBuilder
+    public class McpAppBuilder : IMcpAppBuilder
     {
-        readonly IDictionary<string, IRunTool> tools = new Dictionary<string, IRunTool>();
-        readonly IDictionary<string, IRunResource> resources = new Dictionary<string, IRunResource>();
         readonly IServiceCollection _services;
+        readonly IDictionary<string, IRunTool> _tools = new Dictionary<string, IRunTool>();
+        readonly IDictionary<string, IRunResource> _resources = new Dictionary<string, IRunResource>();
 
         public IServiceCollection Services => _services;
 
-        public ConnectorBuilder(IServiceCollection? services = null)
+        public McpAppBuilder(IServiceCollection? services = null)
         {
             _services = services ?? new ServiceCollection();
 
@@ -40,14 +41,23 @@ namespace com.IvanMurzak.Unity.MCP.Common
             //     .WithAutomaticReconnect());
 
             _services.AddTransient<ILocalApp, LocalApp>();
-            _services.AddTransient<IConnector, Connector>();
+            _services.AddTransient<IMcpApp, McpApp>();
 
-            _services.AddSingleton(tools);
-            _services.AddSingleton(resources);
+            _services.AddSingleton(_tools);
+            _services.AddSingleton(_resources);
 
-            _services.AddSingleton<Func<Task<HubConnection>>>(() =>
+            // new ReactiveProperty<HubConnection>(null)
+            //     .Subscribe(hubConnection =>
+            //     {
+            //         if (hubConnection == null)
+            //             return;
+
+            //         hubConnection.On<IRequestListTool>(Consts.RCP.RunListTool, message => { });
+            //     });
+
+            _services.AddSingleton<Func<HubConnection>>(() =>
             {
-                return new HubConnectionBuilder()
+                var hubConnection = new HubConnectionBuilder()
                     .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
                     .WithAutomaticReconnect()
                     .AddJsonProtocol(options =>
@@ -55,48 +65,49 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         options.PayloadSerializerOptions.PropertyNamingPolicy = null;
                         options.PayloadSerializerOptions.DictionaryKeyPolicy = null;
                     })
-                    .Build()
-                    .TaskFromResult();
+                    .Build();
+
+                return hubConnection;
             });
         }
 
-        public IConnectorBuilder AddTool(string name, IRunTool runner)
+        public IMcpAppBuilder AddTool(string name, IRunTool runner)
         {
-            if (tools.ContainsKey(name))
+            if (_tools.ContainsKey(name))
                 throw new ArgumentException($"Tool with name '{name}' already exists.");
 
-            tools.Add(name, runner);
+            _tools.Add(name, runner);
             return this;
         }
 
-        public IConnectorBuilder AddResource(IRunResource resourceParams)
+        public IMcpAppBuilder AddResource(IRunResource resourceParams)
         {
-            if (resources == null)
-                throw new ArgumentNullException(nameof(resources));
+            if (_resources == null)
+                throw new ArgumentNullException(nameof(_resources));
             if (resourceParams == null)
                 throw new ArgumentNullException(nameof(resourceParams));
 
-            if (resources.ContainsKey(resourceParams.Route))
+            if (_resources.ContainsKey(resourceParams.Route))
                 throw new ArgumentException($"Resource with routing '{resourceParams.Route}' already exists.");
 
-            resources.Add(resourceParams.Route, resourceParams);
+            _resources.Add(resourceParams.Route, resourceParams);
             return this;
         }
 
-        public IConnectorBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder)
+        public IMcpAppBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder)
         {
             _services.AddLogging(loggingBuilder);
             return this;
         }
 
-        public IConnectorBuilder WithConfig(Action<ConnectorConfig> config)
+        public IMcpAppBuilder WithConfig(Action<ConnectorConfig> config)
         {
             _services.Configure(config);
             return this;
         }
 
-        public IConnector Build() => _services
+        public IMcpApp Build() => _services
             .BuildServiceProvider()
-            .GetRequiredService<IConnector>();
+            .GetRequiredService<IMcpApp>();
     }
 }

@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public partial class Connector : IConnector
+    public partial class McpApp : IMcpApp
     {
         public const string Version = "0.1.0";
 
-        readonly ILogger<Connector> _logger;
+        readonly ILogger<McpApp> _logger;
         readonly Func<Task<HubConnection>> _hubBuilder;
 
         HubConnection? hubConnection;
@@ -22,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public Connector(ILogger<Connector> logger, Func<Task<HubConnection>> hubBuilder, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
+        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubBuilder, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
@@ -79,6 +79,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
             hubConnection.StopAsync().Wait();
             hubConnection.DisposeAsync().AsTask().Wait();
         }
-        ~Connector() => Dispose();
+        ~McpApp() => Dispose();
     }
 }

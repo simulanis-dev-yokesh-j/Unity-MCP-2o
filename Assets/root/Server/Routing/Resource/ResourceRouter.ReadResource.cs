@@ -15,7 +15,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (request?.Params?.Uri == null)
                 return new ReadResourceResult().SetError("null", "[Error] Request or Uri is null");
 
-            var connector = Connector.Instance;
+            var connector = McpApp.Instance;
             if (connector == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Connector is null");
 

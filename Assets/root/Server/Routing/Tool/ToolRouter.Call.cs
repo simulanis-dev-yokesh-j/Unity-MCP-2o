@@ -1,9 +1,11 @@
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
+using NLog;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
@@ -11,6 +13,9 @@ namespace com.IvanMurzak.Unity.MCP.Server
     {
         public static async Task<CallToolResponse> Call(RequestContext<CallToolRequestParams> request, CancellationToken cancellationToken)
         {
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Trace("Call called");
+
             if (request == null)
                 return new CallToolResponse().SetError("[Error] Request is null");
 
@@ -20,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (request.Params.Arguments == null)
                 return new CallToolResponse().SetError("[Error] Request.Params.Arguments is null");
 
-            var connector = Connector.Instance;
+            var connector = McpApp.Instance;
             if (connector == null)
                 return new CallToolResponse().SetError("[Error] Connector is null");
 
@@ -43,6 +48,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (response.Value == null)
                 return new CallToolResponse().SetError("[Error] Tool returned null value");
 
+            logger.Trace("Call, result: {0}", JsonSerializer.Serialize(response.Value));
             return response.Value.ToCallToolRespose();
         }
     }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IConnector : IDisposable
+    public interface IMcpApp : IDisposable
     {
         HubConnectionState GetStatus { get; }
         IRemoteServer? RemoteServer { get; }

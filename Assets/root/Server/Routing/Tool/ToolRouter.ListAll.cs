@@ -12,14 +12,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
 {
     public static partial class ToolRouter
     {
-        static Logger? logger;
-        static Logger Logger => logger ?? LogManager.GetCurrentClassLogger();
-
         public static async Task<ListToolsResult> ListAll(RequestContext<ListToolsRequestParams> request, CancellationToken cancellationToken)
         {
-            Logger.Trace("ListAll called");
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Trace("ListAll called");
 
-            var connector = Connector.Instance;
+            var connector = McpApp.Instance;
             if (connector == null)
                 return new ListToolsResult().SetError("[Error] Connector is null");
 
@@ -47,7 +45,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .ToList()
             };
 
-            Logger.Trace("ListAll, result: {0}", JsonSerializer.Serialize(result));
+            logger.Trace("ListAll, result: {0}", JsonSerializer.Serialize(result));
             return result;
         }
     }

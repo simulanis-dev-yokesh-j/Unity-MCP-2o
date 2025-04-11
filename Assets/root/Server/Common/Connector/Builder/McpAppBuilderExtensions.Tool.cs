@@ -8,12 +8,12 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public static partial class ConnectorBuilderExtensions
+    public static partial class McpAppBuilderExtensions
     {
-        public static IConnectorBuilder WithTools(this IConnectorBuilder builder, params Type[] targetTypes)
+        public static IMcpAppBuilder WithTools(this IMcpAppBuilder builder, params Type[] targetTypes)
             => WithTools(builder, targetTypes.ToArray());
 
-        public static IConnectorBuilder WithTools(this IConnectorBuilder builder, IEnumerable<Type> targetTypes)
+        public static IMcpAppBuilder WithTools(this IMcpAppBuilder builder, IEnumerable<Type> targetTypes)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
@@ -26,10 +26,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return builder;
         }
 
-        public static IConnectorBuilder WithTools<T>(this IConnectorBuilder builder)
+        public static IMcpAppBuilder WithTools<T>(this IMcpAppBuilder builder)
             => WithTools(builder, typeof(T));
 
-        public static IConnectorBuilder WithTools(this IConnectorBuilder builder, Type targetType)
+        public static IMcpAppBuilder WithTools(this IMcpAppBuilder builder, Type targetType)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
@@ -60,7 +60,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return builder;
         }
 
-        public static IConnectorBuilder WithToolsFromAssembly(this IConnectorBuilder builder, Assembly? assembly = null)
+        public static IMcpAppBuilder WithToolsFromAssembly(this IMcpAppBuilder builder, Assembly? assembly = null)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));

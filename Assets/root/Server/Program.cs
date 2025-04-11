@@ -33,7 +33,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .AddMcpServer()
                     .WithStdioServerTransport()
                     .WithPromptsFromAssembly()
-                    // .WithToolsFromAssembly()
+                    .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
                     .WithListToolsHandler(ToolRouter.ListAll)
                     .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates)
@@ -54,7 +54,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
                 // Setup Connector ----------------------------------------------------------------
                 builder.Services
-                    .AddConnector()
+                    .AddMcpApp()
                     .AddLogging(logging =>
                     {
                         logging.AddNLog();
@@ -62,7 +62,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     })
                     .WithConfig(config =>
                     {
-                        config.ConnectionType = Connector.ConnectionRole.Server;
+                        config.ConnectionType = McpApp.ConnectionRole.Server;
                     })
                     .AddRemoteApp()
                     .Build() // TODO: Build it right now is not the best idea
@@ -78,7 +78,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             }
             finally
             {
-                Connector.StaticDispose();
+                McpApp.StaticDispose();
                 LogManager.Shutdown();
             }
         }
