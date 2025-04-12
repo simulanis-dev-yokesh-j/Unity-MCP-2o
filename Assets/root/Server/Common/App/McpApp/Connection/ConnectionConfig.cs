@@ -2,7 +2,7 @@
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class ConnectorConfig
+    public class ConnectionConfig
     {
         public string Endpoint { get; set; } = "http://localhost:60606";
 

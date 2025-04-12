@@ -92,7 +92,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return this;
         }
 
-        public IMcpAppBuilder WithConfig(Action<ConnectorConfig> config)
+        public IMcpAppBuilder WithConfig(Action<ConnectionConfig> config)
         {
             _services.Configure(config);
             return this;
