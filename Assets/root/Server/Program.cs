@@ -68,7 +68,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         })
                         .WithConfig(config =>
                         {
-                            config.ConnectionType = McpApp.ConnectionRole.Server;
+
                         });
                 });
 

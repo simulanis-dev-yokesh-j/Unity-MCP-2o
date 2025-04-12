@@ -26,10 +26,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .WithAppFeatures()
                 .WithConfig(config =>
                 {
-                    config.IPAddress = IPAddress.Loopback;
-                    config.PortServer = 60600;
-                    config.PortUnity = 60606;
-                    config.ConnectionType = McpApp.ConnectionRole.Unity;
+
                 })
                 .AddLogging(loggingBuilder =>
                 {
