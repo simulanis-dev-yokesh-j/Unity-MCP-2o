@@ -22,12 +22,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
             builder.AddLocalApp();
             builder.AddRemoteServer();
 
-            // TODO: Oncomment if any tools or prompts are needed from this assembly
-            // var assembly = typeof(McpAppBuilderExtensions).Assembly;
+            // // TODO: Oncomment if any tools or prompts are needed from this assembly
+            // // var assembly = typeof(McpAppBuilderExtensions).Assembly;
 
-            // builder.WithToolsFromAssembly(assembly);
-            // builder.WithPromptsFromAssembly(assembly);
-            // builder.WithResourcesFromAssembly(assembly);
+            // // builder.WithToolsFromAssembly(assembly);
+            // // builder.WithPromptsFromAssembly(assembly);
+            // // builder.WithResourcesFromAssembly(assembly);
 
             return builder;
         }

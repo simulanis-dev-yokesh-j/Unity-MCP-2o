@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IMethodRouter : IDisposable
+    public interface IRpcRouter : IDisposable
     {
         void SetConnection(HubConnection hubConnection);
     }

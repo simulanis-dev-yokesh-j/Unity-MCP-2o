@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<McpApp> _logger;
-        readonly IMethodRouter _methodRouter;
+        readonly IRpcRouter _methodRouter;
         readonly Func<Task<HubConnection>> _hubConnectionBuilder;
 
         HubConnection? hubConnection;
@@ -24,7 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IMethodRouter methodRouter, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
+        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter methodRouter, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);

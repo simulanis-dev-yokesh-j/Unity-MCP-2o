@@ -8,15 +8,15 @@ using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class MethodRouter : IMethodRouter
+    public class RpcRouter : IRpcRouter
     {
-        readonly ILogger<MethodRouter> _logger;
+        readonly ILogger<RpcRouter> _logger;
         readonly ILocalApp _localApp;
         readonly ILocalServer? _localServer;
         readonly IRemoteServer? _remoteServer;
         readonly CompositeDisposable _disposables = new();
 
-        public MethodRouter(ILogger<MethodRouter> logger, ILocalApp localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
+        public RpcRouter(ILogger<RpcRouter> logger, ILocalApp localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");

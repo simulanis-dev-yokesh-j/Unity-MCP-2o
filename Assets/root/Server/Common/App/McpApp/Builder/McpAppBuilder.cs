@@ -40,7 +40,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             //     .WithAutomaticReconnect());
 
             _services.AddSingleton<IConnectionManager, ConnectionManager>();
-            _services.AddSingleton<IMethodRouter, MethodRouter>();
+            _services.AddSingleton<IRpcRouter, RpcRouter>();
             _services.AddSingleton<IMcpApp, McpApp>();
 
             _services.AddSingleton(_tools);
