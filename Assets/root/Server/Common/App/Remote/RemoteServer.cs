@@ -54,7 +54,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return _connectionManager.InvokeAsync<
                 IResponseData<List<IResponseResourceContent>>,
                 IResponseData<string>>(Consts.RPC.ResponseResourceContent, data, cancellationToken);
-
         }
         public Task<IResponseData<string>> RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default)
         {

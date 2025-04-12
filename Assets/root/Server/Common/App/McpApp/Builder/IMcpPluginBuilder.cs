@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IMcpAppBuilder
+    public interface IMcpPluginBuilder
     {
         IServiceCollection Services { get; }
-        IMcpAppBuilder AddTool(string name, IRunTool runner);
-        IMcpAppBuilder AddResource(IRunResource resourceParams);
-        IMcpAppBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder);
-        IMcpAppBuilder WithConfig(Action<ConnectionConfig> config);
+        IMcpPluginBuilder AddTool(string name, IRunTool runner);
+        IMcpPluginBuilder AddResource(IRunResource resourceParams);
+        IMcpPluginBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder);
+        IMcpPluginBuilder WithConfig(Action<ConnectionConfig> config);
         IMcpPlugin Build();
     }
 }

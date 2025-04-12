@@ -6,12 +6,12 @@ using System.Reflection;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public static partial class McpAppBuilderExtensions
+    public static partial class McpPluginBuilderExtensions
     {
-        public static IMcpAppBuilder WithPrompts(this IMcpAppBuilder builder, params Type[] targetTypes)
+        public static IMcpPluginBuilder WithPrompts(this IMcpPluginBuilder builder, params Type[] targetTypes)
             => WithPrompts(builder, targetTypes.ToArray());
 
-        public static IMcpAppBuilder WithPrompts(this IMcpAppBuilder builder, IEnumerable<Type> targetTypes)
+        public static IMcpPluginBuilder WithPrompts(this IMcpPluginBuilder builder, IEnumerable<Type> targetTypes)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
@@ -37,7 +37,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return builder;
         }
 
-        public static IMcpAppBuilder WithPromptsFromAssembly(this IMcpAppBuilder builder, Assembly? assembly = null)
+        public static IMcpPluginBuilder WithPromptsFromAssembly(this IMcpPluginBuilder builder, Assembly? assembly = null)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));

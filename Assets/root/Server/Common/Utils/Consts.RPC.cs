@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             public const string ResponseListTool = "/mcp/response-list-tool";
             public const string ResponseResourceContent = "/mcp/response-resource-content";
             public const string ResponseListResources = "/mcp/response-list-resources";
-            public const string ResponseListResourceTemplates = "/mcp/response-list-resource-templates";
+            public const string ResponseListResourceTemplates = "ResponseList";
         }
     }
 }

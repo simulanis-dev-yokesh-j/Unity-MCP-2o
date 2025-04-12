@@ -25,9 +25,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         bool HasTool(string name);
         bool HasResource(string name);
     }
-    public interface ILocalServer : IToolResponseReceiver, IResourceResponseReceiver, IDisposable
-    {
-    }
     public interface IRemoteApp : IToolRunner, IResourceRunner, IDisposable
     {
     }

@@ -22,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             var message = "<b><color=yellow>STARTUP</color></b>";
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
 
-            new McpAppBuilder()
+            new McpPluginBuilder()
                 .WithAppFeatures()
                 .WithConfig(config =>
                 {

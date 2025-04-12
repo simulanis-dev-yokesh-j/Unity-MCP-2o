@@ -57,7 +57,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 //     }));
 
                 // Setup McpApp ----------------------------------------------------------------
-                builder.Services.AddMcpApp(configure =>
+                builder.Services.AddMcpPlugin(configure =>
                 {
                     configure
                         .WithServerFeatures()

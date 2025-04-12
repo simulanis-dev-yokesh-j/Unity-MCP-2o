@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class McpAppBuilder : IMcpAppBuilder
+    public class McpPluginBuilder : IMcpPluginBuilder
     {
         readonly IServiceCollection _services;
         readonly IDictionary<string, IRunTool> _tools = new Dictionary<string, IRunTool>();
@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public IServiceCollection Services => _services;
 
-        public McpAppBuilder(IServiceCollection? services = null)
+        public McpPluginBuilder(IServiceCollection? services = null)
         {
             _services = services ?? new ServiceCollection();
 
@@ -63,7 +63,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services.AddSingleton(hubConnectionBuilder);
         }
 
-        public IMcpAppBuilder AddTool(string name, IRunTool runner)
+        public IMcpPluginBuilder AddTool(string name, IRunTool runner)
         {
             if (_tools.ContainsKey(name))
                 throw new ArgumentException($"Tool with name '{name}' already exists.");
@@ -72,7 +72,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return this;
         }
 
-        public IMcpAppBuilder AddResource(IRunResource resourceParams)
+        public IMcpPluginBuilder AddResource(IRunResource resourceParams)
         {
             if (_resources == null)
                 throw new ArgumentNullException(nameof(_resources));
@@ -86,13 +86,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return this;
         }
 
-        public IMcpAppBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder)
+        public IMcpPluginBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder)
         {
             _services.AddLogging(loggingBuilder);
             return this;
         }
 
-        public IMcpAppBuilder WithConfig(Action<ConnectionConfig> config)
+        public IMcpPluginBuilder WithConfig(Action<ConnectionConfig> config)
         {
             _services.Configure(config);
             return this;

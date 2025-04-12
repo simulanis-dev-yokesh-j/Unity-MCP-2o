@@ -8,12 +8,12 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public static partial class McpAppBuilderExtensions
+    public static partial class McpPluginBuilderExtensions
     {
-        public static IMcpAppBuilder WithTools(this IMcpAppBuilder builder, params Type[] targetTypes)
+        public static IMcpPluginBuilder WithTools(this IMcpPluginBuilder builder, params Type[] targetTypes)
             => WithTools(builder, targetTypes.ToArray());
 
-        public static IMcpAppBuilder WithTools(this IMcpAppBuilder builder, IEnumerable<Type> targetTypes)
+        public static IMcpPluginBuilder WithTools(this IMcpPluginBuilder builder, IEnumerable<Type> targetTypes)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
@@ -26,10 +26,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return builder;
         }
 
-        public static IMcpAppBuilder WithTools<T>(this IMcpAppBuilder builder)
+        public static IMcpPluginBuilder WithTools<T>(this IMcpPluginBuilder builder)
             => WithTools(builder, typeof(T));
 
-        public static IMcpAppBuilder WithTools(this IMcpAppBuilder builder, Type targetType)
+        public static IMcpPluginBuilder WithTools(this IMcpPluginBuilder builder, Type targetType)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
@@ -60,7 +60,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return builder;
         }
 
-        public static IMcpAppBuilder WithToolsFromAssembly(this IMcpAppBuilder builder, Assembly? assembly = null)
+        public static IMcpPluginBuilder WithToolsFromAssembly(this IMcpPluginBuilder builder, Assembly? assembly = null)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));

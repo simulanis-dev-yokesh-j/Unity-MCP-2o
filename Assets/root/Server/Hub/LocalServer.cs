@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using R3;
 
-namespace com.IvanMurzak.Unity.MCP.Common
+namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class LocalServer : ILocalServer
+    public class LocalServer : Hub, ILocalServer
     {
         protected readonly ILogger<LocalServer> _logger;
         protected readonly IConnectionManager _connectionManager;
@@ -66,9 +68,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return Task.CompletedTask;
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
-
+            base.Dispose();
         }
     }
 }
