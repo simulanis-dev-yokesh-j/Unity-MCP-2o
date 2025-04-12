@@ -33,8 +33,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
     }
     public interface IRemoteServer : IConnection, IToolResponseSender, IResourceResponseSender, IDisposable
     {
-        Task UpdateTools(CancellationToken cancellationToken = default);
-        Task UpdateResources(CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> UpdateTools(CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> UpdateResources(CancellationToken cancellationToken = default);
     }
 
     // -----------------------------------------------------------------
@@ -56,15 +56,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
     public interface IToolResponseSender
     {
-        Task RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default);
-        Task RespondOnListTool(IResponseData<List<IResponseListTool>> data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> RespondOnListTool(IResponseData<List<IResponseListTool>> data, CancellationToken cancellationToken = default);
     }
 
     public interface IResourceResponseSender
     {
-        Task RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default);
-        Task RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default);
-        Task RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default);
     }
 
     // -----------------------------------------------------------------
