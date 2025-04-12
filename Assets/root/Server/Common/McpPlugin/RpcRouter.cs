@@ -51,7 +51,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _logger.LogTrace("SubscribeOnServerEvents.");
             _serverEventsDisposables.Clear();
 
-            hubConnection.On<IRequestCallTool>(Consts.RPC.RunCallTool, async message =>
+            hubConnection.On<RequestCallTool>(Consts.RPC.RunCallTool, async message =>
                 {
                     _logger.LogInformation("Call Tool called.");
                     var response = await _localApp.RunCallTool(message);
@@ -59,7 +59,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 })
                 .AddTo(_serverEventsDisposables);
 
-            hubConnection.On<IRequestListTool>(Consts.RPC.RunListTool, async message =>
+            hubConnection.On<RequestListTool>(Consts.RPC.RunListTool, async message =>
                 {
                     _logger.LogInformation("List Tool called.");
                     var response = await _localApp.RunListTool(message);
@@ -67,7 +67,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 })
                 .AddTo(_serverEventsDisposables);
 
-            hubConnection.On<IRequestResourceContent>(Consts.RPC.RunResourceContent, async message =>
+            hubConnection.On<RequestResourceContent>(Consts.RPC.RunResourceContent, async message =>
                 {
                     _logger.LogInformation("Read Resource called.");
                     var response = await _localApp.RunResourceContent(message);
@@ -75,7 +75,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 })
                 .AddTo(_serverEventsDisposables);
 
-            hubConnection.On<IRequestListResources>(Consts.RPC.RunListResources, async message =>
+            hubConnection.On<RequestListResources>(Consts.RPC.RunListResources, async message =>
                 {
                     _logger.LogInformation("List Resources called.");
                     var response = await _localApp.RunListResources(message);
@@ -83,7 +83,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 })
                 .AddTo(_serverEventsDisposables);
 
-            hubConnection.On<IRequestListResourceTemplates>(Consts.RPC.RunListResourceTemplates, async message =>
+            hubConnection.On<RequestListResourceTemplates>(Consts.RPC.RunListResourceTemplates, async message =>
                 {
                     _logger.LogInformation("List Resource Templates called.");
                     var response = await _localApp.RunResourceTemplates(message);
@@ -97,35 +97,35 @@ namespace com.IvanMurzak.Unity.MCP.Common
         //     if (_localServer == null)
         //         return;
 
-        //     hubConnection.On<IResponseData<IResponseCallTool>>(Consts.RPC.ResponseCallTool, async message =>
+        //     hubConnection.On<ResponseData<IResponseCallTool>>(Consts.RPC.ResponseCallTool, async message =>
         //         {
         //             _logger.LogInformation("Response Call Tool called.");
         //             await _localServer.RespondOnCallTool(message);
         //         })
         //         .AddTo(_serverEventsDisposables);
 
-        //     hubConnection.On<IResponseData<List<IResponseListTool>>>(Consts.RPC.RunListTool, async message =>
+        //     hubConnection.On<ResponseData<List<IResponseListTool>>>(Consts.RPC.RunListTool, async message =>
         //         {
         //             _logger.LogInformation("Response List Tool called.");
         //             await _localServer.RespondOnListTool(message);
         //         })
         //         .AddTo(_serverEventsDisposables);
 
-        //     hubConnection.On<IResponseData<List<IResponseResourceContent>>>(Consts.RPC.RunResourceContent, async message =>
+        //     hubConnection.On<ResponseData<List<IResponseResourceContent>>>(Consts.RPC.RunResourceContent, async message =>
         //         {
         //             _logger.LogInformation("Response Read Resource called.");
         //             await _localServer.RespondOnResourceContent(message);
         //         })
         //         .AddTo(_serverEventsDisposables);
 
-        //     hubConnection.On<IResponseData<List<IResponseListResource>>>(Consts.RPC.RunListResources, async message =>
+        //     hubConnection.On<ResponseData<List<IResponseListResource>>>(Consts.RPC.RunListResources, async message =>
         //         {
         //             _logger.LogInformation("Response List Resources called.");
         //             await _localServer.RespondOnListResources(message);
         //         })
         //         .AddTo(_serverEventsDisposables);
 
-        //     hubConnection.On<IResponseData<List<IResponseResourceTemplate>>>(Consts.RPC.RunListResourceTemplates, async message =>
+        //     hubConnection.On<ResponseData<List<IResponseResourceTemplate>>>(Consts.RPC.RunListResourceTemplates, async message =>
         //         {
         //             _logger.LogInformation("Response List Resource Templates called.");
         //             await _localServer.RespondOnResourceTemplates(message);
