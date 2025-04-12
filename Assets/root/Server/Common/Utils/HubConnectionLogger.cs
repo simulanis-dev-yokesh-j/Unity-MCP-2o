@@ -1,56 +1,52 @@
 using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class HubConnectionLogger : IDisposable
+    public class HubConnectionLogger : HubConnectionObservable, IDisposable
     {
-        private readonly ILogger _logger;
-        private readonly HubConnection _hubConnection;
+        readonly ILogger _logger;
+        readonly CompositeDisposable _disposables = new();
 
-        public HubConnectionLogger(ILogger logger, HubConnection hubConnection)
+        public HubConnectionLogger(ILogger logger, HubConnection hubConnection) : base(hubConnection)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _hubConnection = hubConnection ?? throw new ArgumentNullException(nameof(hubConnection));
 
-            if (_logger.IsEnabled(LogLevel.Trace))
-                SubscribeToHubConnectionEvents();
-        }
+            Closed
+                .Where(x => _logger.IsEnabled(LogLevel.Debug))
+                .Subscribe(ex =>
+                {
+                    _logger.LogTrace("HubConnection closed. Exception: {0}", ex?.Message);
+                    if (ex != null)
+                        _logger.LogError("Error in Closed event subscription: {0}", ex.Message);
+                })
+                .AddTo(_disposables);
 
-        void SubscribeToHubConnectionEvents()
-        {
-            _hubConnection.Closed += OnClosedConnection;
-            _hubConnection.Reconnecting += OnReconnecting;
-            _hubConnection.Reconnected += OnReconnected;
-        }
+            Reconnecting
+                .Where(x => _logger.IsEnabled(LogLevel.Debug))
+                .Subscribe(ex =>
+                {
+                    _logger.LogTrace("HubConnection reconnecting.");
+                    if (ex != null)
+                        _logger.LogError("Error during reconnecting: {0}", ex.Message);
+                })
+                .AddTo(_disposables);
 
-        Task OnClosedConnection(Exception? ex)
-        {
-            _logger.LogTrace("HubConnection closed. Exception: {0}", ex?.Message);
-            if (ex != null)
-                _logger.LogError("Error in Closed event subscription: {0}", ex.Message);
-            return Task.CompletedTask;
-        }
-        Task OnReconnecting(Exception? ex)
-        {
-            _logger.LogTrace("HubConnection reconnecting.");
-            if (ex != null)
-                _logger.LogError("Error during reconnecting: {0}", ex.Message);
-            return Task.CompletedTask;
-        }
-        Task OnReconnected(string? connectionId)
-        {
-            _logger.LogTrace("HubConnection reconnected with id {0}.", connectionId);
-            return Task.CompletedTask;
+            Reconnected
+                .Where(x => _logger.IsEnabled(LogLevel.Debug))
+                .Subscribe(connectionId =>
+                {
+                    _logger.LogTrace("HubConnection reconnected with id {0}.", connectionId);
+                })
+                .AddTo(_disposables);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            _hubConnection.Closed -= OnClosedConnection;
-            _hubConnection.Reconnecting -= OnReconnecting;
-            _hubConnection.Reconnected -= OnReconnected;
+            base.Dispose();
+            _disposables.Dispose();
         }
     }
 }

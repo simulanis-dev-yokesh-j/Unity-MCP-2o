@@ -18,6 +18,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         Task<bool>? connectionTask;
         HubConnectionLogger? hubConnectionLogger;
+        bool continueToReconnect = false;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
         public ReadOnlyReactiveProperty<HubConnection> HubConnection => _hubConnection.ToReadOnlyReactiveProperty();
@@ -74,7 +75,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
             });
         }
 
-        public async Task<bool> Connect(CancellationToken cancellationToken = default)
+        public Task<bool> Connect(CancellationToken cancellationToken = default)
+        {
+            continueToReconnect = true;
+            return InternalConnect(cancellationToken);
+        }
+        async Task<bool> InternalConnect(CancellationToken cancellationToken = default)
         {
             if (_hubConnection.Value == null)
             {
@@ -125,6 +131,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
+            continueToReconnect = false;
             if (_hubConnection.Value == null)
                 return Task.CompletedTask;
 
