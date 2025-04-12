@@ -3,7 +3,7 @@ using System;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public interface IRequestID : IDisposable
+    public interface IRequestID
     {
         string RequestID { get; set; }
     }

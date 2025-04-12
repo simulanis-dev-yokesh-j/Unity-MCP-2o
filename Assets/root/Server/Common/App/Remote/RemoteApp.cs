@@ -24,11 +24,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public async Task<IResponseData<IResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default)
         {
             if (data == null)
-                return ResponseData<IResponseCallTool>.Error("Tool data is null.")
+                return ResponseData<IResponseCallTool>.Error(Consts.Guid.Zero, "Tool data is null.")
                     .Log(_logger);
 
             if (string.IsNullOrEmpty(data.Name))
-                return ResponseData<IResponseCallTool>.Error("Tool.Name is null.")
+                return ResponseData<IResponseCallTool>.Error(data.RequestID, "Tool.Name is null.")
                     .Log(_logger);
             try
             {
@@ -41,14 +41,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }
                 var result = await _connectionManager.InvokeAsync<IRequestCallTool, ResponseCallTool>(Consts.RPC.RunCallTool, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<IResponseCallTool>.Error($"Tool '{data.Name}' returned null result.")
+                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
                         .Log(_logger);
 
-                return result.Log(_logger).Pack();
+                return result.Log(_logger).Pack(data.RequestID);
             }
             catch (Exception ex)
             {
-                return ResponseData<IResponseCallTool>.Error($"Failed to run tool '{data.Name}'. Exception: {ex}")
+                return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -59,18 +59,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 var result = await _connectionManager.InvokeAsync<IRequestListTool, List<ResponseListTool>>(Consts.RPC.RunListTool, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseListTool>>.Error($"'{Consts.RPC.RunListTool}' returned null result.")
+                    return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"'{Consts.RPC.RunListTool}' returned null result.")
                         .Log(_logger);
 
                 return result
                     .Cast<IResponseListTool>()
                     .ToList()
                     .Log(_logger)
-                    .Pack();
+                    .Pack(data.RequestID);
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseListTool>>.Error($"Failed to run '{Consts.RPC.RunListTool}'. Exception: {ex}")
+                return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListTool}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -78,29 +78,29 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public async Task<IResponseData<List<IResponseResourceContent>>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default)
         {
             if (data == null)
-                return ResponseData<List<IResponseResourceContent>>.Error("Resource content data is null.")
+                return ResponseData<List<IResponseResourceContent>>.Error(Consts.Guid.Zero, "Resource content data is null.")
                     .Log(_logger);
 
             if (string.IsNullOrEmpty(data.Uri))
-                return ResponseData<List<IResponseResourceContent>>.Error("Resource content Uri is null.")
+                return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, "Resource content Uri is null.")
                     .Log(_logger);
 
             try
             {
                 var result = await _connectionManager.InvokeAsync<IRequestResourceContent, List<ResponseResourceContent>>(Consts.RPC.RunResourceContent, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseResourceContent>>.Error($"Resource uri: '{data.Uri}' returned null result.")
+                    return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"Resource uri: '{data.Uri}' returned null result.")
                         .Log(_logger);
 
                 return result
                     .Cast<IResponseResourceContent>()
                     .ToList()
                     .Log(_logger)
-                    .Pack();
+                    .Pack(data.RequestID);
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseResourceContent>>.Error($"Failed to get resource uri: '{data.Uri}'. Exception: {ex}")
+                return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"Failed to get resource uri: '{data.Uri}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -111,18 +111,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 var result = await _connectionManager.InvokeAsync<IRequestListResources, List<ResponseResourceContent>>(Consts.RPC.RunListResources, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseListResource>>.Error($"'{Consts.RPC.RunListResources}' returned null result.")
+                    return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"'{Consts.RPC.RunListResources}' returned null result.")
                         .Log(_logger);
 
                 return result
                     .Cast<IResponseListResource>()
                     .ToList()
                     .Log(_logger)
-                    .Pack();
+                    .Pack(data.RequestID);
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseListResource>>.Error($"Failed to run '{Consts.RPC.RunListResources}'. Exception: {ex}")
+                return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResources}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -133,18 +133,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 var result = await _connectionManager.InvokeAsync<IRequestListResourceTemplates, List<ResponseResourceTemplate>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseResourceTemplate>>.Error($"'{Consts.RPC.RunListResourceTemplates}' returned null result.")
+                    return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"'{Consts.RPC.RunListResourceTemplates}' returned null result.")
                         .Log(_logger);
 
                 return result
                     .Cast<IResponseResourceTemplate>()
                     .ToList()
                     .Log(_logger)
-                    .Pack();
+                    .Pack(data.RequestID);
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseResourceTemplate>>.Error($"Failed to run '{Consts.RPC.RunListResourceTemplates}'. Exception: {ex}")
+                return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResourceTemplates}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }

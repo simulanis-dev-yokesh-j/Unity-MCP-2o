@@ -44,15 +44,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public async Task<IResponseData<IResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default)
         {
             if (data == null)
-                return ResponseData<IResponseCallTool>.Error("Tool data is null.")
+                return ResponseData<IResponseCallTool>.Error(Consts.Guid.Zero, "Tool data is null.")
                     .Log(_logger);
 
             if (string.IsNullOrEmpty(data.Name))
-                return ResponseData<IResponseCallTool>.Error("Tool.Name is null.")
+                return ResponseData<IResponseCallTool>.Error(data.RequestID, "Tool.Name is null.")
                     .Log(_logger);
 
             if (!_tools.TryGetValue(data.Name, out var runner))
-                return ResponseData<IResponseCallTool>.Error($"Tool with Name '{data.Name}' not found.")
+                return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool with Name '{data.Name}' not found.")
                     .Log(_logger);
             try
             {
@@ -66,15 +66,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                 var result = await runner.Run(data.Arguments);
                 if (result == null)
-                    return ResponseData<IResponseCallTool>.Error($"Tool '{data.Name}' returned null result.")
+                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
                         .Log(_logger);
 
-                return result.Log(_logger).Pack();
+                return result.Log(_logger).Pack(data.RequestID);
             }
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return ResponseData<IResponseCallTool>.Error($"Failed to run tool '{data.Name}'. Exception: {ex}")
+                return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -95,13 +95,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                 return result
                     .Log(_logger)
-                    .Pack()
+                    .Pack(data.RequestID)
                     .TaskFromResult();
             }
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return ResponseData<List<IResponseListTool>>.Error($"Failed to list tools. Exception: {ex}")
+                return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"Failed to list tools. Exception: {ex}")
                     .Log(_logger, ex)
                     .TaskFromResult();
             }
@@ -126,7 +126,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             // Execute the resource with the parameters from Uri
             var result = await runner.Run(parameters);
-            return result.Pack();
+            return result.Pack(data.RequestID);
         }
 
         public async Task<IResponseData<List<IResponseListResource>>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default)
@@ -139,7 +139,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return tasks
                 .SelectMany(x => x.Result)
                 .ToList()
-                .Pack();
+                .Pack(data.RequestID);
         }
 
         public Task<IResponseData<List<IResponseResourceTemplate>>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default)
@@ -147,7 +147,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 .Select(resource => new ResponseResourceTemplate(resource.Route, resource.Name, resource.Description, resource.MimeType))
                 .Cast<IResponseResourceTemplate>()
                 .ToList()
-                .Pack()
+                .Pack(data.RequestID)
                 .TaskFromResult();
 
         IRunResource? FindResourceContentRunner(string uri, IDictionary<string, IRunResource> resources, out string? uriTemplate)

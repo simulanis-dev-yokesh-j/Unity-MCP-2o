@@ -18,8 +18,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
             return target;
         }
 
-        public static IResponseData<List<IResponseListResource>> Pack(this List<IResponseListResource> target, string? message = null)
-            => ResponseData<List<IResponseListResource>>.Success(message ?? "List Tool execution completed.")
+        public static IResponseData<List<IResponseListResource>> Pack(this List<IResponseListResource> target, string requestId, string? message = null)
+            => ResponseData<List<IResponseListResource>>.Success(requestId, message ?? "List Tool execution completed.")
                 .SetData(target);
     }
 }

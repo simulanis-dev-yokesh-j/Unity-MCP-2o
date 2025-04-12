@@ -6,6 +6,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string All = "*";
         public const string AllRecursive = "**";
 
+        public static class Guid
+        {
+            public const string Zero = "00000000-0000-0000-0000-000000000000";
+        }
+
         public static partial class Command
         {
             public static partial class ResponseCode

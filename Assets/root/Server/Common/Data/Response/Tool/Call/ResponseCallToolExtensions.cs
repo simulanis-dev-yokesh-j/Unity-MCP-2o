@@ -17,13 +17,13 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
             return target;
         }
 
-        public static IResponseData<IResponseCallTool> Pack(this IResponseCallTool target, string? message = null)
+        public static IResponseData<IResponseCallTool> Pack(this IResponseCallTool target, string requestId, string? message = null)
         {
             if (target.IsError)
-                return ResponseData<IResponseCallTool>.Error(message ?? target.Content.FirstOrDefault()?.Text ?? "Tool execution error.")
+                return ResponseData<IResponseCallTool>.Error(requestId, message ?? target.Content.FirstOrDefault()?.Text ?? "Tool execution error.")
                     .SetData(target);
             else
-                return ResponseData<IResponseCallTool>.Success(message ?? target.Content.FirstOrDefault()?.Text ?? "Tool executed successfully.")
+                return ResponseData<IResponseCallTool>.Success(requestId, message ?? target.Content.FirstOrDefault()?.Text ?? "Tool executed successfully.")
                     .SetData(target);
         }
     }
