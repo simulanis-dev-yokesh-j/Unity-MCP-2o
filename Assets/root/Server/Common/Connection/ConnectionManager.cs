@@ -134,9 +134,20 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 .ContinueWith(task =>
                 {
                     if (task.IsCompletedSuccessfully)
+                    {
+                        _logger.LogInformation("Connection started successfully.");
                         return true;
+                    }
 
-                    _logger.LogWarning("Failed to start connection: {0}", task.Exception?.Message);
+                    if (task.Exception != null)
+                    {
+                        foreach (var innerException in task.Exception.InnerExceptions)
+                            _logger.LogError("Failed to start connection: {0}\n{1}", innerException.Message, innerException.StackTrace);
+                    }
+                    else
+                    {
+                        _logger.LogError("Failed to start connection: Unknown error.");
+                    }
                     return false;
                 });
             return await connectionTask;
