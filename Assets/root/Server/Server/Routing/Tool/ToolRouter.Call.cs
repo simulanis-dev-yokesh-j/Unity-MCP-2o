@@ -25,13 +25,13 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (request.Params.Arguments == null)
                 return new CallToolResponse().SetError("[Error] Request.Params.Arguments is null");
 
-            var connector = McpPlugin.Instance;
-            if (connector == null)
+            var mcpServerService = McpServerService.Instance;
+            if (mcpServerService == null)
                 return new CallToolResponse().SetError("[Error] Connector is null");
 
-            var app = connector.McpRunner.HasTool(request.Params.Name)
-                ? connector.McpRunner as IToolRunner
-                : connector.RemoteApp;
+            var app = mcpServerService.McpRunner.HasTool(request.Params.Name)
+                ? mcpServerService.McpRunner as IToolRunner
+                : mcpServerService.RemoteApp;
 
             if (app == null)
                 return new CallToolResponse().SetError("[Error] App is null");

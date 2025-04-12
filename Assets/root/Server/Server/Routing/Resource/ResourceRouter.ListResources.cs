@@ -13,11 +13,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
     {
         public static async Task<ListResourcesResult> ListResources(RequestContext<ListResourcesRequestParams> request, CancellationToken cancellationToken)
         {
-            var connector = McpPlugin.Instance;
-            if (connector == null)
+            var mcpServerService = McpServerService.Instance;
+            if (mcpServerService == null)
                 return new ListResourcesResult().SetError("[Error] Connector is null");
 
-            var remoteApp = connector.RemoteApp;
+            var remoteApp = mcpServerService.RemoteApp;
             if (remoteApp == null)
                 return new ListResourcesResult().SetError("[Error] Remote App is null");
 

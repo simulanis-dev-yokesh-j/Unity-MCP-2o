@@ -15,11 +15,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         readonly IRpcRouter _rpcRouter;
 
         public IMcpRunner McpRunner { get; private set; }
-        public IRemoteApp? RemoteApp { get; private set; } = null;
         public IRemoteServer? RemoteServer { get; private set; } = null;
         public HubConnectionState ConnectionState => _rpcRouter.ConnectionState;
 
-        public McpPlugin(ILogger<McpPlugin> logger, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
+        public McpPlugin(ILogger<McpPlugin> logger, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteServer remoteServer)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
@@ -27,8 +26,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _rpcRouter = rpcRouter ?? throw new ArgumentNullException(nameof(rpcRouter));
 
             McpRunner = mcpRunner ?? throw new ArgumentNullException(nameof(mcpRunner));
-            RemoteApp = app;
-            RemoteServer = remoteServer;
+            RemoteServer = remoteServer ?? throw new ArgumentNullException(nameof(remoteServer));
 
             if (HasInstance)
             {

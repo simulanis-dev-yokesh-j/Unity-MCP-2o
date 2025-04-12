@@ -11,7 +11,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public interface IMcpPlugin : IConnection, IDisposable
     {
         IRemoteServer? RemoteServer { get; }
-        IRemoteApp? RemoteApp { get; }
         IMcpRunner McpRunner { get; }
     }
     public interface IConnection

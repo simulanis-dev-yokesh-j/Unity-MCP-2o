@@ -17,11 +17,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
             var logger = LogManager.GetCurrentClassLogger();
             logger.Trace("ListAll called");
 
-            var connector = McpPlugin.Instance;
-            if (connector == null)
+            var mcpServerService = McpServerService.Instance;
+            if (mcpServerService == null)
                 return new ListToolsResult().SetError("[Error] Connector is null");
 
-            var remoteApp = connector.RemoteApp;
+            var remoteApp = mcpServerService.RemoteApp;
             if (remoteApp == null)
                 return new ListToolsResult().SetError("[Error] Remote App is null");
 

@@ -15,11 +15,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (request?.Params?.Uri == null)
                 return new ReadResourceResult().SetError("null", "[Error] Request or Uri is null");
 
-            var connector = McpPlugin.Instance;
-            if (connector == null)
+            var mcpServerService = McpServerService.Instance;
+            if (mcpServerService == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Connector is null");
 
-            var remoteApp = connector.RemoteApp;
+            var remoteApp = mcpServerService.RemoteApp;
             if (remoteApp == null)
                 return new ReadResourceResult().SetError(request.Params.Uri, "[Error] Remote App is null");
 

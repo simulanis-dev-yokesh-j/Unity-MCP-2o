@@ -7,22 +7,26 @@ using Microsoft.Extensions.Hosting;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class McpAppInitializer : IHostedService
+    public class McpServerService : IHostedService
     {
-        readonly IMcpPlugin _mcpApp;
+        readonly IMcpRunner _mcpRunner;
+        readonly IRemoteApp _remoteApp;
         readonly ILocalServer _localServer;
 
+        public IMcpRunner McpRunner => _mcpRunner;
+        public IRemoteApp RemoteApp => _remoteApp;
         public ILocalServer LocalServer => _localServer;
 
-        public static McpAppInitializer? Instance { get; private set; }
+        public static McpServerService? Instance { get; private set; }
 
-        public McpAppInitializer(IMcpPlugin mcpApp, ILocalServer localServer)
+        public McpServerService(IMcpRunner mcpRunner, IRemoteApp remoteApp, ILocalServer localServer)
         {
-            _mcpApp = mcpApp ?? throw new ArgumentNullException(nameof(mcpApp));
+            _mcpRunner = mcpRunner ?? throw new ArgumentNullException(nameof(mcpRunner));
+            _remoteApp = remoteApp ?? throw new ArgumentNullException(nameof(remoteApp));
             _localServer = localServer ?? throw new ArgumentNullException(nameof(localServer));
 
             if (Instance != null)
-                throw new InvalidOperationException("McpAppInitializer is already initialized.");
+                throw new InvalidOperationException($"{typeof(McpServerService).Name} is already initialized.");
             Instance = this;
         }
 
