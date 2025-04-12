@@ -22,7 +22,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public IRemoteServer? RemoteServer { get; private set; } = null;
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
-        // IOptions<ConnectorConfig> configOptions
         public McpPlugin(ILogger<McpPlugin> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -39,7 +39,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             //     .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
             //     .WithAutomaticReconnect());
 
-            _services.AddSingleton<IConnectionManager, ConnectionManager>();
+            _services.AddTransient<IConnectionManager, ConnectionManager>();
             _services.AddSingleton<IRpcRouter, RpcRouter>();
             _services.AddSingleton<IMcpPlugin, McpPlugin>();
 

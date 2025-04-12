@@ -7,8 +7,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public static bool HasInstance => instance != null;
         public static IMcpPlugin? Instance => instance;
-        // public static IConnectorServer? Server => instance;
-        // public static IConnectorApp? App => instance;
 
         public static void StaticDispose()
         {

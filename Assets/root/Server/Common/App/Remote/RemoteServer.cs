@@ -22,12 +22,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public Task UpdateResources(CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task UpdateTools(CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default)

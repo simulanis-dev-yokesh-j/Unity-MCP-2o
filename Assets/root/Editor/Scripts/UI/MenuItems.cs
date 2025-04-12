@@ -13,17 +13,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static void BuildAndStart() => Startup.BuildAndStart();
 
         [MenuItem("Tools/Unity-MCP/Connect", priority = 1001)]
-        public static void Editor_Connect() => McpApp.Instance.Connect();
+        public static void Editor_Connect() => McpPlugin.Instance.Connect();
 
         [MenuItem("Tools/Unity-MCP/Disconnect", priority = 1001)]
         public static void Editor_Disconnect()
         {
-            if (!McpApp.HasInstance)
+            if (!McpPlugin.HasInstance)
             {
                 Debug.Log($"{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}Connector{Consts.Log.Color.CategoryEnd} Already disconnected.");
                 return;
             }
-            McpApp.Instance.Disconnect();
+            McpPlugin.Instance.Disconnect();
         }
 
         [MenuItem("Tools/Unity-MCP/Server/Build", priority = 1010)]

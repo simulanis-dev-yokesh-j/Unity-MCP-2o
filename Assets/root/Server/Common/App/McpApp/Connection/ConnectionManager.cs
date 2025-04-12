@@ -21,7 +21,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public HubConnectionState GetStatus => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
 
-        // IOptions<ConnectorConfig> configOptions
         public ConnectionManager(ILogger<ConnectionManager> logger, Func<Task<HubConnection>> hubConnectionBuilder)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
