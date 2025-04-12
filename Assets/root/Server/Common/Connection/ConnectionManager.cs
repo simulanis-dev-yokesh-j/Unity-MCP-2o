@@ -20,7 +20,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         HubConnectionLogger? hubConnectionLogger;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
-        public Observable<HubConnection> HubConnection => _hubConnection;
+        public ReadOnlyReactiveProperty<HubConnection> HubConnection => _hubConnection.ToReadOnlyReactiveProperty();
         public string Endpoint { get; set; } = string.Empty;
 
         public ConnectionManager(ILogger<ConnectionManager> logger, Func<string, Task<HubConnection>> hubConnectionBuilder)
