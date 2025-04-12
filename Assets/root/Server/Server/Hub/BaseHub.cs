@@ -40,7 +40,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connectionId == null)
                 return null;
 
-            var client = Clients.Client(connectionId);
+            var client = Clients?.Client(connectionId);
             if (client == null)
             {
                 _logger.LogDebug($"Client {connectionId} is not available. Removing from connected clients.");
