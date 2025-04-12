@@ -41,9 +41,9 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
                     .WithListToolsHandler(ToolRouter.ListAll)
-                    .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates)
+                    .WithReadResourceHandler(ResourceRouter.ReadResource)
                     .WithListResourcesHandler(ResourceRouter.ListResources)
-                    .WithReadResourceHandler(ResourceRouter.ReadResource);
+                    .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates);
 
                 // Setup SignalR connection builder -----------------------------------------------
                 // TODO: Replace raw TCP with SignalR

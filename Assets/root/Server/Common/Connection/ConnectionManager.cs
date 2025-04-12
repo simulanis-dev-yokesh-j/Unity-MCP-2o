@@ -87,8 +87,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             // Create a new internal CancellationTokenSource and link it to the external token
             internalCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(internalCts.Token, timeoutCts.Token);
 
-            return InternalConnect(internalCts.Token);
+            return InternalConnect(linkedCts.Token);
         }
 
         async Task<bool> InternalConnect(CancellationToken cancellationToken = default)

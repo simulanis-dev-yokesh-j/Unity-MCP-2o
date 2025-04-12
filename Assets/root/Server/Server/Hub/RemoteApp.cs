@@ -38,7 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"No connected clients.")
+                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
                 var result = await client.InvokeAsync<IResponseCallTool>(Consts.RPC.RunCallTool, data, cancellationToken);
@@ -61,7 +61,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"No connected clients.")
+                    return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
                 var result = await client.InvokeAsync<List<ResponseListTool>>(Consts.RPC.RunListTool, data, cancellationToken);
@@ -96,7 +96,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"No connected clients.")
+                    return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
                 var result = await client.InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunResourceContent, data, cancellationToken);
@@ -123,7 +123,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"No connected clients.")
+                    return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
                 var result = await client.InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunListResources, data, cancellationToken);
@@ -150,7 +150,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"No connected clients.")
+                    return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
                 var result = await client.InvokeAsync<List<ResponseResourceTemplate>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
