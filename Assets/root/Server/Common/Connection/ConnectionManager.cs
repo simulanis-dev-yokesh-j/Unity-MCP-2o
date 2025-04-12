@@ -20,6 +20,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         HubConnectionLogger? hubConnectionLogger;
         HubConnectionObservable? hubConnectionObservable;
         bool continueToReconnect = false;
+        CancellationTokenSource? internalCts;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
         public ReadOnlyReactiveProperty<HubConnection> HubConnection => _hubConnection.ToReadOnlyReactiveProperty();
@@ -79,7 +80,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
             continueToReconnect = true;
-            return InternalConnect(cancellationToken);
+
+            // Dispose the previous internal CancellationTokenSource if it exists
+            internalCts?.Cancel();
+            internalCts?.Dispose();
+
+            // Create a new internal CancellationTokenSource and link it to the external token
+            internalCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            return InternalConnect(internalCts.Token);
         }
 
         async Task<bool> InternalConnect(CancellationToken cancellationToken = default)
@@ -164,16 +173,33 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
             continueToReconnect = false;
+
+            // Cancel the internal token to stop any ongoing connection attempts
+            internalCts?.Cancel();
+
             if (_hubConnection.Value == null)
                 return Task.CompletedTask;
 
-            return _hubConnection.Value.StopAsync(cancellationToken);
+            return _hubConnection.Value.StopAsync(cancellationToken).ContinueWith(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    _logger.LogInformation("HubConnection stopped successfully.");
+                }
+                else if (task.Exception != null)
+                {
+                    _logger.LogError("Error while stopping HubConnection: {0}\n{1}", task.Exception.Message, task.Exception.StackTrace);
+                }
+            });
         }
 
         public void Dispose()
         {
             hubConnectionLogger?.Dispose();
             hubConnectionObservable?.Dispose();
+
+            internalCts?.Cancel();
+            internalCts?.Dispose();
 
             if (_hubConnection.Value == null)
                 return;
