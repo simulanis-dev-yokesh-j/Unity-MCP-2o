@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (request.Params.Arguments == null)
                 return new CallToolResponse().SetError("[Error] Request.Params.Arguments is null");
 
-            var connector = McpApp.Instance;
+            var connector = McpPlugin.Instance;
             if (connector == null)
                 return new CallToolResponse().SetError("[Error] Connector is null");
 

@@ -41,7 +41,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             _services.AddSingleton<IConnectionManager, ConnectionManager>();
             _services.AddSingleton<IRpcRouter, RpcRouter>();
-            _services.AddSingleton<IMcpApp, McpApp>();
+            _services.AddSingleton<IMcpPlugin, McpPlugin>();
 
             _services.AddSingleton(_tools);
             _services.AddSingleton(_resources);
@@ -98,9 +98,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return this;
         }
 
-        public IMcpApp Build()
+        public IMcpPlugin Build()
         {
-            return _services.BuildServiceProvider().GetRequiredService<IMcpApp>();
+            return _services.BuildServiceProvider().GetRequiredService<IMcpPlugin>();
         }
     }
 }

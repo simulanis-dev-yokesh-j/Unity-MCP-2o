@@ -14,19 +14,19 @@ namespace com.IvanMurzak.Unity.MCP.Common
         protected readonly ILogger<LocalServer> _logger;
         protected readonly IConnectionManager _connectionManager;
 
-        readonly Subject<Unit> _onRespondCallTool = new Subject<Unit>();
+        readonly Subject<Unit> _onRespondCallTool = new();
         public Observable<Unit> OnRespondCallTool => _onRespondCallTool;
 
-        readonly Subject<Unit> _onRespondListTool = new Subject<Unit>();
+        readonly Subject<Unit> _onRespondListTool = new();
         public Observable<Unit> OnRespondListTool => _onRespondListTool;
 
-        readonly Subject<Unit> _onRespondResourceContent = new Subject<Unit>();
+        readonly Subject<Unit> _onRespondResourceContent = new();
         public Observable<Unit> OnRespondResourceContent => _onRespondResourceContent;
 
-        readonly Subject<Unit> _onRespondListResources = new Subject<Unit>();
+        readonly Subject<Unit> _onRespondListResources = new();
         public Observable<Unit> OnRespondListResources => _onRespondListResources;
 
-        readonly Subject<Unit> _onRespondResourceTemplates = new Subject<Unit>();
+        readonly Subject<Unit> _onRespondResourceTemplates = new();
         public Observable<Unit> OnRespondResourceTemplates => _onRespondResourceTemplates;
 
         public LocalServer(ILogger<LocalServer> logger, IConnectionManager connectionManager)

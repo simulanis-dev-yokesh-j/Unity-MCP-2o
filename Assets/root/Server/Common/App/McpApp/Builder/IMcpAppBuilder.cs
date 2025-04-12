@@ -12,6 +12,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         IMcpAppBuilder AddResource(IRunResource resourceParams);
         IMcpAppBuilder AddLogging(Action<ILoggingBuilder> loggingBuilder);
         IMcpAppBuilder WithConfig(Action<ConnectorConfig> config);
-        IMcpApp Build();
+        IMcpPlugin Build();
     }
 }

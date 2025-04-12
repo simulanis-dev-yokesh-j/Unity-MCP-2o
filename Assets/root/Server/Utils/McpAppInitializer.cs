@@ -9,14 +9,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
 {
     public class McpAppInitializer : IHostedService
     {
-        readonly IMcpApp _mcpApp;
+        readonly IMcpPlugin _mcpApp;
         readonly ILocalServer _localServer;
 
         public ILocalServer LocalServer => _localServer;
 
         public static McpAppInitializer? Instance { get; private set; }
 
-        public McpAppInitializer(IMcpApp mcpApp, ILocalServer localServer)
+        public McpAppInitializer(IMcpPlugin mcpApp, ILocalServer localServer)
         {
             _mcpApp = mcpApp ?? throw new ArgumentNullException(nameof(mcpApp));
             _localServer = localServer ?? throw new ArgumentNullException(nameof(localServer));
@@ -36,7 +36,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
         public Task StopAsync(CancellationToken cancellationToken)
         {
             Instance = null;
-            McpApp.StaticDispose();
+            McpPlugin.StaticDispose();
             return Task.CompletedTask;
         }
     }

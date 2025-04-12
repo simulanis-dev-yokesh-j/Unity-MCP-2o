@@ -1,12 +1,12 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public partial class McpApp : IMcpApp
+    public partial class McpPlugin : IMcpPlugin
     {
-        static McpApp? instance;
+        static McpPlugin? instance;
 
         public static bool HasInstance => instance != null;
-        public static IMcpApp? Instance => instance;
+        public static IMcpPlugin? Instance => instance;
         // public static IConnectorServer? Server => instance;
         // public static IConnectorApp? App => instance;
 

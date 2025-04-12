@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
     {
         public static async Task<ListResourcesResult> ListResources(RequestContext<ListResourcesRequestParams> request, CancellationToken cancellationToken)
         {
-            var connector = McpApp.Instance;
+            var connector = McpPlugin.Instance;
             if (connector == null)
                 return new ListResourcesResult().SetError("[Error] Connector is null");
 

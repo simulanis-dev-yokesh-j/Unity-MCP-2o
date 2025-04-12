@@ -7,11 +7,11 @@ using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public partial class McpApp : IMcpApp
+    public partial class McpPlugin : IMcpPlugin
     {
         public const string Version = "0.1.0";
 
-        readonly ILogger<McpApp> _logger;
+        readonly ILogger<McpPlugin> _logger;
         readonly IRpcRouter _rpcRouter;
         readonly Func<Task<HubConnection>> _hubConnectionBuilder;
 
@@ -23,7 +23,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
+        public McpPlugin(ILogger<McpPlugin> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
@@ -82,6 +82,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
             hubConnection.DisposeAsync().AsTask().Wait();
             instance = null;
         }
-        ~McpApp() => Dispose();
+        ~McpPlugin() => Dispose();
     }
 }

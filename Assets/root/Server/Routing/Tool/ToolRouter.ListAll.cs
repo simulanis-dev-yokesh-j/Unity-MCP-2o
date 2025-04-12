@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             var logger = LogManager.GetCurrentClassLogger();
             logger.Trace("ListAll called");
 
-            var connector = McpApp.Instance;
+            var connector = McpPlugin.Instance;
             if (connector == null)
                 return new ListToolsResult().SetError("[Error] Connector is null");
 
