@@ -219,8 +219,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (_hubConnection.Value == null)
                 return;
 
-            _hubConnection.Value.StopAsync().Wait();
-            _hubConnection.Value.DisposeAsync().AsTask().Wait();
+            // _hubConnection.Value.StopAsync().Wait();
+            // _hubConnection.Value.DisposeAsync().AsTask().Wait();
+
+            _hubConnection.Value.StopAsync();
+            _hubConnection.Value.DisposeAsync();
         }
 
         ~ConnectionManager() => Dispose();

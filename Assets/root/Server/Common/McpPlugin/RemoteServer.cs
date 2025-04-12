@@ -85,7 +85,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
-
+            _connectionManager.Dispose();
         }
     }
 }
