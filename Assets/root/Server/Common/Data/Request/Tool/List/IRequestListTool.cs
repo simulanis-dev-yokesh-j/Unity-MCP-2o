@@ -3,7 +3,7 @@ using System;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public interface IRequestListTool : IDisposable
+    public interface IRequestListTool : IRequestID, IDisposable
     {
     }
 }

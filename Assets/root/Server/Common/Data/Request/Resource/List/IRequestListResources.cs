@@ -3,7 +3,7 @@ using System;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public interface IRequestListResources : IDisposable
+    public interface IRequestListResources : IRequestID, IDisposable
     {
         public string? Cursor { get; set; }
     }

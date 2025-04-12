@@ -21,7 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (remoteApp == null)
                 return new ListResourcesResult().SetError("[Error] Remote App is null");
 
-            var requestData = new RequestListResources(request?.Params?.Cursor);
+            var requestData = new RequestListResources(cursor: request?.Params?.Cursor);
 
             var response = await remoteApp.RunListResources(requestData, cancellationToken: cancellationToken);
             if (response == null)

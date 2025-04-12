@@ -5,10 +5,9 @@ using System.Text.Json;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public interface IRequestCallTool : IDisposable
+    public interface IRequestCallTool : IRequestID, IDisposable
     {
         string Name { get; set; }
-        // IDictionary<string, object?>? Parameters { get; set; }
         Dictionary<string, JsonElement> Arguments { get; set; }
     }
 }
