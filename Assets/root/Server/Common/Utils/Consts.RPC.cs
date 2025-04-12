@@ -3,6 +3,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public static partial class Consts
     {
+        public static class Hub
+        {
+            public const string LocalServer = "/mcp/local-server";
+            public const string RemoteApp = "/mcp/remote-app";
+        }
         public static partial class RPC
         {
             public const string RunCallTool = "/mcp/run-call-tool";

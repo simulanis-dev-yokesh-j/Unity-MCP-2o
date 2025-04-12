@@ -1,4 +1,5 @@
 using com.IvanMurzak.Unity.MCP.Common;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace com.IvanMurzak.Unity.MCP.Server
@@ -7,6 +8,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
     {
         public static IMcpPluginBuilder WithServerFeatures(this IMcpPluginBuilder builder)
         {
+            builder.Services.AddHostedService<McpServerService>();
             builder.AddMcpRunner();
             builder.AddLocalServer();
             builder.AddRemoteApp();

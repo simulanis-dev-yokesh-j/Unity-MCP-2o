@@ -72,9 +72,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         });
                 });
 
-                // Add the hosted service to initialize the McpApp
-                builder.Services.AddHostedService<McpServerService>();
-
                 await builder.Build().RunAsync();
             }
             catch (Exception ex)

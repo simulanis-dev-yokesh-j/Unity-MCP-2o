@@ -6,11 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class RemoteApp : IRemoteApp
+    public class RemoteApp : Hub, IRemoteApp
     {
         protected readonly ILogger<RemoteApp> _logger;
         protected readonly IConnectionManager _connectionManager;
@@ -150,9 +151,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
             }
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
-
+            base.Dispose();
+            _connectionManager.Dispose();
         }
     }
 }
