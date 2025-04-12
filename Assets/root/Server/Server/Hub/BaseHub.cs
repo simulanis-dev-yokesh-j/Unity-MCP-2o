@@ -23,14 +23,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
         public override Task OnConnectedAsync()
         {
             ConnectedClients.Add(Context.ConnectionId);
-            _logger.LogInformation($"Client connected: {Context.ConnectionId}");
+            _logger.LogInformation($"Client connected: {Context.ConnectionId}, Total connected clients: {ConnectedClients.Count}");
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             ConnectedClients.Remove(Context.ConnectionId);
-            _logger.LogInformation($"Client disconnected: {Context.ConnectionId}");
+            _logger.LogInformation($"Client disconnected: {Context.ConnectionId}, Total connected clients: {ConnectedClients.Count}");
             return base.OnDisconnectedAsync(exception);
         }
 
