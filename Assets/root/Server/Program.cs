@@ -9,6 +9,7 @@ using NLog;
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
@@ -88,13 +89,13 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 app.UseRouting();
                 app.MapHub<LocalServer>(Consts.Hub.LocalServer, options =>
                 {
-                    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+                    options.Transports = HttpTransports.All;
                     options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                     options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                 });
                 app.MapHub<RemoteApp>(Consts.Hub.RemoteApp, options =>
                 {
-                    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+                    options.Transports = HttpTransports.All;
                     options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                     options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                 });

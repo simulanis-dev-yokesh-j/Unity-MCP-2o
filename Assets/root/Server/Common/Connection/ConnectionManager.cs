@@ -98,7 +98,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 var hubConnection = await _hubConnectionBuilder(Endpoint);
                 if (hubConnection == null)
                 {
-                    _logger.LogError("Can't create connection instance. Something may be wrong with Connection Config.");
+                    _logger.LogError("Can't create connection instance. Something may be wrong with Connection Config {0}.", Endpoint);
                     return false;
                 }
 
@@ -113,7 +113,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     .Where(_ => continueToReconnect)
                     .Subscribe(async _ =>
                     {
-                        _logger.LogWarning("Connection closed. Attempting to reconnect...");
+                        _logger.LogWarning("Connection closed. Attempting to reconnect... {0}.", Endpoint);
                         await InternalConnect(cancellationToken);
                     });
             }
@@ -133,7 +133,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     }
                     catch (OperationCanceledException)
                     {
-                        _logger.LogWarning("Connection task was canceled.");
+                        _logger.LogWarning("Connection task was canceled {0}.", Endpoint);
                         return false;
                     }
                 }, cancellationToken);
@@ -144,23 +144,23 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 {
                     if (task.IsCompletedSuccessfully)
                     {
-                        _logger.LogInformation("Connection started successfully.");
+                        _logger.LogInformation("Connection started successfully {0}.", Endpoint);
                         return true;
                     }
 
                     if (task.Exception != null)
                     {
                         foreach (var innerException in task.Exception.InnerExceptions)
-                            _logger.LogError("Failed to start connection: {0}\n{1}", innerException.Message, innerException.StackTrace);
+                            _logger.LogError("Failed to start connection. {0} - {1}\n{2}", Endpoint, innerException.Message, innerException.StackTrace);
                     }
                     else
                     {
-                        _logger.LogError("Failed to start connection: Unknown error.");
+                        _logger.LogError("Failed to start connection: Unknown error {0}.", Endpoint);
                     }
 
                     if (continueToReconnect)
                     {
-                        _logger.LogWarning("Retrying connection...");
+                        _logger.LogWarning("Retrying connection... {0}", Endpoint);
                         await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); // Wait before retrying
                         return await InternalConnect(cancellationToken);
                     }
