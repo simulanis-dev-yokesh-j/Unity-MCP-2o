@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
@@ -12,7 +13,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<McpApp> _logger;
-        readonly Func<Task<HubConnection>> _hubBuilder;
+        readonly IMethodRouter _methodRouter;
+        readonly Func<Task<HubConnection>> _hubConnectionBuilder;
 
         HubConnection? hubConnection;
 
@@ -22,12 +24,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubBuilder, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
+        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IMethodRouter methodRouter, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
 
-            _hubBuilder = hubBuilder ?? throw new ArgumentNullException(nameof(hubBuilder));
+            _hubConnectionBuilder = hubConnectionBuilder ?? throw new ArgumentNullException(nameof(hubConnectionBuilder));
+            _methodRouter = methodRouter ?? throw new ArgumentNullException(nameof(methodRouter));
 
             LocalApp = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
             RemoteApp = app;
@@ -46,14 +49,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (hubConnection == null)
             {
-                hubConnection = await _hubBuilder();
+                hubConnection = await _hubConnectionBuilder();
                 if (hubConnection == null)
                 {
                     _logger.LogError("Can't establish connection with Remote.");
                     return;
                 }
 
-                hubConnection.On<IRequestListTool>(Consts.RCP.RunListTool, message => _logger.LogInformation("List Tool called"));
+                _methodRouter.SetConnection(hubConnection);
             }
 
             if (hubConnection.State == HubConnectionState.Connected ||

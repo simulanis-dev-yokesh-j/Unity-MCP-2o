@@ -34,7 +34,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 : connector.RemoteApp;
 
             if (app == null)
-                return new CallToolResponse().SetError("[Error] Remote App is null");
+                return new CallToolResponse().SetError("[Error] App is null");
 
             var requestData = new RequestCallTool(request.Params.Name, request.Params.Arguments);
 

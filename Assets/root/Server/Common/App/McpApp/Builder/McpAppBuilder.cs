@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
@@ -33,42 +32,35 @@ namespace com.IvanMurzak.Unity.MCP.Common
             //         };
             //         // options.WebSockets.ClientWebSocketOptions.KeepAliveInterval = TimeSpan.FromSeconds(30);
             //     });
-            // _services.AddTransient<IConnectionFactory, HttpConnectionFactory>();
+            // _services.AddSingleton<IConnectionFactory, HttpConnectionFactory>();
             // _services.Add
 
             // _services.AddSingleton(new HubConnectionBuilder()
             //     .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
             //     .WithAutomaticReconnect());
 
-            _services.AddTransient<ILocalApp, LocalApp>();
-            _services.AddTransient<IMcpApp, McpApp>();
+            _services.AddSingleton<IConnectionManager, ConnectionManager>();
+            _services.AddSingleton<IMethodRouter, MethodRouter>();
+            _services.AddSingleton<IMcpApp, McpApp>();
 
             _services.AddSingleton(_tools);
             _services.AddSingleton(_resources);
 
-            // new ReactiveProperty<HubConnection>(null)
-            //     .Subscribe(hubConnection =>
-            //     {
-            //         if (hubConnection == null)
-            //             return;
-
-            //         hubConnection.On<IRequestListTool>(Consts.RCP.RunListTool, message => { });
-            //     });
-
-            _services.AddSingleton<Func<HubConnection>>(() =>
+            Func<Task<HubConnection>> hubConnectionBuilder = () =>
             {
                 var hubConnection = new HubConnectionBuilder()
                     .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
                     .WithAutomaticReconnect()
                     .AddJsonProtocol(options =>
                     {
-                        options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-                        options.PayloadSerializerOptions.DictionaryKeyPolicy = null;
+                        // options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+                        // options.PayloadSerializerOptions.DictionaryKeyPolicy = null;
                     })
                     .Build();
 
-                return hubConnection;
-            });
+                return Task.FromResult(hubConnection);
+            };
+            _services.AddSingleton(hubConnectionBuilder);
         }
 
         public IMcpAppBuilder AddTool(string name, IRunTool runner)
@@ -106,8 +98,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return this;
         }
 
-        public IMcpApp Build() => _services
-            .BuildServiceProvider()
-            .GetRequiredService<IMcpApp>();
+        public IMcpApp Build()
+        {
+            return _services.BuildServiceProvider().GetRequiredService<IMcpApp>();
+        }
     }
 }

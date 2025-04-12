@@ -13,14 +13,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public class LocalApp : ILocalApp
     {
         protected readonly ILogger<LocalApp> _logger;
+        protected readonly IConnectionManager _connectionManager;
         readonly IDictionary<string, IRunTool> _tools;
         readonly IDictionary<string, IRunResource> _resources;
 
-        public LocalApp(ILogger<LocalApp> logger, IDictionary<string, IRunTool> tools, IDictionary<string, IRunResource> resources)
+        public LocalApp(ILogger<LocalApp> logger, IDictionary<string, IRunTool> tools, IDictionary<string, IRunResource> resources, IConnectionManager connectionManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger.LogTrace("Ctor.");
             _tools = tools ?? throw new ArgumentNullException(nameof(tools));
             _resources = resources ?? throw new ArgumentNullException(nameof(resources));
+            _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
 
             if (_logger.IsEnabled(LogLevel.Trace))
             {

@@ -23,6 +23,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
 
             new McpAppBuilder()
+                .WithAppFeatures()
                 .WithConfig(config =>
                 {
                     config.IPAddress = IPAddress.Loopback;
@@ -36,7 +37,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     loggingBuilder.AddProvider(new UnityLoggerProvider());
                     loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 })
-                .AddRemoteServer()
                 .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
                 .WithResourcesFromAssembly(typeof(Startup).Assembly)

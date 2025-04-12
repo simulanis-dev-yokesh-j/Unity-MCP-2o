@@ -8,6 +8,7 @@ using NLog.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using NLog;
 using System;
+using Microsoft.AspNetCore.Builder;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
@@ -20,7 +21,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
             var logger = LogManager.Setup().LoadConfigurationFromFile("NLog.config").GetCurrentClassLogger();
             try
             {
-                var builder = Host.CreateApplicationBuilder(args);
+                var builder = WebApplication.CreateBuilder(args);
+
+                builder.Services.AddSignalR();
+
                 // Configure all logs to go to stderr. This is needed for MCP STDIO server to work properly.
                 builder.Logging.AddConsole(consoleLogOptions => consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace);
 
@@ -52,22 +56,24 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 //         logging.SetMinimumLevel(LogLevel.Information);
                 //     }));
 
-                // Setup Connector ----------------------------------------------------------------
-                builder.Services
-                    .AddMcpApp()
-                    .AddLogging(logging =>
-                    {
-                        logging.AddNLog();
-                        logging.SetMinimumLevel(LogLevel.Information);
-                    })
-                    .WithConfig(config =>
-                    {
-                        config.ConnectionType = McpApp.ConnectionRole.Server;
-                    })
-                    .AddRemoteApp()
-                    .Build() // TODO: Build it right now is not the best idea
-                    .Connect()
-                    .GetAwaiter();
+                // Setup McpApp ----------------------------------------------------------------
+                builder.Services.AddMcpApp(configure =>
+                {
+                    configure
+                        .WithServerFeatures()
+                        .AddLogging(logging =>
+                        {
+                            logging.AddNLog();
+                            logging.SetMinimumLevel(LogLevel.Information);
+                        })
+                        .WithConfig(config =>
+                        {
+                            config.ConnectionType = McpApp.ConnectionRole.Server;
+                        });
+                });
+
+                // Add the hosted service to initialize the McpApp
+                builder.Services.AddHostedService<McpAppInitializer>();
 
                 await builder.Build().RunAsync();
             }
@@ -78,7 +84,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
             }
             finally
             {
-                McpApp.StaticDispose();
                 LogManager.Shutdown();
             }
         }
