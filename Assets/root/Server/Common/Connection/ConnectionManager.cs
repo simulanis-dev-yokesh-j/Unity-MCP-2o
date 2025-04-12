@@ -219,11 +219,27 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (_hubConnection.Value == null)
                 return;
 
-            // _hubConnection.Value.StopAsync().Wait();
-            // _hubConnection.Value.DisposeAsync().AsTask().Wait();
+            // DisposeAsync().AsTask().Wait();
+            // Unity won't reload Domain if we call DisposeAsync().AsTask().Wait() here.
+#pragma warning disable CS4014
+            DisposeAsync();
+#pragma warning restore CS4014
+        }
 
-            _hubConnection.Value.StopAsync();
-            _hubConnection.Value.DisposeAsync();
+        public async ValueTask DisposeAsync()
+        {
+            if (_hubConnection.Value != null)
+            {
+                try
+                {
+                    await _hubConnection.Value.StopAsync();
+                    await _hubConnection.Value.DisposeAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error during async disposal: {0}\n{1}", ex.Message, ex.StackTrace);
+                }
+            }
         }
 
         ~ConnectionManager() => Dispose();
