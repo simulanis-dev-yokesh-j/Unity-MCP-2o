@@ -19,7 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 .Where(x => _logger.IsEnabled(LogLevel.Debug))
                 .Subscribe(ex =>
                 {
-                    _logger.LogTrace("HubConnection closed. Exception: {0}", ex?.Message);
+                    _logger.LogTrace("HubConnection OnClosed. Exception: {0}", ex?.Message);
                     if (ex != null)
                         _logger.LogError("Error in Closed event subscription: {0}", ex.Message);
                 })
@@ -29,7 +29,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 .Where(x => _logger.IsEnabled(LogLevel.Debug))
                 .Subscribe(ex =>
                 {
-                    _logger.LogTrace("HubConnection reconnecting.");
+                    _logger.LogTrace("HubConnection OnReconnecting.");
                     if (ex != null)
                         _logger.LogError("Error during reconnecting: {0}", ex.Message);
                 })
@@ -39,7 +39,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 .Where(x => _logger.IsEnabled(LogLevel.Debug))
                 .Subscribe(connectionId =>
                 {
-                    _logger.LogTrace("HubConnection reconnected with id {0}.", connectionId);
+                    _logger.LogTrace("HubConnection OnReconnected with id {0}.", connectionId);
                 })
                 .AddTo(_disposables);
         }

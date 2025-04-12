@@ -15,7 +15,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         readonly IRpcRouter _rpcRouter;
 
         public IMcpRunner McpRunner { get; private set; }
-        public IRemoteServer? RemoteServer { get; private set; } = null;
+        public IRemoteServer RemoteServer { get; private set; }
         public HubConnectionState ConnectionState => _rpcRouter.ConnectionState;
 
         public McpPlugin(ILogger<McpPlugin> logger, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteServer remoteServer)
@@ -51,7 +51,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
-            RemoteServer?.Dispose();
+            RemoteServer.Dispose();
             _rpcRouter.Dispose();
             instance = null;
         }

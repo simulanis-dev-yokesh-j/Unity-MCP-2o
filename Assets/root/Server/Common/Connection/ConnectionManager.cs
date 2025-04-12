@@ -95,6 +95,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (_hubConnection.Value == null)
             {
+                _logger.LogDebug("Creating new HubConnection instance {0}.", Endpoint);
                 var hubConnection = await _hubConnectionBuilder(Endpoint);
                 if (hubConnection == null)
                 {
@@ -121,8 +122,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (ConnectionState == HubConnectionState.Connected)
                 return true;
 
+
             if (connectionTask != null)
             {
+                _logger.LogDebug("Connection task already exists. Waiting for the completion... {0}.", Endpoint);
                 // Create a new task that waits for the existing task but can be canceled independently
                 return await Task.Run(async () =>
                 {
@@ -139,6 +142,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }, cancellationToken);
             }
 
+            _logger.LogDebug("Connecting to {0}...", Endpoint);
             connectionTask = _hubConnection.Value.StartAsync(cancellationToken)
                 .ContinueWith(async task =>
                 {
@@ -160,8 +164,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                     if (continueToReconnect)
                     {
-                        _logger.LogWarning("Retrying connection... {0}", Endpoint);
+                        _logger.LogWarning("Waiting before retry... {0}", Endpoint);
                         await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); // Wait before retrying
+
+                        // Cancel the current connection task to allow for a new connection attempt
+                        // connectionTask?.Dispose();
+                        connectionTask = null;
+
+                        _logger.LogWarning("Retrying connection... {0}", Endpoint);
                         return await InternalConnect(cancellationToken);
                     }
 
@@ -195,6 +205,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
+            connectionTask?.Dispose();
+            connectionTask = null;
+
             hubConnectionLogger?.Dispose();
             hubConnectionObservable?.Dispose();
 
