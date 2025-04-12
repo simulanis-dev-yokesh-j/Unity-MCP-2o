@@ -21,6 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
             _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
+            _connectionManager.Endpoint = Consts.Hub.DefaultEndpoint + Consts.Hub.LocalServer;
         }
 
         public Task<IResponseData<string>> UpdateResources(CancellationToken cancellationToken = default)

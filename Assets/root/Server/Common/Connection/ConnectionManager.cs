@@ -14,14 +14,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         readonly ILogger<ConnectionManager> _logger;
         readonly ReactiveProperty<HubConnection> _hubConnection = new();
-        readonly Func<Task<HubConnection>> _hubConnectionBuilder;
+        readonly Func<string, Task<HubConnection>> _hubConnectionBuilder;
 
         Task<bool>? _connectionTask;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
         public Observable<HubConnection> HubConnection => _hubConnection;
+        public string Endpoint { get; set; } = string.Empty;
 
-        public ConnectionManager(ILogger<ConnectionManager> logger, Func<Task<HubConnection>> hubConnectionBuilder)
+        public ConnectionManager(ILogger<ConnectionManager> logger, Func<string, Task<HubConnection>> hubConnectionBuilder)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
@@ -76,7 +77,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             if (_hubConnection.Value == null)
             {
-                var hubConnection = await _hubConnectionBuilder();
+                var hubConnection = await _hubConnectionBuilder(Endpoint);
                 if (hubConnection == null)
                 {
                     _logger.LogError("Can't create connection instance. Something may be wrong with Connection Config.");

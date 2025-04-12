@@ -46,10 +46,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services.AddSingleton(_tools);
             _services.AddSingleton(_resources);
 
-            Func<Task<HubConnection>> hubConnectionBuilder = () =>
+            Func<string, Task<HubConnection>> hubConnectionBuilder = (endpoint) =>
             {
                 var hubConnection = new HubConnectionBuilder()
-                    .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
+                    .WithUrl(endpoint)
                     .WithAutomaticReconnect()
                     .AddJsonProtocol(options =>
                     {

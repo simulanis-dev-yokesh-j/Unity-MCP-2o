@@ -29,6 +29,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
             _remoteServer = remoteServer ?? throw new ArgumentNullException(nameof(remoteServer));
 
+            _connectionManager.Endpoint = Consts.Hub.DefaultEndpoint + Consts.Hub.RemoteApp;
+
             _hubConnectionDisposable = connectionManager.HubConnection
                 .Subscribe(SubscribeOnServerEvents);
         }

@@ -5,6 +5,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         public static class Hub
         {
+            public const string DefaultEndpoint = "http://localhost:60606/mcp/";
             public const string LocalServer = "/mcp/local-server";
             public const string RemoteApp = "/mcp/remote-app";
         }

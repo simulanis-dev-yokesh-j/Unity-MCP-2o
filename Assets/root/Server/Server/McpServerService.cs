@@ -31,13 +31,15 @@ namespace com.IvanMurzak.Unity.MCP.Server
             _remoteApp = remoteApp ?? throw new ArgumentNullException(nameof(remoteApp));
             _localServer = localServer ?? throw new ArgumentNullException(nameof(localServer));
 
-            endpoints.MapHub<LocalServer>(Consts.Hub.LocalServer, options =>
+            const string endpoint = Consts.Hub.DefaultEndpoint; // TODO: add reading from configs (json file and env variables)
+
+            endpoints.MapHub<LocalServer>(endpoint + Consts.Hub.LocalServer, options =>
             {
                 options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
                 options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                 options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
             });
-            endpoints.MapHub<RemoteApp>(Consts.Hub.RemoteApp, options =>
+            endpoints.MapHub<RemoteApp>(endpoint + Consts.Hub.RemoteApp, options =>
             {
                 options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
                 options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
