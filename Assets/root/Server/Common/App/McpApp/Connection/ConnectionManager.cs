@@ -19,6 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         Task<bool>? _connectionTask;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
+        public Observable<HubConnection> HubConnection => _hubConnection;
 
         public ConnectionManager(ILogger<ConnectionManager> logger, Func<Task<HubConnection>> hubConnectionBuilder)
         {
