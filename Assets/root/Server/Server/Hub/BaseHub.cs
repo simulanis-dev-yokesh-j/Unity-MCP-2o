@@ -8,17 +8,19 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class BaseHub : Hub
+    public class BaseHub<T> : Hub where T : Hub
     {
         // Thread-safe collection to store connected clients, grouped by hub type
         protected static readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, bool>> ConnectedClients = new();
 
         protected readonly ILogger _logger;
+        protected readonly IHubContext<T> _hubContext;
 
-        protected BaseHub(ILogger logger)
+        protected BaseHub(ILogger logger, IHubContext<T> hubContext)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
+            _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
         }
 
         public override Task OnConnectedAsync()
@@ -62,7 +64,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connectionId == null)
                 return null;
 
-            var client = Clients?.Client(connectionId);
+            var client = _hubContext.Clients.Client(connectionId);
             if (client == null)
             {
                 _logger.LogDebug($"Client {connectionId} is not available. Removing from connected clients.");

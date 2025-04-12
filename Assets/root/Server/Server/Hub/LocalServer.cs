@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,7 @@ using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class LocalServer : BaseHub, ILocalServer
+    public class LocalServer : BaseHub<LocalServer>, ILocalServer
     {
         readonly Subject<Unit> _onRespondCallTool = new();
         public Observable<Unit> OnRespondCallTool => _onRespondCallTool;
@@ -28,7 +27,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
         readonly Subject<Unit> _onRespondResourceTemplates = new();
         public Observable<Unit> OnRespondResourceTemplates => _onRespondResourceTemplates;
 
-        public LocalServer(ILogger<LocalServer> logger) : base(logger)
+        public LocalServer(ILogger<LocalServer> logger, IHubContext<LocalServer> hubContext) : base(logger, hubContext)
         {
         }
 

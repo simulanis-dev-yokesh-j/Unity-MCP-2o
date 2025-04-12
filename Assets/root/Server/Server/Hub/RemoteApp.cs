@@ -11,9 +11,10 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class RemoteApp : BaseHub, IRemoteApp
+    public class RemoteApp : BaseHub<RemoteApp>, IRemoteApp
     {
-        public RemoteApp(ILogger<RemoteApp> logger) : base(logger)
+
+        public RemoteApp(ILogger<RemoteApp> logger, IHubContext<RemoteApp> hubContext) : base(logger, hubContext)
         {
         }
 
