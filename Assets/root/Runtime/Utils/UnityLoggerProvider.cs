@@ -24,7 +24,19 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             if (formatter == null) throw new ArgumentNullException(nameof(formatter));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            var message = $"{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}{_categoryName}{Consts.Log.Color.CategoryEnd} {Consts.Log.Color.LevelStart}[{logLevel}]{Consts.Log.Color.LevelEnd} {formatter(state, exception)}";
+            // Map LogLevel to short names
+            string logLevelShort = logLevel switch
+            {
+                LogLevel.Critical => "crit",
+                LogLevel.Error => "fail",
+                LogLevel.Warning => "warn",
+                LogLevel.Information => "info",
+                LogLevel.Debug => "dbug",
+                LogLevel.Trace => "trce",
+                _ => "none"
+            };
+
+            var message = $"{Consts.Log.Color.LevelStart}[{logLevelShort}]{Consts.Log.Color.LevelEnd}: {Consts.Log.Tag} {Consts.Log.Color.CategoryStart}{_categoryName}{Consts.Log.Color.CategoryEnd} {formatter(state, exception)}";
             switch (logLevel)
             {
                 case LogLevel.Critical:
