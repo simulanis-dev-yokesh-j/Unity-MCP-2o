@@ -27,16 +27,16 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // Map LogLevel to short names
             string logLevelShort = logLevel switch
             {
-                LogLevel.Critical => "crit",
-                LogLevel.Error => "fail",
-                LogLevel.Warning => "warn",
-                LogLevel.Information => "info",
-                LogLevel.Debug => "dbug",
-                LogLevel.Trace => "trce",
-                _ => "none"
+                LogLevel.Critical => Consts.Log.Crit,
+                LogLevel.Error => Consts.Log.Fail,
+                LogLevel.Warning => Consts.Log.Warn,
+                LogLevel.Information => Consts.Log.Info,
+                LogLevel.Debug => Consts.Log.Dbug,
+                LogLevel.Trace => Consts.Log.Trce,
+                _ => "none: "
             };
 
-            var message = $"{Consts.Log.Color.LevelStart}[{logLevelShort}]{Consts.Log.Color.LevelEnd}: {Consts.Log.Tag} {Consts.Log.Color.CategoryStart}{_categoryName}{Consts.Log.Color.CategoryEnd} {formatter(state, exception)}";
+            var message = $"{Consts.Log.Color.LevelStart}{logLevelShort}{Consts.Log.Color.LevelEnd}{Consts.Log.Tag} {Consts.Log.Color.CategoryStart}{_categoryName}{Consts.Log.Color.CategoryEnd} {formatter(state, exception)}";
             switch (logLevel)
             {
                 case LogLevel.Critical:

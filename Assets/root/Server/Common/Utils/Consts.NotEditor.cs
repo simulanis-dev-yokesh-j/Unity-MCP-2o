@@ -6,8 +6,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         public static partial class Log
         {
-
             public const string Tag = "[AI]";
+
+            public const string Trce = "trce: ";
+            public const string Dbug = "dbug: ";
+            public const string Info = "info: ";
+            public const string Warn = "warn: ";
+            public const string Fail = "fail: ";
+            public const string Crit = "crit: ";
+
             public static partial class Color
             {
                 public const string TagStart = "";
