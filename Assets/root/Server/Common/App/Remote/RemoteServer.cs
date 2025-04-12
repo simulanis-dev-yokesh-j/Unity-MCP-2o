@@ -61,11 +61,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return _connectionManager.InvokeAsync(Consts.RPC.ResponseListResourceTemplates, data, cancellationToken);
         }
 
-        public void Dispose()
-        {
-
-        }
-
         public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("Connect.");
@@ -76,6 +71,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             _logger.LogTrace("Connect.");
             return _connectionManager.Disconnect(cancellationToken);
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }
