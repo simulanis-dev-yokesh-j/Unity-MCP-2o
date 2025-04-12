@@ -18,6 +18,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         Task<bool>? connectionTask;
         HubConnectionLogger? hubConnectionLogger;
+        HubConnectionObservable? hubConnectionObservable;
         bool continueToReconnect = false;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
@@ -80,6 +81,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             continueToReconnect = true;
             return InternalConnect(cancellationToken);
         }
+
         async Task<bool> InternalConnect(CancellationToken cancellationToken = default)
         {
             if (_hubConnection.Value == null)
@@ -92,8 +94,19 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }
 
                 _hubConnection.Value = hubConnection;
+
                 hubConnectionLogger?.Dispose();
                 hubConnectionLogger = new(_logger, hubConnection);
+
+                hubConnectionObservable?.Dispose();
+                hubConnectionObservable = new(hubConnection);
+                hubConnectionObservable.Closed
+                    .Where(_ => continueToReconnect)
+                    .Subscribe(async _ =>
+                    {
+                        _logger.LogWarning("Connection closed. Attempting to reconnect...");
+                        await InternalConnect(cancellationToken);
+                    });
             }
 
             if (ConnectionState == HubConnectionState.Connected)
@@ -141,6 +154,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public void Dispose()
         {
             hubConnectionLogger?.Dispose();
+            hubConnectionObservable?.Dispose();
 
             if (_hubConnection.Value == null)
                 return;
