@@ -75,12 +75,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
                 // TODO: add reading from configs (json file and env variables)
                 // "http://localhost:60606");
-                builder.WebHost.UseUrls(Consts.Hub.DefaultEndpoint);
-                builder.WebHost.UseKestrel();
-                // builder.WebHost.UseKestrel(options =>
-                // {
-                //     options.ListenAnyIP(60606); // TODO: add reading from configs (json file and env variables)
-                // });
+                // builder.WebHost.UseUrls(Consts.Hub.DefaultEndpoint);
+                builder.WebHost.UseKestrel(options =>
+                {
+                    options.ListenLocalhost(60606); // Bind to localhost only on port 60606
+                });
 
                 var app = builder.Build();
 
