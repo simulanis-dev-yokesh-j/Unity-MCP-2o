@@ -2,16 +2,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IConnectionManager : IDisposable
+    public interface IConnectionManager : IConnection, IDisposable
     {
-        HubConnectionState GetStatus { get; }
         Task InvokeAsync<TInput>(string methodName, TInput input, CancellationToken cancellationToken = default);
         Task<TResult> InvokeAsync<TInput, TResult>(string methodName, TInput input, CancellationToken cancellationToken = default);
-        Task<bool> Connect(CancellationToken cancellationToken = default);
-        void Disconnect();
     }
 }

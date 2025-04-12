@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
@@ -12,6 +13,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         protected readonly ILogger<RemoteServer> _logger;
         protected readonly IConnectionManager _connectionManager;
+
+        public HubConnectionState ConnectionState => throw new NotImplementedException();
 
         public RemoteServer(ILogger<RemoteServer> logger, IConnectionManager connectionManager)
         {
@@ -61,6 +64,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public void Dispose()
         {
 
+        }
+
+        public Task<bool> Connect(CancellationToken cancellationToken = default)
+        {
+            _logger.LogTrace("Connect.");
+            return _connectionManager.Connect(cancellationToken);
+        }
+
+        public Task Disconnect(CancellationToken cancellationToken = default)
+        {
+            _logger.LogTrace("Connect.");
+            return _connectionManager.Disconnect(cancellationToken);
         }
     }
 }

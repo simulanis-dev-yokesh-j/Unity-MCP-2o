@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
@@ -13,21 +14,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         readonly ILogger<McpPlugin> _logger;
         readonly IRpcRouter _rpcRouter;
-        readonly Func<Task<HubConnection>> _hubConnectionBuilder;
-
-        HubConnection? hubConnection;
 
         public IMcpRunner McpRunner { get; private set; }
         public IRemoteApp? RemoteApp { get; private set; } = null;
         public IRemoteServer? RemoteServer { get; private set; } = null;
-        public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
+        public HubConnectionState ConnectionState => _rpcRouter.ConnectionState;
 
-        public McpPlugin(ILogger<McpPlugin> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
+        public McpPlugin(ILogger<McpPlugin> logger, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
 
-            _hubConnectionBuilder = hubConnectionBuilder ?? throw new ArgumentNullException(nameof(hubConnectionBuilder));
             _rpcRouter = rpcRouter ?? throw new ArgumentNullException(nameof(rpcRouter));
 
             McpRunner = mcpRunner ?? throw new ArgumentNullException(nameof(mcpRunner));
@@ -43,42 +40,22 @@ namespace com.IvanMurzak.Unity.MCP.Common
             instance = this;
         }
 
-        public async Task Connect()
+        public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
-            if (hubConnection == null)
-            {
-                hubConnection = await _hubConnectionBuilder();
-                if (hubConnection == null)
-                {
-                    _logger.LogError("Can't establish connection with Remote.");
-                    return;
-                }
-
-                _rpcRouter.SetConnection(hubConnection);
-            }
-
-            if (hubConnection.State == HubConnectionState.Connected ||
-                hubConnection.State == HubConnectionState.Reconnecting)
-                return;
-
-            await hubConnection.StartAsync();
+            RemoteServer?.Connect(cancellationToken);
+            return _rpcRouter.Connect(cancellationToken);
         }
 
-        public void Disconnect()
+        public Task Disconnect(CancellationToken cancellationToken = default)
         {
-            if (hubConnection == null)
-                return;
-
-            hubConnection.StopAsync().Wait();
+            RemoteServer?.Disconnect(cancellationToken);
+            return _rpcRouter.Disconnect(cancellationToken);
         }
 
         public void Dispose()
         {
-            if (hubConnection == null)
-                return;
-
-            hubConnection.StopAsync().Wait();
-            hubConnection.DisposeAsync().AsTask().Wait();
+            RemoteServer?.Dispose();
+            _rpcRouter.Dispose();
             instance = null;
         }
         ~McpPlugin() => Dispose();

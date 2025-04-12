@@ -2,7 +2,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using R3;
@@ -19,7 +18,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         Task<bool>? _connectionTask;
 
-        public HubConnectionState GetStatus => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
+        public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
 
         public ConnectionManager(ILogger<ConnectionManager> logger, Func<Task<HubConnection>> hubConnectionBuilder)
         {
@@ -31,10 +30,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public async Task InvokeAsync<TInput>(string methodName, TInput input, CancellationToken cancellationToken = default)
         {
-            if (GetStatus != HubConnectionState.Connected)
+            if (ConnectionState != HubConnectionState.Connected)
             {
                 await Connect(cancellationToken);
-                if (GetStatus != HubConnectionState.Connected)
+                if (ConnectionState != HubConnectionState.Connected)
                 {
                     _logger.LogError("Can't establish connection with Remote.");
                     return;
@@ -52,10 +51,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public async Task<TResult> InvokeAsync<TInput, TResult>(string methodName, TInput input, CancellationToken cancellationToken = default)
         {
-            if (GetStatus != HubConnectionState.Connected)
+            if (ConnectionState != HubConnectionState.Connected)
             {
                 await Connect(cancellationToken);
-                if (GetStatus != HubConnectionState.Connected)
+                if (ConnectionState != HubConnectionState.Connected)
                 {
                     _logger.LogError("Can't establish connection with Remote.");
                     return default!;
@@ -83,12 +82,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     return false;
                 }
 
-                hubConnection.On<IRequestListTool>(Consts.RPC.RunListTool, message => _logger.LogInformation("List Tool called"));
-
                 _hubConnection.Value = hubConnection;
             }
 
-            if (GetStatus == HubConnectionState.Connected)
+            if (ConnectionState == HubConnectionState.Connected)
                 return true;
 
             if (_connectionTask != null)
@@ -99,7 +96,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     try
                     {
                         await _connectionTask; // Wait for the existing connection task
-                        return GetStatus == HubConnectionState.Connected;
+                        return ConnectionState == HubConnectionState.Connected;
                     }
                     catch (OperationCanceledException)
                     {
@@ -121,12 +118,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return await _connectionTask;
         }
 
-        public void Disconnect()
+        public Task Disconnect(CancellationToken cancellationToken = default)
         {
             if (_hubConnection.Value == null)
-                return;
+                return Task.CompletedTask;
 
-            _hubConnection.Value.StopAsync().Wait();
+            return _hubConnection.Value.StopAsync(cancellationToken);
         }
 
         public void Dispose()

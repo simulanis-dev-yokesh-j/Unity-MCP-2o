@@ -1,6 +1,8 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
@@ -12,19 +14,34 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         readonly ILogger<RpcRouter> _logger;
         readonly IMcpRunner _localApp;
+        readonly IConnectionManager _connectionManager;
         readonly ILocalServer? _localServer;
         readonly IRemoteServer? _remoteServer;
         readonly CompositeDisposable _disposables = new();
 
-        public RpcRouter(ILogger<RpcRouter> logger, IMcpRunner localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
+        public HubConnectionState ConnectionState => _connectionManager.ConnectionState;
+
+        public RpcRouter(ILogger<RpcRouter> logger, IConnectionManager connectionManager, IMcpRunner localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
             _localApp = localApp ?? throw new ArgumentNullException(nameof(localApp));
+            _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
             _remoteServer = remoteServer;
             _localServer = localServer;
             if (localServer == null && remoteServer == null)
                 throw new ArgumentNullException(nameof(remoteServer), "Either local or remote server must be set.");
+        }
+
+        public Task<bool> Connect(CancellationToken cancellationToken = default)
+        {
+            _logger.LogTrace("Connect.");
+            return _connectionManager.Connect(cancellationToken);
+        }
+        public Task Disconnect(CancellationToken cancellationToken = default)
+        {
+            _logger.LogTrace("Disconnect.");
+            return _connectionManager.Disconnect(cancellationToken);
         }
 
         public void SetConnection(HubConnection hubConnection)

@@ -8,14 +8,17 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IMcpPlugin : IDisposable
+    public interface IMcpPlugin : IConnection, IDisposable
     {
-        HubConnectionState GetStatus { get; }
         IRemoteServer? RemoteServer { get; }
         IRemoteApp? RemoteApp { get; }
         IMcpRunner McpRunner { get; }
-        Task Connect();
-        void Disconnect();
+    }
+    public interface IConnection
+    {
+        HubConnectionState ConnectionState { get; }
+        Task<bool> Connect(CancellationToken cancellationToken = default);
+        Task Disconnect(CancellationToken cancellationToken = default);
     }
     public interface IMcpRunner : IToolRunner, IResourceRunner, IDisposable
     {
@@ -28,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public interface IRemoteApp : IToolRunner, IResourceRunner, IDisposable
     {
     }
-    public interface IRemoteServer : IToolResponseSender, IResourceResponseSender, IDisposable
+    public interface IRemoteServer : IConnection, IToolResponseSender, IResourceResponseSender, IDisposable
     {
         Task UpdateTools(CancellationToken cancellationToken = default);
         Task UpdateResources(CancellationToken cancellationToken = default);
