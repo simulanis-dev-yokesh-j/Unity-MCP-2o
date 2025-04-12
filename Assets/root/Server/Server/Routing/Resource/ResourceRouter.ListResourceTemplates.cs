@@ -14,11 +14,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
             var mcpServerService = McpServerService.Instance;
             if (mcpServerService == null)
-                return new ListResourceTemplatesResult().SetError("[Error] Connector is null");
+                return new ListResourceTemplatesResult().SetError("[Error] 'McpServerService' is null");
 
             var remoteApp = mcpServerService.RemoteApp;
             if (remoteApp == null)
-                return new ListResourceTemplatesResult().SetError("[Error] Remote App is null");
+                return new ListResourceTemplatesResult().SetError("[Error] 'RemoteApp' is null");
 
             var requestData = new RequestListResourceTemplates();
 

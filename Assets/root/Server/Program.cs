@@ -72,8 +72,9 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         });
                 });
 
-
-                builder.WebHost.UseUrls("http://localhost:60606"); // TODO: add reading from configs (json file and env variables)
+                // TODO: add reading from configs (json file and env variables)
+                // "http://localhost:60606");
+                builder.WebHost.UseUrls(Consts.Hub.DefaultEndpoint);
                 // builder.WebHost.UseKestrel(options =>
                 // {
                 //     options.ListenAnyIP(60606); // TODO: add reading from configs (json file and env variables)
@@ -97,6 +98,20 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                     options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
                 });
+
+                if (logger.IsEnabled(NLog.LogLevel.Debug))
+                {
+                    var endpointDataSource = app.Services.GetRequiredService<Microsoft.AspNetCore.Routing.EndpointDataSource>();
+                    foreach (var endpoint in endpointDataSource.Endpoints)
+                        logger.Info($"Configured endpoint: {endpoint.DisplayName}");
+
+                    app.Use(async (context, next) =>
+                    {
+                        logger.Debug($"Request: {context.Request.Method} {context.Request.Path}");
+                        await next.Invoke();
+                        logger.Debug($"Response: {context.Response.StatusCode}");
+                    });
+                }
 
                 await app.RunAsync();
             }

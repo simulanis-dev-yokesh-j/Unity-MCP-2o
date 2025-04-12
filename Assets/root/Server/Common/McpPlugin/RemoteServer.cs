@@ -73,13 +73,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
-            _logger.LogTrace("Connect.");
+            _logger.LogTrace("Connecting... (to LocalServer: {0}).", _connectionManager.Endpoint);
             return _connectionManager.Connect(cancellationToken);
         }
 
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
-            _logger.LogTrace("Connect.");
+            _logger.LogTrace("Disconnecting... (from LocalServer: {0}).", _connectionManager.Endpoint);
             return _connectionManager.Disconnect(cancellationToken);
         }
 

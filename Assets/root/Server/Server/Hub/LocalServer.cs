@@ -11,11 +11,8 @@ using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class LocalServer : Hub, ILocalServer
+    public class LocalServer : BaseHub, ILocalServer
     {
-        protected readonly ILogger<LocalServer> _logger;
-        protected readonly IConnectionManager _connectionManager;
-
         readonly Subject<Unit> _onRespondCallTool = new();
         public Observable<Unit> OnRespondCallTool => _onRespondCallTool;
 
@@ -31,11 +28,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
         readonly Subject<Unit> _onRespondResourceTemplates = new();
         public Observable<Unit> OnRespondResourceTemplates => _onRespondResourceTemplates;
 
-        public LocalServer(ILogger<LocalServer> logger, IConnectionManager connectionManager)
+        public LocalServer(ILogger<LocalServer> logger) : base(logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _logger.LogTrace("Ctor.");
-            _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
         }
 
         public Task RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default)

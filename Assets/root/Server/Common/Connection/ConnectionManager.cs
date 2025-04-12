@@ -16,7 +16,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
         readonly ReactiveProperty<HubConnection> _hubConnection = new();
         readonly Func<string, Task<HubConnection>> _hubConnectionBuilder;
 
-        Task<bool>? _connectionTask;
+        Task<bool>? connectionTask;
+        HubConnectionLogger? hubConnectionLogger;
 
         public HubConnectionState ConnectionState => _hubConnection.Value?.State ?? HubConnectionState.Disconnected;
         public Observable<HubConnection> HubConnection => _hubConnection;
@@ -85,19 +86,21 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }
 
                 _hubConnection.Value = hubConnection;
+                hubConnectionLogger?.Dispose();
+                hubConnectionLogger = new(_logger, _hubConnection.Value);
             }
 
             if (ConnectionState == HubConnectionState.Connected)
                 return true;
 
-            if (_connectionTask != null)
+            if (connectionTask != null)
             {
                 // Create a new task that waits for the existing task but can be canceled independently
                 return await Task.Run(async () =>
                 {
                     try
                     {
-                        await _connectionTask; // Wait for the existing connection task
+                        await connectionTask; // Wait for the existing connection task
                         return ConnectionState == HubConnectionState.Connected;
                     }
                     catch (OperationCanceledException)
@@ -108,7 +111,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }, cancellationToken);
             }
 
-            _connectionTask = _hubConnection.Value.StartAsync(cancellationToken)
+            connectionTask = _hubConnection.Value.StartAsync(cancellationToken)
                 .ContinueWith(task =>
                 {
                     if (task.IsCompletedSuccessfully)
@@ -117,7 +120,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     _logger.LogWarning("Failed to start connection: {0}", task.Exception?.Message);
                     return false;
                 });
-            return await _connectionTask;
+            return await connectionTask;
         }
 
         public Task Disconnect(CancellationToken cancellationToken = default)
@@ -133,6 +136,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (_hubConnection.Value == null)
                 return;
 
+            hubConnectionLogger?.Dispose();
             _hubConnection.Value.StopAsync().Wait();
             _hubConnection.Value.DisposeAsync().AsTask().Wait();
         }

@@ -37,17 +37,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
-            _logger.LogTrace("Connect.");
+            _logger.LogTrace("Connecting... (to RemoteApp: {0}).", _connectionManager.Endpoint);
             return _connectionManager.Connect(cancellationToken);
         }
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
-            _logger.LogTrace("Disconnect.");
+            _logger.LogTrace("Disconnecting... (to RemoteApp: {0}).", _connectionManager.Endpoint);
             return _connectionManager.Disconnect(cancellationToken);
         }
 
         void SubscribeOnServerEvents(HubConnection hubConnection)
         {
+            _logger.LogTrace("SubscribeOnServerEvents.");
             _serverEventsDisposables.Clear();
 
             hubConnection.On<IRequestCallTool>(Consts.RPC.RunCallTool, async message =>

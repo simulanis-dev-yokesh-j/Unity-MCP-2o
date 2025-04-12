@@ -27,18 +27,18 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
             var mcpServerService = McpServerService.Instance;
             if (mcpServerService == null)
-                return new CallToolResponse().SetError("[Error] Connector is null");
+                return new CallToolResponse().SetError("[Error] 'McpServerService' is null");
 
-            var app = mcpServerService.McpRunner.HasTool(request.Params.Name)
+            var toolRunner = mcpServerService.McpRunner.HasTool(request.Params.Name)
                 ? mcpServerService.McpRunner as IToolRunner
                 : mcpServerService.RemoteApp;
 
-            if (app == null)
-                return new CallToolResponse().SetError("[Error] App is null");
+            if (toolRunner == null)
+                return new CallToolResponse().SetError("[Error] 'ToolRunner' is null");
 
             var requestData = new RequestCallTool(request.Params.Name, request.Params.Arguments);
 
-            var response = await app.RunCallTool(requestData, cancellationToken);
+            var response = await toolRunner.RunCallTool(requestData, cancellationToken);
             if (response == null)
                 return new CallToolResponse().SetError("[Error] Resource is null");
 
