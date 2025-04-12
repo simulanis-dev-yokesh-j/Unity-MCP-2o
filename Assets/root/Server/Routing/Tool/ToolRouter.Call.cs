@@ -29,8 +29,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (connector == null)
                 return new CallToolResponse().SetError("[Error] Connector is null");
 
-            var app = connector.LocalApp.HasTool(request.Params.Name)
-                ? connector.LocalApp as IToolRunner
+            var app = connector.McpRunner.HasTool(request.Params.Name)
+                ? connector.McpRunner as IToolRunner
                 : connector.RemoteApp;
 
             if (app == null)

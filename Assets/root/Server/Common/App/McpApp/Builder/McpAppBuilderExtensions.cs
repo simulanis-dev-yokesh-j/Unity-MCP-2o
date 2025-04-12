@@ -42,7 +42,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public static IMcpAppBuilder AddLocalApp(this IMcpAppBuilder builder)
         {
-            builder.Services.TryAddSingleton<ILocalApp, LocalApp>();
+            builder.Services.TryAddSingleton<IMcpRunner, McpRunner>();
             return builder;
         }
         public static IMcpAppBuilder AddLocalServer(this IMcpAppBuilder builder)

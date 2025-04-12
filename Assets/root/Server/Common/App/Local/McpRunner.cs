@@ -10,14 +10,14 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public class LocalApp : ILocalApp
+    public class McpRunner : IMcpRunner
     {
-        protected readonly ILogger<LocalApp> _logger;
+        protected readonly ILogger<McpRunner> _logger;
         protected readonly IConnectionManager _connectionManager;
         readonly IDictionary<string, IRunTool> _tools;
         readonly IDictionary<string, IRunResource> _resources;
 
-        public LocalApp(ILogger<LocalApp> logger, IDictionary<string, IRunTool> tools, IDictionary<string, IRunResource> resources, IConnectionManager connectionManager)
+        public McpRunner(ILogger<McpRunner> logger, IDictionary<string, IRunTool> tools, IDictionary<string, IRunResource> resources, IConnectionManager connectionManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");

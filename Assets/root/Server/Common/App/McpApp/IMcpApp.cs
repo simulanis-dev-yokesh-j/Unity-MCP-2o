@@ -13,11 +13,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         HubConnectionState GetStatus { get; }
         IRemoteServer? RemoteServer { get; }
         IRemoteApp? RemoteApp { get; }
-        ILocalApp LocalApp { get; }
+        IMcpRunner McpRunner { get; }
         Task Connect();
         void Disconnect();
     }
-    public interface ILocalApp : IToolRunner, IResourceRunner, IDisposable
+    public interface IMcpRunner : IToolRunner, IResourceRunner, IDisposable
     {
         bool HasTool(string name);
         bool HasResource(string name);

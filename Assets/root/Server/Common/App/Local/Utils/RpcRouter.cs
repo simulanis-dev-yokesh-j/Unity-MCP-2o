@@ -11,12 +11,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public class RpcRouter : IRpcRouter
     {
         readonly ILogger<RpcRouter> _logger;
-        readonly ILocalApp _localApp;
+        readonly IMcpRunner _localApp;
         readonly ILocalServer? _localServer;
         readonly IRemoteServer? _remoteServer;
         readonly CompositeDisposable _disposables = new();
 
-        public RpcRouter(ILogger<RpcRouter> logger, ILocalApp localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
+        public RpcRouter(ILogger<RpcRouter> logger, IMcpRunner localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");

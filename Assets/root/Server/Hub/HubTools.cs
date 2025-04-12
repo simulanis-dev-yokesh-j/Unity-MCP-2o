@@ -16,12 +16,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
         private static readonly ConcurrentDictionary<string, TaskCompletionSource<string>> _pendingRequests = new();
 
         readonly ILogger<HubTools> _logger;
-        readonly ILocalApp _localApp;
+        readonly IMcpRunner _localApp;
         readonly ILocalServer? _localServer;
         readonly IRemoteServer? _remoteServer;
         readonly CompositeDisposable _disposables = new();
 
-        public HubTools(ILogger<HubTools> logger, ILocalApp localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
+        public HubTools(ILogger<HubTools> logger, IMcpRunner localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");

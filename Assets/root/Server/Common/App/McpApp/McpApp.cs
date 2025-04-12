@@ -19,11 +19,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public IRemoteServer? RemoteServer { get; private set; } = null;
         public IRemoteApp? RemoteApp { get; private set; } = null;
-        public ILocalApp LocalApp { get; private set; }
+        public IMcpRunner McpRunner { get; private set; }
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter methodRouter, ILocalApp appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
+        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter methodRouter, IMcpRunner appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
@@ -31,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _hubConnectionBuilder = hubConnectionBuilder ?? throw new ArgumentNullException(nameof(hubConnectionBuilder));
             _methodRouter = methodRouter ?? throw new ArgumentNullException(nameof(methodRouter));
 
-            LocalApp = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
+            McpRunner = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
             RemoteApp = app;
             RemoteServer = server;
 
