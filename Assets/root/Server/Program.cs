@@ -1,7 +1,6 @@
 ﻿#if !IGNORE
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using com.IvanMurzak.Unity.MCP.Common;
 using NLog.Extensions.Logging;
@@ -9,6 +8,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using NLog;
 using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
@@ -72,7 +72,33 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         });
                 });
 
-                await builder.Build().RunAsync();
+
+                builder.WebHost.UseUrls("http://localhost:60606"); // TODO: add reading from configs (json file and env variables)
+                // builder.WebHost.UseKestrel(options =>
+                // {
+                //     options.ListenAnyIP(60606); // TODO: add reading from configs (json file and env variables)
+                // });
+
+                var app = builder.Build();
+
+                // Middleware ----------------------------------------------------------------
+                // ---------------------------------------------------------------------------
+
+                app.UseRouting();
+                app.MapHub<LocalServer>(Consts.Hub.LocalServer, options =>
+                {
+                    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+                    options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                    options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                });
+                app.MapHub<RemoteApp>(Consts.Hub.RemoteApp, options =>
+                {
+                    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+                    options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                    options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                });
+
+                await app.RunAsync();
             }
             catch (Exception ex)
             {

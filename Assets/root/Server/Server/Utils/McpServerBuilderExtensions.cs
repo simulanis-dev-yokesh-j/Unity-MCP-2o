@@ -8,6 +8,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
     {
         public static IMcpPluginBuilder WithServerFeatures(this IMcpPluginBuilder builder)
         {
+            builder.Services.AddRouting();
             builder.Services.AddHostedService<McpServerService>();
             builder.AddMcpRunner();
             builder.AddLocalServer();

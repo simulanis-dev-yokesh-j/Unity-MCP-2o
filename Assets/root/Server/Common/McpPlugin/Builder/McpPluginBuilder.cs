@@ -56,6 +56,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         // options.PayloadSerializerOptions.PropertyNamingPolicy = null;
                         // options.PayloadSerializerOptions.DictionaryKeyPolicy = null;
                     })
+                    // .ConfigureLogging(logging =>
+                    // {
+                    //     logging.AddNLog();
+                    //     logging.SetMinimumLevel(LogLevel.Information);
+                    // })
                     .Build();
 
                 return Task.FromResult(hubConnection);
