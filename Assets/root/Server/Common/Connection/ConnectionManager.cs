@@ -87,7 +87,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                 _hubConnection.Value = hubConnection;
                 hubConnectionLogger?.Dispose();
-                hubConnectionLogger = new(_logger, _hubConnection.Value);
+                hubConnectionLogger = new(_logger, hubConnection);
             }
 
             if (ConnectionState == HubConnectionState.Connected)
