@@ -21,8 +21,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 SubscribeToHubConnectionEvents();
         }
 
-        private void SubscribeToHubConnectionEvents()
+        void SubscribeToHubConnectionEvents()
         {
+            _disposables.Clear();
+
             // Subscribe to the Closed event
             Observable.FromEvent<Func<Exception?, Task>, Exception?>(
                     handler => ex => { handler(ex); return Task.CompletedTask; },
