@@ -133,10 +133,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
+            hubConnectionLogger?.Dispose();
+
             if (_hubConnection.Value == null)
                 return;
 
-            hubConnectionLogger?.Dispose();
             _hubConnection.Value.StopAsync().Wait();
             _hubConnection.Value.DisposeAsync().AsTask().Wait();
         }
