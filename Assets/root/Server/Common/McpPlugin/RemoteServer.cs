@@ -41,11 +41,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 IResponseData<IResponseCallTool>,
                 IResponseData<string>>(Consts.RPC.ResponseOnCallTool, data, cancellationToken);
         }
-        public Task<IResponseData<string>> RespondOnListTool(IResponseData<List<IResponseListTool>> data, CancellationToken cancellationToken = default)
+        public Task<IResponseData<string>> RespondOnListTool(IResponseData<IResponseListTool[]> data, CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("RespondOnListTool.");
             return _connectionManager.InvokeAsync<
-                IResponseData<List<IResponseListTool>>,
+                IResponseData<IResponseListTool[]>,
                 IResponseData<string>>(Consts.RPC.ResponseOnListTool, data, cancellationToken);
         }
 

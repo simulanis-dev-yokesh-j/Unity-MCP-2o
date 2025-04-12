@@ -1,6 +1,4 @@
 #if !IGNORE
-using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Common.Server;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Threading.Tasks;

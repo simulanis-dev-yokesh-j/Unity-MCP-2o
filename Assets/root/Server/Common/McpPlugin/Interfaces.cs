@@ -19,11 +19,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         Task<bool> Connect(CancellationToken cancellationToken = default);
         Task Disconnect(CancellationToken cancellationToken = default);
     }
-    public interface IMcpRunner : IToolRunner, IResourceRunner, IDisposable
-    {
-        bool HasTool(string name);
-        bool HasResource(string name);
-    }
     public interface IRemoteServer : IConnection, IToolResponseSender, IResourceResponseSender, IDisposable
     {
         Task<IResponseData<string>> UpdateTools(CancellationToken cancellationToken = default);
@@ -34,15 +29,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
     public interface IToolRunner
     {
-        Task<IResponseData<IResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default);
-        Task<IResponseData<List<IResponseListTool>>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default);
+        Task<IResponseData<ResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default);
+        Task<IResponseData<ResponseListTool[]>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default);
     }
 
     public interface IResourceRunner
     {
-        Task<IResponseData<List<IResponseResourceContent>>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default);
-        Task<IResponseData<List<IResponseListResource>>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default);
-        Task<IResponseData<List<IResponseResourceTemplate>>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default);
+        Task<IResponseData<ResponseResourceContent[]>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default);
+        Task<IResponseData<ResponseListResource[]>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default);
+        Task<IResponseData<ResponseResourceTemplate[]>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default);
     }
 
     // -----------------------------------------------------------------
@@ -50,7 +45,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public interface IToolResponseSender
     {
         Task<IResponseData<string>> RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> RespondOnListTool(IResponseData<List<IResponseListTool>> data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> RespondOnListTool(IResponseData<IResponseListTool[]> data, CancellationToken cancellationToken = default);
     }
 
     public interface IResourceResponseSender

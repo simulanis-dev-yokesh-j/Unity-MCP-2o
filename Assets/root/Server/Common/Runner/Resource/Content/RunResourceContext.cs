@@ -47,10 +47,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public async Task<List<IResponseListResource>> Run(params object?[] parameters)
+        public async Task<ResponseListResource[]> Run(params object?[] parameters)
         {
             var result = await Invoke(parameters);
-            return result as List<IResponseListResource> ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseListResource)} array.");
+            return result as ResponseListResource[] ?? throw new InvalidOperationException($"The method did not return a valid {nameof(ResponseListResource)}[]. Instead returned {result?.GetType().Name}.");
         }
 
         /// <summary>
@@ -59,10 +59,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public async Task<List<IResponseListResource>> Run(IDictionary<string, object?>? namedParameters)
+        public async Task<ResponseListResource[]> Run(IDictionary<string, object?>? namedParameters)
         {
             var result = await Invoke(namedParameters);
-            return result as List<IResponseListResource> ?? throw new InvalidOperationException($"The method did not return a valid {nameof(IResponseListResource)} array.");
+            return result as ResponseListResource[] ?? throw new InvalidOperationException($"The method did not return a valid {nameof(ResponseListResource)}[]. Instead returned {result?.GetType().Name}.");
         }
     }
 }

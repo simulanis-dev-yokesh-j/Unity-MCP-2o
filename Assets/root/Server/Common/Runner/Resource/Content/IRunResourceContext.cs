@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        Task<List<IResponseListResource>> Run(params object?[] parameters);
+        Task<ResponseListResource[]> Run(params object?[] parameters);
 
         /// <summary>
         /// Executes the target method with named parameters.
@@ -20,6 +20,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        Task<List<IResponseListResource>> Run(IDictionary<string, object?>? namedParameters);
+        Task<ResponseListResource[]> Run(IDictionary<string, object?>? namedParameters);
     }
 }

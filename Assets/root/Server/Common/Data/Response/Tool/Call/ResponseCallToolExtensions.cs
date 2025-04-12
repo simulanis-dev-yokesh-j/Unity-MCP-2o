@@ -7,7 +7,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public static class ResponseCallToolExtensions
     {
-        public static IResponseCallTool Log(this IResponseCallTool target, ILogger logger, Exception? ex = null)
+        public static ResponseCallTool Log(this ResponseCallTool target, ILogger logger, Exception? ex = null)
         {
             if (target.IsError)
                 logger.LogError(ex, target.Content.FirstOrDefault()?.Text ?? "Tool execution error.");
@@ -17,13 +17,13 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
             return target;
         }
 
-        public static IResponseData<IResponseCallTool> Pack(this IResponseCallTool target, string requestId, string? message = null)
+        public static IResponseData<ResponseCallTool> Pack(this ResponseCallTool target, string requestId, string? message = null)
         {
             if (target.IsError)
-                return ResponseData<IResponseCallTool>.Error(requestId, message ?? target.Content.FirstOrDefault()?.Text ?? "Tool execution error.")
+                return ResponseData<ResponseCallTool>.Error(requestId, message ?? target.Content.FirstOrDefault()?.Text ?? "Tool execution error.")
                     .SetData(target);
             else
-                return ResponseData<IResponseCallTool>.Success(requestId, message ?? target.Content.FirstOrDefault()?.Text ?? "Tool executed successfully.")
+                return ResponseData<ResponseCallTool>.Success(requestId, message ?? target.Content.FirstOrDefault()?.Text ?? "Tool executed successfully.")
                     .SetData(target);
         }
     }

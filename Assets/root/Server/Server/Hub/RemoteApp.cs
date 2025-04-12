@@ -18,14 +18,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
         }
 
-        public async Task<IResponseData<IResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default)
         {
             if (data == null)
-                return ResponseData<IResponseCallTool>.Error(Consts.Guid.Zero, "Tool data is null.")
+                return ResponseData<ResponseCallTool>.Error(Consts.Guid.Zero, "Tool data is null.")
                     .Log(_logger);
 
             if (string.IsNullOrEmpty(data.Name))
-                return ResponseData<IResponseCallTool>.Error(data.RequestID, "Tool.Name is null.")
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, "Tool.Name is null.")
                     .Log(_logger);
             try
             {
@@ -39,135 +39,119 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<IResponseCallTool>(Consts.RPC.RunCallTool, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.RunCallTool, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
+                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
                         .Log(_logger);
 
-                return result.Log(_logger).Pack(data.RequestID);
+                return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}'. Exception: {ex}")
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
 
-        public async Task<IResponseData<List<IResponseListTool>>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseListTool[]>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default)
         {
             try
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                    return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<List<ResponseListTool>>(Consts.RPC.RunListTool, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseListTool[]>>(Consts.RPC.RunListTool, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"'{Consts.RPC.RunListTool}' returned null result.")
+                    return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"'{Consts.RPC.RunListTool}' returned null result.")
                         .Log(_logger);
 
-                return result
-                    .Cast<IResponseListTool>()
-                    .ToList()
-                    .Log(_logger)
-                    .Pack(data.RequestID);
+                return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListTool}'. Exception: {ex}")
+                return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListTool}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
 
-        public async Task<IResponseData<List<IResponseResourceContent>>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseResourceContent[]>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default)
         {
             if (data == null)
-                return ResponseData<List<IResponseResourceContent>>.Error(Consts.Guid.Zero, "Resource content data is null.")
+                return ResponseData<ResponseResourceContent[]>.Error(Consts.Guid.Zero, "Resource content data is null.")
                     .Log(_logger);
 
             if (string.IsNullOrEmpty(data.Uri))
-                return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, "Resource content Uri is null.")
+                return ResponseData<ResponseResourceContent[]>.Error(data.RequestID, "Resource content Uri is null.")
                     .Log(_logger);
 
             try
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                    return ResponseData<ResponseResourceContent[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunResourceContent, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseResourceContent[]>>(Consts.RPC.RunResourceContent, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"Resource uri: '{data.Uri}' returned null result.")
+                    return ResponseData<ResponseResourceContent[]>.Error(data.RequestID, $"Resource uri: '{data.Uri}' returned null result.")
                         .Log(_logger);
 
-                return result
-                    .Cast<IResponseResourceContent>()
-                    .ToList()
-                    .Log(_logger)
-                    .Pack(data.RequestID);
+                return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"Failed to get resource uri: '{data.Uri}'. Exception: {ex}")
+                return ResponseData<ResponseResourceContent[]>.Error(data.RequestID, $"Failed to get resource uri: '{data.Uri}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
 
-        public async Task<IResponseData<List<IResponseListResource>>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseListResource[]>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default)
         {
             try
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                    return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunListResources, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseListResource[]>>(Consts.RPC.RunListResources, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"'{Consts.RPC.RunListResources}' returned null result.")
+                    return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"'{Consts.RPC.RunListResources}' returned null result.")
                         .Log(_logger);
 
-                return result
-                    .Cast<IResponseListResource>()
-                    .ToList()
-                    .Log(_logger)
-                    .Pack(data.RequestID);
+                return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResources}'. Exception: {ex}")
+                return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResources}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
 
-        public async Task<IResponseData<List<IResponseResourceTemplate>>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseResourceTemplate[]>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default)
         {
             try
             {
                 var client = GetActiveClient();
                 if (client == null)
-                    return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                    return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<List<ResponseResourceTemplate>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseResourceTemplate[]>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"'{Consts.RPC.RunListResourceTemplates}' returned null result.")
+                    return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"'{Consts.RPC.RunListResourceTemplates}' returned null result.")
                         .Log(_logger);
 
-                return result
-                    .Cast<IResponseResourceTemplate>()
-                    .ToList()
-                    .Log(_logger)
-                    .Pack(data.RequestID);
+                return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResourceTemplates}'. Exception: {ex}")
+                return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResourceTemplates}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }

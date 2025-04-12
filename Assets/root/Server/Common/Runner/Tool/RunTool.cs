@@ -48,11 +48,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="parameters">The arguments to pass to the method.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public async Task<IResponseCallTool> Run(params object?[] parameters)
+        public async Task<ResponseCallTool> Run(params object?[] parameters)
         {
             // Invoke the method (static or instance)
             var result = await Invoke(parameters);
-            return result as IResponseCallTool ?? ResponseCallTool.Success(result?.ToString());
+            return result as ResponseCallTool ?? ResponseCallTool.Success(result?.ToString());
         }
 
         /// <summary>
@@ -61,10 +61,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public async Task<IResponseCallTool> Run(IDictionary<string, JsonElement>? namedParameters)
+        public async Task<ResponseCallTool> Run(IDictionary<string, JsonElement>? namedParameters)
         {
             var result = await Invoke(namedParameters);
-            return result as IResponseCallTool ?? ResponseCallTool.Success(result?.ToString());
+            return result as ResponseCallTool ?? ResponseCallTool.Success(result?.ToString());
         }
     }
 }

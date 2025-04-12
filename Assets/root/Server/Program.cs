@@ -37,8 +37,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 builder.Services
                     .AddMcpServer()
                     .WithStdioServerTransport()
-                    .WithPromptsFromAssembly()
-                    .WithToolsFromAssembly()
+                    // .WithPromptsFromAssembly()
+                    // .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
                     .WithListToolsHandler(ToolRouter.ListAll)
                     .WithReadResourceHandler(ResourceRouter.ReadResource)

@@ -41,18 +41,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public bool HasTool(string name) => _tools.ContainsKey(name);
         public bool HasResource(string name) => _resources.ContainsKey(name);
 
-        public async Task<IResponseData<IResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseCallTool>> RunCallTool(IRequestCallTool data, CancellationToken cancellationToken = default)
         {
             if (data == null)
-                return ResponseData<IResponseCallTool>.Error(Consts.Guid.Zero, "Tool data is null.")
+                return ResponseData<ResponseCallTool>.Error(Consts.Guid.Zero, "Tool data is null.")
                     .Log(_logger);
 
             if (string.IsNullOrEmpty(data.Name))
-                return ResponseData<IResponseCallTool>.Error(data.RequestID, "Tool.Name is null.")
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, "Tool.Name is null.")
                     .Log(_logger);
 
             if (!_tools.TryGetValue(data.Name, out var runner))
-                return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool with Name '{data.Name}' not found.")
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool with Name '{data.Name}' not found.")
                     .Log(_logger);
             try
             {
@@ -66,7 +66,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                 var result = await runner.Run(data.Arguments);
                 if (result == null)
-                    return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
+                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
                         .Log(_logger);
 
                 return result.Log(_logger).Pack(data.RequestID);
@@ -74,15 +74,16 @@ namespace com.IvanMurzak.Unity.MCP.Common
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}'. Exception: {ex}")
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
 
-        public Task<IResponseData<List<IResponseListTool>>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default)
+        public Task<IResponseData<ResponseListTool[]>> RunListTool(IRequestListTool data, CancellationToken cancellationToken = default)
         {
             try
             {
+                _logger.LogDebug("Listing tools.");
                 var result = _tools
                     .Select(kvp => new ResponseListTool()
                     {
@@ -90,8 +91,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         Description = kvp.Value.Description,
                         InputSchema = kvp.Value.InputSchema.ToJsonElement() ?? new()
                     })
-                    .Cast<IResponseListTool>()
-                    .ToList();
+                    .ToArray();
 
                 return result
                     .Log(_logger)
@@ -101,13 +101,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
-                return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"Failed to list tools. Exception: {ex}")
+                return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"Failed to list tools. Exception: {ex}")
                     .Log(_logger, ex)
                     .TaskFromResult();
             }
         }
 
-        public async Task<IResponseData<List<IResponseResourceContent>>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseResourceContent[]>> RunResourceContent(IRequestResourceContent data, CancellationToken cancellationToken = default)
         {
             if (data == null)
                 throw new ArgumentException("Resource data is null.");
@@ -129,7 +129,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return result.Pack(data.RequestID);
         }
 
-        public async Task<IResponseData<List<IResponseListResource>>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default)
+        public async Task<IResponseData<ResponseListResource[]>> RunListResources(IRequestListResources data, CancellationToken cancellationToken = default)
         {
             var tasks = _resources.Values
                 .Select(resource => resource.RunListContext.Run());
@@ -138,15 +138,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             return tasks
                 .SelectMany(x => x.Result)
-                .ToList()
+                .ToArray()
                 .Pack(data.RequestID);
         }
 
-        public Task<IResponseData<List<IResponseResourceTemplate>>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default)
+        public Task<IResponseData<ResponseResourceTemplate[]>> RunResourceTemplates(IRequestListResourceTemplates data, CancellationToken cancellationToken = default)
             => _resources.Values
                 .Select(resource => new ResponseResourceTemplate(resource.Route, resource.Name, resource.Description, resource.MimeType))
-                .Cast<IResponseResourceTemplate>()
-                .ToList()
+                .ToArray()
                 .Pack(data.RequestID)
                 .TaskFromResult();
 
