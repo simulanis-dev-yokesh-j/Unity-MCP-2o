@@ -53,35 +53,35 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             hubConnection.On<RequestCallTool, IResponseData<ResponseCallTool>>(Consts.RPC.RunCallTool, async message =>
                 {
-                    _logger.LogInformation("Call Tool called.");
+                    _logger.LogDebug("Call Tool called.");
                     return await _localApp.RunCallTool(message);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestListTool, IResponseData<ResponseListTool[]>>(Consts.RPC.RunListTool, async message =>
                 {
-                    _logger.LogInformation("List Tool called.");
+                    _logger.LogDebug("List Tool called.");
                     return await _localApp.RunListTool(message);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestResourceContent, IResponseData<ResponseResourceContent[]>>(Consts.RPC.RunResourceContent, async message =>
                 {
-                    _logger.LogInformation("Read Resource content called.");
+                    _logger.LogDebug("Read Resource content called.");
                     return await _localApp.RunResourceContent(message);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestListResources, IResponseData<ResponseListResource[]>>(Consts.RPC.RunListResources, async message =>
                 {
-                    _logger.LogInformation("List Resources called.");
+                    _logger.LogDebug("List Resources called.");
                     return await _localApp.RunListResources(message);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestListResourceTemplates, IResponseData<ResponseResourceTemplate[]>>(Consts.RPC.RunListResourceTemplates, async message =>
                 {
-                    _logger.LogInformation("List Resource Templates called.");
+                    _logger.LogDebug("List Resource Templates called.");
                     return await _localApp.RunResourceTemplates(message);
                 })
                 .AddTo(_serverEventsDisposables);
