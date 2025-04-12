@@ -1,7 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using R3;
@@ -81,6 +80,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             hubConnection.StopAsync().Wait();
             hubConnection.DisposeAsync().AsTask().Wait();
+            instance = null;
         }
         ~McpApp() => Dispose();
     }
