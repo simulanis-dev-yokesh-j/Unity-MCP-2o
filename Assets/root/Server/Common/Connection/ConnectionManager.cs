@@ -131,7 +131,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             }
 
             connectionTask = _hubConnection.Value.StartAsync(cancellationToken)
-                .ContinueWith(task =>
+                .ContinueWith(async task =>
                 {
                     if (task.IsCompletedSuccessfully)
                     {
@@ -148,8 +148,16 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     {
                         _logger.LogError("Failed to start connection: Unknown error.");
                     }
+
+                    if (continueToReconnect)
+                    {
+                        _logger.LogWarning("Retrying connection...");
+                        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); // Wait before retrying
+                        return await InternalConnect(cancellationToken);
+                    }
+
                     return false;
-                });
+                }).Unwrap();
             return await connectionTask;
         }
 
