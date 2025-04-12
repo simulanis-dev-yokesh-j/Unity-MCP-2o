@@ -36,12 +36,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     _logger.LogInformation(message);
                 }
 
-                var connectionId = ConnectedClients.FirstOrDefault();
-                if (connectionId == null)
+                var client = GetActiveClient();
+                if (client == null)
                     return ResponseData<IResponseCallTool>.Error(data.RequestID, $"No connected clients.")
                         .Log(_logger);
 
-                var result = await Clients.Client(connectionId).InvokeAsync<IResponseCallTool>(Consts.RPC.RunCallTool, data, cancellationToken);
+                var result = await client.InvokeAsync<IResponseCallTool>(Consts.RPC.RunCallTool, data, cancellationToken);
                 if (result == null)
                     return ResponseData<IResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
                         .Log(_logger);
@@ -59,12 +59,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
             try
             {
-                var connectionId = ConnectedClients.FirstOrDefault();
-                if (connectionId == null)
+                var client = GetActiveClient();
+                if (client == null)
                     return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"No connected clients.")
                         .Log(_logger);
 
-                var result = await Clients.Client(connectionId).InvokeAsync<List<ResponseListTool>>(Consts.RPC.RunListTool, data, cancellationToken);
+                var result = await client.InvokeAsync<List<ResponseListTool>>(Consts.RPC.RunListTool, data, cancellationToken);
                 if (result == null)
                     return ResponseData<List<IResponseListTool>>.Error(data.RequestID, $"'{Consts.RPC.RunListTool}' returned null result.")
                         .Log(_logger);
@@ -94,12 +94,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
             try
             {
-                var connectionId = ConnectedClients.FirstOrDefault();
-                if (connectionId == null)
+                var client = GetActiveClient();
+                if (client == null)
                     return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"No connected clients.")
                         .Log(_logger);
 
-                var result = await Clients.Client(connectionId).InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunResourceContent, data, cancellationToken);
+                var result = await client.InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunResourceContent, data, cancellationToken);
                 if (result == null)
                     return ResponseData<List<IResponseResourceContent>>.Error(data.RequestID, $"Resource uri: '{data.Uri}' returned null result.")
                         .Log(_logger);
@@ -121,12 +121,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
             try
             {
-                var connectionId = ConnectedClients.FirstOrDefault();
-                if (connectionId == null)
+                var client = GetActiveClient();
+                if (client == null)
                     return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"No connected clients.")
                         .Log(_logger);
 
-                var result = await Clients.Client(connectionId).InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunListResources, data, cancellationToken);
+                var result = await client.InvokeAsync<List<ResponseResourceContent>>(Consts.RPC.RunListResources, data, cancellationToken);
                 if (result == null)
                     return ResponseData<List<IResponseListResource>>.Error(data.RequestID, $"'{Consts.RPC.RunListResources}' returned null result.")
                         .Log(_logger);
@@ -148,12 +148,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
             try
             {
-                var connectionId = ConnectedClients.FirstOrDefault();
-                if (connectionId == null)
+                var client = GetActiveClient();
+                if (client == null)
                     return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"No connected clients.")
                         .Log(_logger);
 
-                var result = await Clients.Client(connectionId).InvokeAsync<List<ResponseResourceTemplate>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
+                var result = await client.InvokeAsync<List<ResponseResourceTemplate>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
                 if (result == null)
                     return ResponseData<List<IResponseResourceTemplate>>.Error(data.RequestID, $"'{Consts.RPC.RunListResourceTemplates}' returned null result.")
                         .Log(_logger);
