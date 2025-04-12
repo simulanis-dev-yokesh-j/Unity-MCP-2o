@@ -62,7 +62,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             return Task.CompletedTask;
         }
 
-        public Task RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default)
+        public Task RespondOnListResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default)
         {
             _onRespondResourceTemplates.OnNext(Unit.Default);
             return Task.CompletedTask;

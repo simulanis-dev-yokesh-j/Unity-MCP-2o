@@ -113,7 +113,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     if (task.IsCompletedSuccessfully)
                         return true;
 
-                    _logger.LogError("Failed to start connection: {0}", task.Exception?.Message);
+                    _logger.LogWarning("Failed to start connection: {0}", task.Exception?.Message);
                     return false;
                 });
             return await _connectionTask;

@@ -12,11 +12,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
             public const string RunListResourceTemplates = "/mcp/run-list-resource-templates";
 
 
-            public const string ResponseCallTool = "/mcp/response-call-tool";
-            public const string ResponseListTool = "/mcp/response-list-tool";
-            public const string ResponseResourceContent = "/mcp/response-resource-content";
-            public const string ResponseListResources = "/mcp/response-list-resources";
-            public const string ResponseListResourceTemplates = "ResponseList";
+            public const string ResponseOnCallTool = "RespondOnCallTool";
+            public const string ResponseOnListTool = "RespondOnListTool";
+            public const string ResponseOnResourceContent = "RespondOnResourceContent";
+            public const string ResponseOnListResources = "RespondOnListResources";
+            public const string ResponseOnListResourceTemplates = "RespondOnResourceTemplates";
         }
     }
 }

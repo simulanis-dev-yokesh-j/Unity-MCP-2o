@@ -24,9 +24,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         bool HasTool(string name);
         bool HasResource(string name);
     }
-    public interface IRemoteApp : IToolRunner, IResourceRunner, IDisposable
-    {
-    }
     public interface IRemoteServer : IConnection, IToolResponseSender, IResourceResponseSender, IDisposable
     {
         Task<IResponseData<string>> UpdateTools(CancellationToken cancellationToken = default);
@@ -75,6 +72,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         Task RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default);
         Task RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default);
-        Task RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default);
+        Task RespondOnListResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default);
     }
 }

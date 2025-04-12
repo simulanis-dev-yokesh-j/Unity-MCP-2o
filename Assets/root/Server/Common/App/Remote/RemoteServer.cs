@@ -38,14 +38,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _logger.LogTrace("RespondOnCallTool.");
             return _connectionManager.InvokeAsync<
                 IResponseData<IResponseCallTool>,
-                IResponseData<string>>(Consts.RPC.ResponseCallTool, data, cancellationToken);
+                IResponseData<string>>(Consts.RPC.ResponseOnCallTool, data, cancellationToken);
         }
         public Task<IResponseData<string>> RespondOnListTool(IResponseData<List<IResponseListTool>> data, CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("RespondOnListTool.");
             return _connectionManager.InvokeAsync<
                 IResponseData<List<IResponseListTool>>,
-                IResponseData<string>>(Consts.RPC.ResponseListTool, data, cancellationToken);
+                IResponseData<string>>(Consts.RPC.ResponseOnListTool, data, cancellationToken);
         }
 
         public Task<IResponseData<string>> RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default)
@@ -53,21 +53,21 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _logger.LogTrace("RespondOnResourceContent.");
             return _connectionManager.InvokeAsync<
                 IResponseData<List<IResponseResourceContent>>,
-                IResponseData<string>>(Consts.RPC.ResponseResourceContent, data, cancellationToken);
+                IResponseData<string>>(Consts.RPC.ResponseOnResourceContent, data, cancellationToken);
         }
         public Task<IResponseData<string>> RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("RespondOnListResources.");
             return _connectionManager.InvokeAsync<
                 IResponseData<List<IResponseListResource>>,
-                IResponseData<string>>(Consts.RPC.ResponseListResources, data, cancellationToken);
+                IResponseData<string>>(Consts.RPC.ResponseOnListResources, data, cancellationToken);
         }
         public Task<IResponseData<string>> RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("RespondOnResourceTemplates.");
             return _connectionManager.InvokeAsync<
                 IResponseData<List<IResponseResourceTemplate>>,
-                IResponseData<string>>(Consts.RPC.ResponseListResourceTemplates, data, cancellationToken);
+                IResponseData<string>>(Consts.RPC.ResponseOnListResourceTemplates, data, cancellationToken);
         }
 
         public Task<bool> Connect(CancellationToken cancellationToken = default)
