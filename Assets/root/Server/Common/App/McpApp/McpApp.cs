@@ -12,28 +12,28 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<McpApp> _logger;
-        readonly IRpcRouter _methodRouter;
+        readonly IRpcRouter _rpcRouter;
         readonly Func<Task<HubConnection>> _hubConnectionBuilder;
 
         HubConnection? hubConnection;
 
-        public IRemoteServer? RemoteServer { get; private set; } = null;
-        public IRemoteApp? RemoteApp { get; private set; } = null;
         public IMcpRunner McpRunner { get; private set; }
+        public IRemoteApp? RemoteApp { get; private set; } = null;
+        public IRemoteServer? RemoteServer { get; private set; } = null;
         public HubConnectionState GetStatus => hubConnection?.State ?? HubConnectionState.Disconnected;
 
         // IOptions<ConnectorConfig> configOptions
-        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter methodRouter, IMcpRunner appLocal, IRemoteApp? app = null, IRemoteServer? server = null)
+        public McpApp(ILogger<McpApp> logger, Func<Task<HubConnection>> hubConnectionBuilder, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteApp? app = null, IRemoteServer? remoteServer = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor. Version: {0}", Version);
 
             _hubConnectionBuilder = hubConnectionBuilder ?? throw new ArgumentNullException(nameof(hubConnectionBuilder));
-            _methodRouter = methodRouter ?? throw new ArgumentNullException(nameof(methodRouter));
+            _rpcRouter = rpcRouter ?? throw new ArgumentNullException(nameof(rpcRouter));
 
-            McpRunner = appLocal ?? throw new ArgumentNullException(nameof(appLocal));
+            McpRunner = mcpRunner ?? throw new ArgumentNullException(nameof(mcpRunner));
             RemoteApp = app;
-            RemoteServer = server;
+            RemoteServer = remoteServer;
 
             if (HasInstance)
             {
@@ -55,7 +55,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     return;
                 }
 
-                _methodRouter.SetConnection(hubConnection);
+                _rpcRouter.SetConnection(hubConnection);
             }
 
             if (hubConnection.State == HubConnectionState.Connected ||
