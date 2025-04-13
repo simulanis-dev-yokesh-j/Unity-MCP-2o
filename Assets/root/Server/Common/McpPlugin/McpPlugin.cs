@@ -51,7 +51,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
-            DisposeAsync().Wait();
+#pragma warning disable CS4014
+            DisposeAsync();
+            // DisposeAsync().Wait();
+            // Unity won't reload Domain if we call DisposeAsync().Wait() here.
+#pragma warning restore CS4014
         }
 
         public async Task DisposeAsync()
