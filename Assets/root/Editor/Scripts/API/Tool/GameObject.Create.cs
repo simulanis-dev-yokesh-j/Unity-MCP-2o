@@ -1,16 +1,21 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using UnityEditor;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
-    [ToolType]
     public partial class Tool_GameObject
     {
-        [Tool("Tool_GameObject_Create",
+        [Tool("GameObject_Create",
             Title = "Create a new GameObject",
             Description = "Create a new GameObject.")]
-        public string Create(string path, string name) => MainThread.Run(() =>
+        public string Create(
+            [Description("Path to the GameObject (excluding the name of the GameObject).")]
+            string path,
+            [Description("Name of the GameObject.")]
+            string name) => MainThread.Run(() =>
         {
             var targetParent = string.IsNullOrEmpty(path) ? null : GameObject.Find(path);
             if (targetParent == null && !string.IsNullOrEmpty(path))

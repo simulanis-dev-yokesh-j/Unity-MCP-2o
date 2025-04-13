@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,13 +46,61 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 return new CallToolResponse().SetError("[Error] Resource is null");
 
             if (response.IsError)
-                return new CallToolResponse().SetError(response.Message ?? "[Error] Got an error during reading resources");
+                return new CallToolResponse().SetError(response.Message ?? "[Error] Got an error during running tool");
 
             if (response.Value == null)
                 return new CallToolResponse().SetError("[Error] Tool returned null value");
 
-            logger.Trace("Call, result: {0}", JsonSerializer.Serialize(response.Value));
+            if (logger.IsTraceEnabled)
+                logger.Trace("Call, request: {0}", JsonSerializer.Serialize(requestData));
             return response.Value.ToCallToolRespose();
+        }
+
+        public static Task<CallToolResponse> Call(string name, Action<Dictionary<string, object>> configureArguments)
+        {
+            var arguments = new Dictionary<string, object>();
+            configureArguments?.Invoke(arguments);
+
+            return Call_(name, args =>
+            {
+                foreach (var kvp in arguments)
+                    args[kvp.Key] = kvp.Value.ToJsonElement();
+            });
+        }
+
+        public static Task<CallToolResponse> Call_(string name, Action<Dictionary<string, JsonElement>> configureArguments)
+        {
+            var mcpServer = McpServerService.Instance?.McpServer;
+            if (mcpServer == null)
+                throw new InvalidOperationException("[Error] 'McpServer' is null");
+
+            var arguments = new Dictionary<string, JsonElement>();
+            configureArguments?.Invoke(arguments);
+
+            var request = new RequestContext<CallToolRequestParams>(mcpServer, new CallToolRequestParams()
+            {
+                Name = name,
+                Arguments = arguments
+            });
+            return Call(request, default);
+
+            // Do we need to return the 'response'? It may work even better.
+
+            // var response = await Call(request, default);
+            // return response;
+
+            // if (response == null)
+            //     return "[Error] Tool response is null";
+
+            // if (response.IsError)
+            //     return response.Content?.FirstOrDefault()?.Text ?? "[Error] Got an error during running tool";
+
+            // var result = response.Content?.FirstOrDefault()?.Text;
+            // if (result == null)
+            //     return "[Error] Tool returned null value";
+
+            // // logger.Trace("Call, result: {0}", JsonSerializer.Serialize(response.Value));
+            // return response.Value.ToCallToolRespose();
         }
     }
 }

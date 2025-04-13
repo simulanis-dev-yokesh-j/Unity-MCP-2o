@@ -7,7 +7,6 @@ using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 using R3;
 
@@ -22,6 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
         readonly ILocalServer _localServer;
         readonly CompositeDisposable _disposables = new();
 
+        public IMcpServer McpServer => _mcpServer;
         public IMcpRunner McpRunner => _mcpRunner;
         public IRemoteApp RemoteApp => _remoteApp;
         public ILocalServer LocalServer => _localServer;

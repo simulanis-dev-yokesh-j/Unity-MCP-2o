@@ -1,44 +1,21 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using UnityEditor;
-using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
-    [ToolType]
     public partial class Tool_Component
     {
-        [Tool("Tool_Component_Add",
+        [Tool("Component_Add",
             Title = "Add Component to a GameObject",
             Description = "Add a component to a GameObject.")]
-        public string Add(string path, string fullName)
+        public string Add(
+            [Description("Full name of the Component. It should include full namespace path and the class name.")]
+            string fullName)
         {
-            if (string.IsNullOrEmpty(path))
-                return "[Error] Path to the GameObject is empty.";
-
-            if (string.IsNullOrEmpty(fullName))
-                return "[Error] Full name of the component is empty.";
-
-            var type = Type.GetType(fullName);
-            if (type == null)
-                return $"[Error] Component type '{fullName}' not found.";
-
-            if (!typeof(UnityEngine.Component).IsAssignableFrom(type))
-                return $"[Error] Type '{fullName}' is not a valid Unity Component.";
-
-            return MainThread.Run(() =>
-            {
-                var go = GameObject.Find(path);
-                if (go == null)
-                    return $"[Error] GameObject '{path}' not found.";
-
-                go.AddComponent(type);
-
-                EditorUtility.SetDirty(go);
-                EditorApplication.RepaintHierarchyWindow();
-
-                return $"[Success] Added `{fullName}` component to GameObject at path '{path}'.";
-            });
+            throw new NotImplementedException("Add Component to a GameObject is not implemented yet.");
         }
     }
 }
