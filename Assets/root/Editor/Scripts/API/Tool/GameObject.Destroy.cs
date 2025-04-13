@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_GameObject
     {
-        [Tool
+        [McpPluginTool
         (
             "GameObject_Destroy",
             Title = "Destroy GameObject",

@@ -8,10 +8,10 @@ using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
-    [ResourceType]
+    [McpPluginResourceType]
     public partial class Resource_GameObject
     {
-        [Resource
+        [McpPluginResource
         (
             Route = "gameObject://currentScene/{path}",
             MimeType = Consts.MimeType.TextJson,

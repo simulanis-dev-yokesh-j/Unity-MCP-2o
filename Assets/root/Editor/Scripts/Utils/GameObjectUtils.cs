@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.Utils
@@ -103,6 +104,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                     yield return childContent;
                 }
             }
+        }
+        public static string GetPath(this GameObject go)
+        {
+            if (go == null)
+                return null;
+
+            var path = new StringBuilder(go.name);
+            var currentTransform = go.transform.parent;
+
+            while (currentTransform != null)
+            {
+                path.Insert(0, '/'); // Prepend '/' to the start
+                path.Insert(0, currentTransform.name); // Prepend the name to the start
+                currentTransform = currentTransform.parent;
+            }
+
+            return path.ToString();
         }
     }
 }

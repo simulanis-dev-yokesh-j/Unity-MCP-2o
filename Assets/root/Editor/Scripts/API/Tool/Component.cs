@@ -3,7 +3,7 @@ using com.IvanMurzak.Unity.MCP.Common;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
-    [ToolType]
+    [McpPluginToolType]
     public partial class Tool_Component
     {
     }
