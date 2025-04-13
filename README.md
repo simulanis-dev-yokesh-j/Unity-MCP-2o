@@ -12,11 +12,14 @@ Supports custom `tool` if any exists in your source code of a Unity project.
 
 - Create
 - Destroy
+- Add Component
+- Remove Component
+- Find by name (optional recursive)
+- Find by path (optional recursive)
 
 ### Component
 
-- Get All from the project
-- Add to GamePbject
+- Get All from the project (optional search by substring)
 
 ### Prefabs
 
@@ -33,7 +36,7 @@ To add a custom `tool` just need to create `.cs` file in your project source. Th
 ```csharp
 public partial class Tool_GameObject
 {
-    [Tool
+    [McpPluginTool
     (
         "GameObject_Create",
         Title = "Create a new GameObject",
