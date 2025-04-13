@@ -50,16 +50,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 if (listContextMethod == null)
                     throw new InvalidOperationException($"Method {targetType.FullName}{listContextMethodName} not found in type {targetType.Name}.");
 
-                // if (!method.ReturnType.IsGenericType ||
-                //     method.ReturnType.GetGenericTypeDefinition() != typeof(List<>) ||
-                //     !typeof(ResponseResourceContent).IsAssignableFrom(method.ReturnType.GetGenericArguments()[0]))
-                //     throw new InvalidOperationException($"Method {targetType.FullName}{method.Name} must return List<{nameof(ResponseResourceContent)}>.");
-
-                // if (!listContextMethod.ReturnType.IsGenericType ||
-                //     listContextMethod.ReturnType.GetGenericTypeDefinition() != typeof(List<>) ||
-                //     !typeof(ResponseListResource).IsAssignableFrom(listContextMethod.ReturnType.GetGenericArguments()[0]))
-                //     throw new InvalidOperationException($"Method {targetType.FullName}{listContextMethod.Name} must return List<{nameof(ResponseListResource)}>.");
-
                 if (!method.ReturnType.IsArray ||
                     !typeof(ResponseResourceContent).IsAssignableFrom(method.ReturnType.GetElementType()))
                     throw new InvalidOperationException($"Method {targetType.FullName}{method.Name} must return {nameof(ResponseResourceContent)} array.");
@@ -67,7 +57,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 if (!listContextMethod.ReturnType.IsArray ||
                     !typeof(ResponseListResource).IsAssignableFrom(listContextMethod.ReturnType.GetElementType()))
                     throw new InvalidOperationException($"Method {targetType.FullName}{listContextMethod.Name} must return {nameof(ResponseListResource)} array.");
-
 
                 var resourceParams = new RunResource
                 (

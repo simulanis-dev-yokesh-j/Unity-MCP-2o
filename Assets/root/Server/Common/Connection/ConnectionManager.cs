@@ -82,8 +82,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             continueToReconnect = true;
 
             // Dispose the previous internal CancellationTokenSource if it exists
-            internalCts?.Cancel();
-            internalCts?.Dispose();
+            CancelInternalToken(dispose: true);
 
             // Create a new internal CancellationTokenSource and link it to the external token
             internalCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -92,6 +91,21 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(internalCts.Token, timeoutCts.Token);
 
                 return InternalConnect(linkedCts.Token);
+            }
+        }
+
+        void CancelInternalToken(bool dispose = false)
+        {
+            if (internalCts != null)
+            {
+                if (!internalCts.IsCancellationRequested)
+                    internalCts.Cancel();
+
+                if (dispose)
+                {
+                    internalCts.Dispose();
+                    internalCts = null;
+                }
             }
         }
 
@@ -187,9 +201,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
             continueToReconnect = false;
+            connectionTask = null;
 
             // Cancel the internal token to stop any ongoing connection attempts
-            internalCts?.Cancel();
+            CancelInternalToken(dispose: false);
 
             if (_hubConnection.Value == null)
                 return Task.CompletedTask;
@@ -223,8 +238,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             hubConnectionLogger?.Dispose();
             hubConnectionObservable?.Dispose();
 
-            internalCts?.Cancel();
-            internalCts?.Dispose();
+            CancelInternalToken(dispose: true);
 
             if (_hubConnection.Value == null)
                 return;

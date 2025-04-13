@@ -9,8 +9,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public interface IRunTool
     {
-        JsonNode? InputSchema { get; }
+        string? Title { get; }
         string? Description { get; }
+        JsonNode? InputSchema { get; }
 
         /// <summary>
         /// Executes the target method with named parameters.

@@ -4,6 +4,7 @@ using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using ModelContextProtocol.Protocol.Types;
+using ModelContextProtocol.Server;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
@@ -37,36 +38,40 @@ namespace com.IvanMurzak.Unity.MCP.Server
             return target;
         }
 
-        public static Tool ToTool(this IResponseListTool response)
+        public static Tool ToTool(this IResponseListTool response) => new Tool()
         {
-            return new Tool()
+            Name = response.Name,
+            // Title = response.Title,
+            Description = response.Description,
+            InputSchema = response.InputSchema
+        };
+
+        public static McpServerTool ToMcpServerTool(this IResponseListTool response) => McpServerTool.Create
+        (
+            method: null, // MCP csharp-sdk doesn't have API to provide Json Schema
+            options: new McpServerToolCreateOptions()
             {
                 Name = response.Name,
+                Title = response.Title,
                 Description = response.Description,
-                InputSchema = response.InputSchema
-            };
-        }
+            },
+            target: null
+        );
 
-        public static CallToolResponse ToCallToolRespose(this IResponseCallTool response)
+        public static CallToolResponse ToCallToolRespose(this IResponseCallTool response) => new CallToolResponse()
         {
-            return new CallToolResponse()
-            {
-                IsError = response.IsError,
-                Content = response.Content
-                    .Select(x => x.ToContent())
-                    .ToList()
-            };
-        }
+            IsError = response.IsError,
+            Content = response.Content
+                .Select(x => x.ToContent())
+                .ToList()
+        };
 
-        public static Content ToContent(this ResponseCallToolContent response)
+        public static Content ToContent(this ResponseCallToolContent response) => new Content()
         {
-            return new Content()
-            {
-                Type = response.Type,
-                MimeType = response.MimeType,
-                Text = response.Text,
-                Data = response.Data
-            };
-        }
+            Type = response.Type,
+            MimeType = response.MimeType,
+            Text = response.Text,
+            Data = response.Data
+        };
     }
 }

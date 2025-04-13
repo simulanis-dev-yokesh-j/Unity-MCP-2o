@@ -11,18 +11,20 @@ namespace com.IvanMurzak.Unity.MCP.Common
         }
         public static partial class RPC
         {
-            public const string RunCallTool = "/mcp/run-call-tool";
-            public const string RunListTool = "/mcp/run-list-tool";
-            public const string RunResourceContent = "/mcp/run-resource-content";
-            public const string RunListResources = "/mcp/run-list-resources";
-            public const string RunListResourceTemplates = "/mcp/run-list-resource-templates";
+            public static class Client
+            {
+                public const string RunCallTool = "/mcp/run-call-tool";
+                public const string RunListTool = "/mcp/run-list-tool";
+                public const string RunResourceContent = "/mcp/run-resource-content";
+                public const string RunListResources = "/mcp/run-list-resources";
+                public const string RunListResourceTemplates = "/mcp/run-list-resource-templates";
+            }
 
-
-            public const string ResponseOnCallTool = "RespondOnCallTool";
-            public const string ResponseOnListTool = "RespondOnListTool";
-            public const string ResponseOnResourceContent = "RespondOnResourceContent";
-            public const string ResponseOnListResources = "RespondOnListResources";
-            public const string ResponseOnListResourceTemplates = "RespondOnResourceTemplates";
+            public static class Server
+            {
+                public const string SetOnListToolsUpdated = "SetOnListToolsUpdated";
+                public const string SetOnListResourcesUpdated = "SetOnListResourcesUpdated";
+            }
         }
     }
 }

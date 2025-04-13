@@ -52,8 +52,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
 
                 var runner = method.IsStatic
-                    ? RunTool.CreateFromStaticMethod(logger, method)
-                    : RunTool.CreateFromClassMethod(logger, targetType, method);
+                    ? RunTool.CreateFromStaticMethod(logger, method, attribute.Title)
+                    : RunTool.CreateFromClassMethod(logger, targetType, method, attribute.Title);
 
                 builder.AddTool(attribute.Name, runner);
             }

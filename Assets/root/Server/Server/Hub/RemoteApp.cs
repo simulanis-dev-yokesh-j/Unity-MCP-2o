@@ -42,7 +42,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.RunCallTool, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, data, cancellationToken);
                 if (result == null)
                     return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
                         .Log(_logger);
@@ -65,16 +65,16 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<ResponseData<ResponseListTool[]>>(Consts.RPC.RunListTool, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseListTool[]>>(Consts.RPC.Client.RunListTool, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"'{Consts.RPC.RunListTool}' returned null result.")
+                    return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"'{Consts.RPC.Client.RunListTool}' returned null result.")
                         .Log(_logger);
 
                 return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListTool}'. Exception: {ex}")
+                return ResponseData<ResponseListTool[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.Client.RunListTool}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -96,7 +96,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     return ResponseData<ResponseResourceContent[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<ResponseData<ResponseResourceContent[]>>(Consts.RPC.RunResourceContent, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseResourceContent[]>>(Consts.RPC.Client.RunResourceContent, data, cancellationToken);
                 if (result == null)
                     return ResponseData<ResponseResourceContent[]>.Error(data.RequestID, $"Resource uri: '{data.Uri}' returned null result.")
                         .Log(_logger);
@@ -119,16 +119,16 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<ResponseData<ResponseListResource[]>>(Consts.RPC.RunListResources, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseListResource[]>>(Consts.RPC.Client.RunListResources, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"'{Consts.RPC.RunListResources}' returned null result.")
+                    return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"'{Consts.RPC.Client.RunListResources}' returned null result.")
                         .Log(_logger);
 
                 return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResources}'. Exception: {ex}")
+                return ResponseData<ResponseListResource[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.Client.RunListResources}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }
@@ -142,16 +142,16 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
                         .Log(_logger);
 
-                var result = await client.InvokeAsync<ResponseData<ResponseResourceTemplate[]>>(Consts.RPC.RunListResourceTemplates, data, cancellationToken);
+                var result = await client.InvokeAsync<ResponseData<ResponseResourceTemplate[]>>(Consts.RPC.Client.RunListResourceTemplates, data, cancellationToken);
                 if (result == null)
-                    return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"'{Consts.RPC.RunListResourceTemplates}' returned null result.")
+                    return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"'{Consts.RPC.Client.RunListResourceTemplates}' returned null result.")
                         .Log(_logger);
 
                 return result;
             }
             catch (Exception ex)
             {
-                return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.RunListResourceTemplates}'. Exception: {ex}")
+                return ResponseData<ResponseResourceTemplate[]>.Error(data.RequestID, $"Failed to run '{Consts.RPC.Client.RunListResourceTemplates}'. Exception: {ex}")
                     .Log(_logger, ex);
             }
         }

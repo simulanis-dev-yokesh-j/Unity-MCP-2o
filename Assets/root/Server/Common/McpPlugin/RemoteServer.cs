@@ -1,6 +1,5 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
@@ -24,51 +23,16 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _connectionManager.Endpoint = Consts.Hub.DefaultEndpoint + Consts.Hub.LocalServer;
         }
 
-        public Task<IResponseData<string>> UpdateResources(CancellationToken cancellationToken = default)
+        public Task<ResponseData<string>> NotifyAboutUpdatedTools(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            _logger.LogTrace("Notify server about updated tools.");
+            return _connectionManager.InvokeAsync<string, ResponseData<string>>(Consts.RPC.Server.SetOnListToolsUpdated, string.Empty, cancellationToken);
         }
 
-        public Task<IResponseData<string>> UpdateTools(CancellationToken cancellationToken = default)
+        public Task<ResponseData<string>> NotifyAboutUpdatedResources(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResponseData<string>> RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default)
-        {
-            _logger.LogTrace("RespondOnCallTool.");
-            return _connectionManager.InvokeAsync<
-                IResponseData<IResponseCallTool>,
-                IResponseData<string>>(Consts.RPC.ResponseOnCallTool, data, cancellationToken);
-        }
-        public Task<IResponseData<string>> RespondOnListTool(IResponseData<IResponseListTool[]> data, CancellationToken cancellationToken = default)
-        {
-            _logger.LogTrace("RespondOnListTool.");
-            return _connectionManager.InvokeAsync<
-                IResponseData<IResponseListTool[]>,
-                IResponseData<string>>(Consts.RPC.ResponseOnListTool, data, cancellationToken);
-        }
-
-        public Task<IResponseData<string>> RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default)
-        {
-            _logger.LogTrace("RespondOnResourceContent.");
-            return _connectionManager.InvokeAsync<
-                IResponseData<List<IResponseResourceContent>>,
-                IResponseData<string>>(Consts.RPC.ResponseOnResourceContent, data, cancellationToken);
-        }
-        public Task<IResponseData<string>> RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default)
-        {
-            _logger.LogTrace("RespondOnListResources.");
-            return _connectionManager.InvokeAsync<
-                IResponseData<List<IResponseListResource>>,
-                IResponseData<string>>(Consts.RPC.ResponseOnListResources, data, cancellationToken);
-        }
-        public Task<IResponseData<string>> RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default)
-        {
-            _logger.LogTrace("RespondOnResourceTemplates.");
-            return _connectionManager.InvokeAsync<
-                IResponseData<List<IResponseResourceTemplate>>,
-                IResponseData<string>>(Consts.RPC.ResponseOnListResourceTemplates, data, cancellationToken);
+            _logger.LogTrace("Notify server about updated resources.");
+            return _connectionManager.InvokeAsync<string, ResponseData<string>>(Consts.RPC.Server.SetOnListResourcesUpdated, string.Empty, cancellationToken);
         }
 
         public Task<bool> Connect(CancellationToken cancellationToken = default)

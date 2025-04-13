@@ -16,28 +16,30 @@ namespace com.IvanMurzak.Unity.MCP.Common
     /// </summary>
     public partial class RunTool : MethodWrapper, IRunTool
     {
+        public string? Title { get; protected set; }
+
         /// <summary>
         /// Initializes the Command with the target method information.
         /// </summary>
         /// <param name="type">The type containing the static method.</param>
-        public static RunTool CreateFromStaticMethod(ILogger logger, MethodInfo methodInfo)
-            => new RunTool(logger, methodInfo);
+        public static RunTool CreateFromStaticMethod(ILogger logger, MethodInfo methodInfo, string? title = null)
+            => new RunTool(logger, methodInfo) { Title = title };
 
         /// <summary>
         /// Initializes the Command with the target instance method information.
         /// </summary>
         /// <param name="targetInstance">The instance of the object containing the method.</param>
         /// <param name="methodInfo">The MethodInfo of the instance method to execute.</param>
-        public static RunTool CreateFromInstanceMethod(ILogger logger, object targetInstance, MethodInfo methodInfo)
-            => new RunTool(logger, targetInstance, methodInfo);
+        public static RunTool CreateFromInstanceMethod(ILogger logger, object targetInstance, MethodInfo methodInfo, string? title = null)
+            => new RunTool(logger, targetInstance, methodInfo) { Title = title };
 
         /// <summary>
         /// Initializes the Command with the target instance method information.
         /// </summary>
         /// <param name="targetInstance">The instance of the object containing the method.</param>
         /// <param name="methodInfo">The MethodInfo of the instance method to execute.</param>
-        public static RunTool CreateFromClassMethod(ILogger logger, Type targetType, MethodInfo methodInfo)
-            => new RunTool(logger, targetType, methodInfo);
+        public static RunTool CreateFromClassMethod(ILogger logger, Type targetType, MethodInfo methodInfo, string? title = null)
+            => new RunTool(logger, targetType, methodInfo) { Title = title };
 
         public RunTool(ILogger logger, MethodInfo methodInfo) : base(logger, methodInfo) { }
         public RunTool(ILogger logger, object targetInstance, MethodInfo methodInfo) : base(logger, targetInstance, methodInfo) { }

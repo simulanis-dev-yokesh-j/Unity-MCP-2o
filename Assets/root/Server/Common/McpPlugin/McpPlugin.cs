@@ -40,7 +40,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
             RemoteServer?.Connect(cancellationToken);
-            return _rpcRouter.Connect(cancellationToken);
+            return _rpcRouter.Connect(cancellationToken).ContinueWith(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                    RemoteServer?.NotifyAboutUpdatedTools();
+                return task.IsCompletedSuccessfully;
+            });
         }
 
         public Task Disconnect(CancellationToken cancellationToken = default)

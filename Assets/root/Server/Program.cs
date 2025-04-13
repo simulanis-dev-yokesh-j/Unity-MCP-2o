@@ -24,7 +24,15 @@ namespace com.IvanMurzak.Unity.MCP.Server
             {
                 var builder = WebApplication.CreateBuilder(args);
 
-                builder.Services.AddSignalR();
+                builder.Services.AddSignalR(configure =>
+                {
+                    configure.EnableDetailedErrors = true;
+                    configure.MaximumReceiveMessageSize = 1024 * 1024 * 10; // 10 MB
+                    configure.ClientTimeoutInterval = TimeSpan.FromMinutes(5);
+                    configure.KeepAliveInterval = TimeSpan.FromSeconds(15);
+                    configure.HandshakeTimeout = TimeSpan.FromSeconds(15);
+                    configure.JsonSerialize();
+                });
 
                 // Configure all logs to go to stderr. This is needed for MCP STDIO server to work properly.
                 builder.Logging.AddConsole(consoleLogOptions => consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace);
@@ -35,7 +43,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
                 // Setup MCP server ---------------------------------------------------------------
                 builder.Services
-                    .AddMcpServer()
+                    .AddMcpServer(options =>
+                    {
+                        options.Capabilities ??= new();
+                        options.Capabilities.Tools ??= new();
+                        options.Capabilities.Tools.ListChanged = true;
+                    })
                     .WithStdioServerTransport()
                     // .WithPromptsFromAssembly()
                     // .WithToolsFromAssembly()
@@ -44,18 +57,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .WithReadResourceHandler(ResourceRouter.ReadResource)
                     .WithListResourcesHandler(ResourceRouter.ListResources)
                     .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates);
-
-                // Setup SignalR connection builder -----------------------------------------------
-                // TODO: Replace raw TCP with SignalR
-                // builder.Services.AddSingleton(new HubConnectionBuilder()
-                //     .WithUrl(Environment.GetEnvironmentVariable("UNITY_URL") ?? Consts.Remote.URL)
-                //     .WithAutomaticReconnect()
-                //     .AddJsonProtocol()
-                //     .ConfigureLogging(logging =>
-                //     {
-                //         logging.AddNLog();
-                //         logging.SetMinimumLevel(LogLevel.Information);
-                //     }));
 
                 // Setup McpApp ----------------------------------------------------------------
                 builder.Services.AddMcpPlugin(configure =>
@@ -104,7 +105,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 {
                     var endpointDataSource = app.Services.GetRequiredService<Microsoft.AspNetCore.Routing.EndpointDataSource>();
                     foreach (var endpoint in endpointDataSource.Endpoints)
-                        logger.Info($"Configured endpoint: {endpoint.DisplayName}");
+                        logger.Debug($"Configured endpoint: {endpoint.DisplayName}");
 
                     app.Use(async (context, next) =>
                     {
