@@ -12,34 +12,55 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             if (string.IsNullOrEmpty(path))
                 return null;
 
-            if (path.StartsWith("/") ||
-                path.StartsWith("./"))
+            if (path.StartsWith("./"))
+                path = path[2..];
+
+            if (path.StartsWith("/"))
                 path = path[1..];
 
             // If root is null, search in the active scene's root GameObjects
             if (root == null)
             {
-                path = path.TrimStart('/');
-                return UnityEditor.SceneManagement.EditorSceneManager
+                var rootGos = UnityEditor.SceneManagement.EditorSceneManager
                     .GetActiveScene()
-                    .GetRootGameObjects()
-                    .FirstOrDefault(go => FindByPath(path, go) != null);
-            }
+                    .GetRootGameObjects();
 
-            var pathParts = path.Split('/');
-            var currentGameObject = root;
+                var pathParts = path.Split('/');
 
-            foreach (var part in pathParts)
-            {
-                if (currentGameObject == null)
+                root = rootGos.FirstOrDefault(go => go.name == pathParts[0]);
+                if (root == null)
                     return null;
 
-                currentGameObject = FindChildByName(currentGameObject, part);
-            }
+                var currentGameObject = root;
 
-            return currentGameObject;
+                foreach (var part in pathParts.Skip(1))
+                {
+                    if (currentGameObject == null)
+                        return null;
+
+                    currentGameObject = FindChildByName(currentGameObject, part);
+                }
+
+                return currentGameObject;
+            }
+            else
+            {
+
+                var pathParts = path.Split('/');
+                var currentGameObject = root;
+
+                foreach (var part in pathParts)
+                {
+                    if (currentGameObject == null)
+                        return null;
+
+                    currentGameObject = FindChildByName(currentGameObject, part);
+                }
+
+                return currentGameObject;
+            }
         }
-        public static GameObject FindChildByName(GameObject parent, string name)
+        public static GameObject FindChildByName(this GameObject parent, string name)
         {
             if (parent == null || string.IsNullOrEmpty(name))
                 return null;
@@ -52,7 +73,22 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
 
             return null;
         }
-        public static IEnumerable<KeyValuePair<string, GameObject>> GetAllRecursively(GameObject root, string path = null)
+        public static GameObject AddChild(this GameObject parent, string name)
+        {
+            if (parent == null || string.IsNullOrEmpty(name))
+                return null;
+
+            return parent.AddChild(new GameObject(name));
+        }
+        public static GameObject AddChild(this GameObject parent, GameObject child)
+        {
+            if (parent == null || child == null)
+                return null;
+
+            child.transform.SetParent(parent.transform, false);
+            return child;
+        }
+        public static IEnumerable<KeyValuePair<string, GameObject>> GetAllRecursively(this GameObject root, string path = null)
         {
             var currentPath = string.IsNullOrEmpty(path)
                 ? root.name
