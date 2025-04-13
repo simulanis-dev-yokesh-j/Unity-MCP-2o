@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.Collections.Generic;
 using System.Text;
+using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
@@ -8,6 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     public class GameObjectMetadata
     {
         public string path;
+        public string name;
         public string tag;
         public bool activeSelf;
         public bool activeInHierarchy;
@@ -32,16 +34,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         private void AppendMetadata(StringBuilder sb, GameObjectMetadata metadata, int depth)
         {
             // Indent the path based on depth for better readability
-            string indentedPath = new string(' ', depth * 2) + metadata.path;
+            var indentedPath = new string(' ', depth * 2) + metadata.name;
 
             // Add the current GameObject's data
             sb.AppendLine($"{metadata.activeInHierarchy,-17} | {metadata.activeSelf,-10} | {metadata.tag,-9} | {indentedPath}");
 
             // Recursively add children
             foreach (var child in metadata.children)
-            {
                 AppendMetadata(sb, child, depth + 1);
-            }
         }
 
         public static GameObjectMetadata FromGameObject(GameObject go, bool includeChildren = true, bool includeChildrenRecursively = false)
@@ -55,7 +55,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // Create metadata for the GameObject
             var metadata = new GameObjectMetadata
             {
-                path = go.name,
+                path = go.GetPath(),
+                name = go.name,
                 tag = go.tag,
                 activeSelf = go.activeSelf,
                 activeInHierarchy = go.activeInHierarchy

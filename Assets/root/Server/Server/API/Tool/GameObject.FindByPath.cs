@@ -24,7 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             bool includeChildrenRecursively = false
         )
         {
-            return ToolRouter.Call("GameObject_Create", arguments =>
+            return ToolRouter.Call("GameObject_FindByPath", arguments =>
             {
                 arguments[nameof(path)] = path;
                 arguments[nameof(includeChildren)] = includeChildren;

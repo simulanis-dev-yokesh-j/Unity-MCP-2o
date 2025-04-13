@@ -22,16 +22,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
             bool includeChildrenRecursively = false
         )
-        => MainThread.Run(() =>
         {
             if (string.IsNullOrEmpty(path))
                 return "[Error] GameObject path is empty.";
 
-            var go = GameObjectUtils.FindByPath(path);
-            if (go == null)
-                return $"[Error] GameObject '{path}' not found.";
+            return MainThread.Run(() =>
+            {
+                var go = GameObjectUtils.FindByPath(path);
+                if (go == null)
+                    return $"[Error] GameObject '{path}' not found.";
 
-            return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
-        });
+                return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
+            });
+        }
     }
 }
