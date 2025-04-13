@@ -1,8 +1,7 @@
 using System.Linq;
-using System.Collections.Generic;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
-using com.IvanMurzak.Unity.MCP.Common.Utils;
+using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.Runtime;
 using UnityEditor.SceneManagement;
 using UnityEngine;

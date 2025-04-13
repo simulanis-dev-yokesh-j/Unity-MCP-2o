@@ -8,11 +8,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_GameObject
     {
-        [McpServerTool(Name = "GameObject_Destroy", Title = "Destroy GameObject")]
+        [McpServerTool
+        (
+            Name = "GameObject_Destroy",
+            Title = "Destroy GameObject"
+        )]
         [Description("Destroy GameObject in the current active scene.")]
-        public Task<CallToolResponse> Destroy(
+        public Task<CallToolResponse> Destroy
+        (
             [Description("Full path (including name) to the target GameObject.")]
-            string fullPath)
+            string fullPath
+        )
         {
             return ToolRouter.Call("GameObject_Destroy", arguments =>
             {

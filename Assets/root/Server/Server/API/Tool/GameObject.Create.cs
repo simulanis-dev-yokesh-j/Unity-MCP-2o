@@ -8,13 +8,19 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_GameObject
     {
-        [McpServerTool(Name = "GameObject_Create", Title = "Create GameObject")]
+        [McpServerTool
+        (
+            Name = "GameObject_Create",
+            Title = "Create GameObject"
+        )]
         [Description("Create a new GameObject in the current active scene.")]
-        public Task<CallToolResponse> Create(
+        public Task<CallToolResponse> Create
+        (
             [Description("Path to the parent GameObject.")]
             string path,
             [Description("Name of the new GameObject.")]
-            string name)
+            string name
+        )
         {
             return ToolRouter.Call("GameObject_Create", arguments =>
             {
