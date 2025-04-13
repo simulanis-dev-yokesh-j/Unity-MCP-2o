@@ -6,9 +6,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class ToolAttribute : Attribute
     {
-        public string? Name { get; set; }
+        public string Name { get; set; }
+        public string? Title { get; set; }
         public string? Description { get; set; }
 
-        public ToolAttribute() { }
+        public ToolAttribute(string name, string? title = null, string? description = null)
+        {
+            Name = name;
+            Title = title;
+            Description = description;
+        }
     }
 }

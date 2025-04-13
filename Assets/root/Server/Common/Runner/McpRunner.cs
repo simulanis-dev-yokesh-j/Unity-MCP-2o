@@ -88,6 +88,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     .Select(kvp => new ResponseListTool()
                     {
                         Name = kvp.Key,
+                        Title = kvp.Value.Title,
                         Description = kvp.Value.Description,
                         InputSchema = kvp.Value.InputSchema.ToJsonElement() ?? new()
                     })
