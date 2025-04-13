@@ -8,18 +8,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_Component
     {
-        [McpServerTool(Name = "Component_Get_All", Title = "Add Component")]
-        [Description("Add new Component instance to a target GameObject.")]
-        public Task<CallToolResponse> Add(
-            [Description("Path to the GameObject.")]
-            string path,
-            [Description("Component class full name.")]
-            string fullName)
+        [McpServerTool(Name = "Component_Get_All", Title = "Get list of all Components")]
+        [Description("Returns the list of all available components in the project.")]
+        public Task<CallToolResponse> GetAll(
+            [Description("Substring for searching components. Could be empty.")]
+            string search)
         {
             return ToolRouter.Call("Component_Get_All", arguments =>
             {
-                arguments[nameof(path)] = path;
-                arguments[nameof(fullName)] = fullName;
+                arguments[nameof(search)] = search;
             });
         }
     }

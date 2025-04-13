@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpServerTool(Name = "Component_Add", Title = "Add Component")]
         [Description("Add new Component instance to a target GameObject.")]
-        public Task<CallToolResponse> GetAll(
+        public Task<CallToolResponse> Add(
             [Description("Path to the GameObject.")]
             string path,
             [Description("Component class full name, including namespace.")]

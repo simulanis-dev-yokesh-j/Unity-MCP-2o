@@ -3,7 +3,6 @@ using System;
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using UnityEditor;
-using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
