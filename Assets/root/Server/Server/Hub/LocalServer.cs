@@ -20,11 +20,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
         }
 
-        public new void Dispose()
-        {
-            base.Dispose();
-        }
-
         public Task<IResponseData<string>> SetOnListToolsUpdated(CancellationToken cancellationToken = default)
         {
             _onListToolUpdated.OnNext(Unit.Default);
@@ -35,6 +30,13 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
             _onListResourcesUpdated.OnNext(Unit.Default);
             return Task.FromResult<IResponseData<string>>(ResponseData<string>.Success(string.Empty, string.Empty));
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            _onListToolUpdated.Dispose();
+            _onListResourcesUpdated.Dispose();
         }
     }
 }

@@ -201,6 +201,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
             continueToReconnect = false;
+            connectionTask = null;
 
             // Cancel the internal token to stop any ongoing connection attempts
             CancelInternalToken(dispose: false);
