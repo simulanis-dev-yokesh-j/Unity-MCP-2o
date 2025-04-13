@@ -45,10 +45,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return _connectionManager.Disconnect(cancellationToken);
         }
 
-        void SubscribeOnServerEvents(HubConnection hubConnection)
+        void SubscribeOnServerEvents(HubConnection? hubConnection)
         {
-            _logger.LogTrace("SubscribeOnServerEvents.");
+            _logger.LogTrace("Clearing server events disposables.");
             _serverEventsDisposables.Clear();
+
+            if (hubConnection == null)
+                return;
+
+            _logger.LogTrace("Subscribing to server events.");
 
             hubConnection.On<RequestCallTool, IResponseData<ResponseCallTool>>(Consts.RPC.RunCallTool, async data =>
                 {
