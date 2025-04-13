@@ -157,11 +157,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     if (task.Exception != null)
                     {
                         foreach (var innerException in task.Exception.InnerExceptions)
-                            _logger.LogError("Failed to start connection. {0} - {1}\n{2}", Endpoint, innerException.Message, innerException.StackTrace);
+                            _logger.LogWarning("Failed to start connection. {0} - {1}\n{2}", Endpoint, innerException.Message, innerException.StackTrace);
                     }
                     else
                     {
-                        _logger.LogError("Failed to start connection: Unknown error {0}.", Endpoint);
+                        _logger.LogWarning("Failed to start connection: Unknown error {0}.", Endpoint);
                     }
 
                     if (continueToReconnect)

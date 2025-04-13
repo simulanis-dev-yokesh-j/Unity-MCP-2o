@@ -77,14 +77,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     }
                 }
             }
-            else
-            {
+
+            if (string.IsNullOrEmpty(error))
                 Debug.Log($"{Consts.Log.Tag} Build succeeded:\n{output}");
-            }
-            if (!string.IsNullOrEmpty(error))
-            {
+            else
                 Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
-            }
+
             MenuItems.PrintConfig();
         }
 
