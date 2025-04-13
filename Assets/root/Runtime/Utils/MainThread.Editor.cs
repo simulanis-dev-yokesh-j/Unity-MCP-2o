@@ -79,7 +79,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             if (Thread.CurrentThread.ManagedThreadId == MainThreadId)
             {
                 // Execute directly if already on the main thread
-                return func().TaskFromResult();
+                return Task.FromResult(func());
             }
             var tcs = new TaskCompletionSource<T>();
 
