@@ -2,14 +2,31 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common;
 using UnityEditor;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
     public static class MainThread
     {
-        static readonly int MainThreadId = Thread.CurrentThread.ManagedThreadId;
+        static int MainThreadId = Thread.CurrentThread.ManagedThreadId;
+        static MainThread()
+        {
+            // Ensure initialization happens on the main thread
+            if (Thread.CurrentThread.ManagedThreadId != 1)
+            {
+                EditorApplication.update += InitializeMainThreadId;
+            }
+            else
+            {
+                MainThreadId = Thread.CurrentThread.ManagedThreadId;
+            }
+        }
+
+        private static void InitializeMainThreadId()
+        {
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+            EditorApplication.update -= InitializeMainThreadId;
+        }
 
         public static void Run<T>(Task task) => RunAsync(task).Wait();
         public static Task RunAsync(Task task)

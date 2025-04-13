@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
-using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
@@ -10,28 +9,28 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "GameObject_FindByName",
-            Title = "Find GameObject by name",
-            Description = "Find GameObject by name in the active scene. Returns metadata about each GameObject."
+            "GameObject_FindByPath",
+            Title = "Find GameObject by path",
+            Description = "Find GameObject tree by the path to the root GameObject. Returns metadata about each GameObject."
         )]
-        public string FindByName
+        public string FindByPath
         (
-            [Description("Name of the target GameObject.")]
-            string name,
+            [Description("Path to the GameObject.")]
+            string path,
             [Description("Include children GameObjects in the result.")]
             bool includeChildren = true,
             [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
             bool includeChildrenRecursively = false
         )
         {
-            if (string.IsNullOrEmpty(name))
-                return "[Error] GameObject name is empty.";
+            if (string.IsNullOrEmpty(path))
+                return "[Error] GameObject path is empty.";
 
             return MainThread.Run(() =>
             {
-                var go = GameObject.Find(name);
+                var go = GameObjectUtils.FindByPath(path);
                 if (go == null)
-                    return $"[Error] GameObject with name '{name}' not found.";
+                    return $"[Error] GameObject '{path}' not found.";
 
                 return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
             });

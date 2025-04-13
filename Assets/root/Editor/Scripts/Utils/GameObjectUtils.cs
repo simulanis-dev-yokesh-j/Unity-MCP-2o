@@ -122,5 +122,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
 
             return path.ToString();
         }
+        public static GameObjectMetadata ToMetadata(this GameObject go, bool includeChildren = true, bool includeChildrenRecursively = false)
+            => GameObjectMetadata.FromGameObject(go, includeChildren, includeChildrenRecursively);
     }
 }
