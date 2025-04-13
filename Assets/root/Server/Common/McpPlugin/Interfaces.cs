@@ -19,11 +19,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         Task<bool> Connect(CancellationToken cancellationToken = default);
         Task Disconnect(CancellationToken cancellationToken = default);
     }
-    public interface IRemoteServer : IConnection, IToolResponseSender, IResourceResponseSender, IDisposableAsync
-    {
-        Task<IResponseData<string>> UpdateTools(CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> UpdateResources(CancellationToken cancellationToken = default);
-    }
 
     public interface IDisposableAsync : IDisposable
     {
@@ -46,32 +41,4 @@ namespace com.IvanMurzak.Unity.MCP.Common
     }
 
     // -----------------------------------------------------------------
-
-    public interface IToolResponseSender
-    {
-        Task<IResponseData<string>> RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> RespondOnListTool(IResponseData<IResponseListTool[]> data, CancellationToken cancellationToken = default);
-    }
-
-    public interface IResourceResponseSender
-    {
-        Task<IResponseData<string>> RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default);
-    }
-
-    // -----------------------------------------------------------------
-
-    public interface IToolResponseReceiver
-    {
-        Task RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default);
-        Task RespondOnListTool(IResponseData<List<IResponseListTool>> data, CancellationToken cancellationToken = default);
-    }
-
-    public interface IResourceResponseReceiver
-    {
-        Task RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default);
-        Task RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default);
-        Task RespondOnListResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default);
-    }
 }
