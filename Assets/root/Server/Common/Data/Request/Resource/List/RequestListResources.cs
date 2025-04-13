@@ -6,7 +6,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public class RequestListResources : IRequestListResources
     {
-        public string RequestID { get; set; } = string.Empty;
+        public string RequestID { get; set; } = Guid.NewGuid().ToString();
         public string? Cursor { get; set; }
 
         public RequestListResources() { }

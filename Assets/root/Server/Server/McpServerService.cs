@@ -1,10 +1,13 @@
 #if !IGNORE
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 using R3;
 
@@ -39,18 +42,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
             Instance = this;
 
             LocalServer.OnListToolUpdated
-                .Subscribe(_ =>
-                {
-
-                })
+                .Subscribe(OnListToolUpdated)
                 .AddTo(_disposables);
 
-            LocalServer.OnListResourcesUpdated
-                .Subscribe(_ =>
-                {
-
-                })
-                .AddTo(_disposables);
+            // LocalServer.OnListResourcesUpdated
+            //     .Subscribe(OnListResourcesUpdated)
+            //     .AddTo(_disposables);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -66,6 +63,57 @@ namespace com.IvanMurzak.Unity.MCP.Server
             Instance = null;
             return McpPlugin.StaticDisposeAsync();
         }
+
+        async void OnListToolUpdated(Unit _)
+        {
+            var tools = _mcpServer.ServerOptions.Capabilities?.Tools?.ToolCollection;
+            if (tools == null)
+            {
+                _logger.LogError("Tools capability is not set. Cannot update tools.");
+                return;
+            }
+            // Fetch new tools from Plugin
+            var request = new RequestListTool();
+            var response = await _remoteApp.RunListTool(request);
+            if (response.IsError)
+            {
+                _logger.LogError("Failed to fetch tools from plugin: {Error}", response.Message);
+                return;
+            }
+            var pluginTools = response?.Value
+                ?.Select(x => x.ToMcpServerTool())
+                ?.ToArray() ?? Array.Empty<McpServerTool>();
+
+            // Update the tools collection
+            tools.Clear();
+            foreach (var tool in pluginTools)
+                tools.Add(tool);
+        }
+
+        // async void OnListResourcesUpdated(Unit _)
+        // {
+        //     var resources = _mcpServer.ServerOptions.Capabilities?.Resources?.;
+        //     if (resources == null)
+        //     {
+        //         _logger.LogError("Resources capability is not set. Cannot update resources.");
+        //         return;
+        //     }
+        //     // Fetch new resources from Plugin
+        //     var request = new RequestListResources();
+        //     var response = await _remoteApp.RunListResources(request);
+        //     if (response.IsError)
+        //     {
+        //         _logger.LogError("Failed to fetch resources from plugin: {Error}", response.Message);
+        //         return;
+        //     }
+        //     var pluginResources = response?.Value
+        //         ?.Select(x => x.ToResource())
+        //         ?.ToArray() ?? Array.Empty<Resource>();
+
+
+        //     // Update the resources collection
+        //     resources.ResourceCollection.
+        // }
     }
 }
 #endif

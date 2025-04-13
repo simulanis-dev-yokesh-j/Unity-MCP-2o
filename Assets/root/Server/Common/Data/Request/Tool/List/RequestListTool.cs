@@ -5,7 +5,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
     public class RequestListTool : IRequestListTool
     {
-        public string RequestID { get; set; } = string.Empty;
+        public string RequestID { get; set; } = Guid.NewGuid().ToString();
 
         // Empty constructor for JSON deserialization
         public RequestListTool() { }
