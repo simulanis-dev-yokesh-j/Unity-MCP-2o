@@ -2,7 +2,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common;
 using UnityEditor;
 
 namespace com.IvanMurzak.Unity.MCP.Editor

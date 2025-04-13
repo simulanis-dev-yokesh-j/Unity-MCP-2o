@@ -10,23 +10,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpServerTool
         (
-            Name = "GameObject_FindByName",
-            Title = "Find GameObject by name"
+            Name = "GameObject_FindByPath",
+            Title = "Find GameObject by path"
         )]
-        [Description("Find GameObject by name in the active scene. Returns the path to the GameObject.")]
-        public Task<CallToolResponse> FindByName
+        [Description("Find GameObject tree by the path to the root GameObject. Returns metadata about each GameObject.")]
+        public Task<CallToolResponse> FindByPath
         (
-            [Description("Name of the target GameObject.")]
-            string name,
+            [Description("Path to the GameObject.")]
+            string path,
             [Description("Include children GameObjects in the result.")]
             bool includeChildren = true,
             [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
             bool includeChildrenRecursively = false
         )
         {
-            return ToolRouter.Call("GameObject_FindByName", arguments =>
+            return ToolRouter.Call("GameObject_Create", arguments =>
             {
-                arguments[nameof(name)] = name;
+                arguments[nameof(path)] = path;
                 arguments[nameof(includeChildren)] = includeChildren;
                 arguments[nameof(includeChildrenRecursively)] = includeChildrenRecursively;
             });
