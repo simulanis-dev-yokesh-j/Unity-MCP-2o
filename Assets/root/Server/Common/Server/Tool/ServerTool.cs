@@ -4,7 +4,7 @@ using com.IvanMurzak.Unity.MCP.Common.Data;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Server
 {
-    public abstract class ServerTool : IServerTool //  : ServerCommand<IRequestCallTool, IResponseCallTool>, IServerTool
+    public abstract class ServerTool : ServerCommand<IRequestCallTool, IResponseCallTool>, IServerTool
     {
 
     }

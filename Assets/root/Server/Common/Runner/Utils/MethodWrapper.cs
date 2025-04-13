@@ -103,7 +103,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             return result;
         }
 
-        protected virtual async Task<object?> Invoke(IDictionary<string, JsonElement>? namedParameters)
+        protected virtual async Task<object?> Invoke(IReadOnlyDictionary<string, JsonElement>? namedParameters)
         {
             if (_methodInfo == null)
                 throw new InvalidOperationException("The method information is not initialized.");
@@ -170,7 +170,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.MCP
             return finalParameters;
         }
 
-        protected object?[]? BuildParameters(IDictionary<string, JsonElement>? namedParameters)
+        protected object?[]? BuildParameters(IReadOnlyDictionary<string, JsonElement>? namedParameters)
         {
             if (namedParameters == null)
                 return null;
