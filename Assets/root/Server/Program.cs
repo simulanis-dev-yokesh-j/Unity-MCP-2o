@@ -35,7 +35,12 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
                 // Setup MCP server ---------------------------------------------------------------
                 builder.Services
-                    .AddMcpServer()
+                    .AddMcpServer(options =>
+                    {
+                        options.Capabilities ??= new();
+                        options.Capabilities.Tools ??= new();
+                        options.Capabilities.Tools.ListChanged = true;
+                    })
                     .WithStdioServerTransport()
                     // .WithPromptsFromAssembly()
                     // .WithToolsFromAssembly()
