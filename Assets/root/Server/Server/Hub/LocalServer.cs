@@ -1,5 +1,4 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR;
@@ -20,14 +19,16 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
         }
 
-        public Task<IResponseData<string>> SetOnListToolsUpdated(string data, CancellationToken cancellationToken = default)
+        public Task<IResponseData<string>> SetOnListToolsUpdated(string data)
         {
+            _logger.LogTrace("SetOnListToolsUpdated. Data: {0}", data);
             _onListToolUpdated.OnNext(Unit.Default);
             return ResponseData<string>.Success(data, string.Empty).TaskFromResult();
         }
 
-        public Task<IResponseData<string>> SetOnListResourcesUpdated(string data, CancellationToken cancellationToken = default)
+        public Task<IResponseData<string>> SetOnListResourcesUpdated(string data)
         {
+            _logger.LogTrace("SetOnListResourcesUpdated. Data: {0}", data);
             _onListResourcesUpdated.OnNext(Unit.Default);
             return ResponseData<string>.Success(data, string.Empty).TaskFromResult();
         }

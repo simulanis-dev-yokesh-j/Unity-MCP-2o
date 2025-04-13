@@ -12,8 +12,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
         Observable<Unit> OnListToolUpdated { get; }
         Observable<Unit> OnListResourcesUpdated { get; }
 
-        Task<IResponseData<string>> SetOnListToolsUpdated(string data, CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> SetOnListResourcesUpdated(string data, CancellationToken cancellationToken = default);
+        Task<IResponseData<string>> SetOnListToolsUpdated(string data);
+        Task<IResponseData<string>> SetOnListResourcesUpdated(string data);
     }
 
     public interface IToolResponseReceiver

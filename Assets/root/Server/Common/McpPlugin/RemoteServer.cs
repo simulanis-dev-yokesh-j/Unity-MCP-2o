@@ -23,16 +23,16 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _connectionManager.Endpoint = Consts.Hub.DefaultEndpoint + Consts.Hub.LocalServer;
         }
 
-        public Task<IResponseData<string>> NotifyAboutUpdatedTools(CancellationToken cancellationToken = default)
+        public Task<ResponseData<string>> NotifyAboutUpdatedTools(CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("Notify server about updated tools.");
-            return _connectionManager.InvokeAsync<string, IResponseData<string>>(Consts.RPC.Server.SetOnListToolsUpdated, string.Empty, cancellationToken);
+            return _connectionManager.InvokeAsync<string, ResponseData<string>>(Consts.RPC.Server.SetOnListToolsUpdated, string.Empty, cancellationToken);
         }
 
-        public Task<IResponseData<string>> NotifyAboutUpdatedResources(CancellationToken cancellationToken = default)
+        public Task<ResponseData<string>> NotifyAboutUpdatedResources(CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("Notify server about updated resources.");
-            return _connectionManager.InvokeAsync<string, IResponseData<string>>(Consts.RPC.Server.SetOnListResourcesUpdated, string.Empty, cancellationToken);
+            return _connectionManager.InvokeAsync<string, ResponseData<string>>(Consts.RPC.Server.SetOnListResourcesUpdated, string.Empty, cancellationToken);
         }
 
         public Task<bool> Connect(CancellationToken cancellationToken = default)

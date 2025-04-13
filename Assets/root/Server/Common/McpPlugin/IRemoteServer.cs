@@ -7,8 +7,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public interface IRemoteServer : IConnection, IToolResponseSender, IResourceResponseSender, IDisposableAsync
     {
-        Task<IResponseData<string>> NotifyAboutUpdatedTools(CancellationToken cancellationToken = default);
-        Task<IResponseData<string>> NotifyAboutUpdatedResources(CancellationToken cancellationToken = default);
+        Task<ResponseData<string>> NotifyAboutUpdatedTools(CancellationToken cancellationToken = default);
+        Task<ResponseData<string>> NotifyAboutUpdatedResources(CancellationToken cancellationToken = default);
     }
 
     // -----------------------------------------------------------------
