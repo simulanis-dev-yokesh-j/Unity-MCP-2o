@@ -9,12 +9,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_Component
     {
-        [Tool("Component_Get_All",
+        [Tool
+        (
+            "Component_Get_All",
             Title = "Get list of all Components",
-            Description = "Returns the list of all available components in the project.")]
-        public string GetAll(
+            Description = "Returns the list of all available components in the project."
+        )]
+        public string GetAll
+        (
             [Description("Substring for searching components. Could be empty.")]
-            string? search = null)
+            string? search = null
+        )
         {
             var componentTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())

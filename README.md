@@ -4,6 +4,8 @@
 
 AI gate to Unity Editor and Unity player's build.
 
+Supports custom `tool` if any exists in your source code of a Unity project.
+
 ## AI Tools
 
 ### GameObject
@@ -22,6 +24,48 @@ AI gate to Unity Editor and Unity player's build.
 
 ### Scripts
 
+## Add custom `tool`
+
+To add a custom `tool` just need to create `.cs` file in your project source. There is a sample a tool.
+
+> Take a look that the line `=> MainThread.Run(() =>` it allows to run the code in Main thread which is needed to interact with Unity API. If you don't need it and running the tool in background thread is fine for the tool, don't use Main thread for efficience purpose.
+
+```csharp
+public partial class Tool_GameObject
+{
+    [Tool
+    (
+        "GameObject_Create",
+        Title = "Create a new GameObject",
+        Description = "Create a new GameObject."
+    )]
+    public string Create
+    (
+        [Description("Path to the GameObject (excluding the name of the GameObject).")]
+        string path,
+        [Description("Name of the GameObject.")]
+        string name
+    )
+    => MainThread.Run(() =>
+    {
+        var targetParent = string.IsNullOrEmpty(path) ? null : GameObject.Find(path);
+        if (targetParent == null && !string.IsNullOrEmpty(path))
+            return $"[Error] Parent GameObject '{path}' not found.";
+
+        var go = new GameObject(name);
+        go.transform.position = new Vector3(0, 0, 0);
+        go.transform.rotation = Quaternion.identity;
+        go.transform.localScale = new Vector3(1, 1, 1);
+        if (targetParent != null)
+            go.transform.SetParent(targetParent.transform, false);
+
+        EditorUtility.SetDirty(go);
+        EditorApplication.RepaintHierarchyWindow();
+
+        return $"[Success] Created GameObject '{name}' at path '{path}'.";
+    });
+}
+```
 
 # Steps to make your package
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using Debug = UnityEngine.Debug;
-using com.IvanMurzak.Unity.MCP.Common.Utils;
+using com.IvanMurzak.Unity.MCP.Editor.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {

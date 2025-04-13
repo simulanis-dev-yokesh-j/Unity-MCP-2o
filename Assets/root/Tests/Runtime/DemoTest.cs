@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Package.Tests
+namespace com.IvanMurzak.Unity.MCP.Runtime.Tests
 {
     public partial class DemoTest
     {

@@ -8,11 +8,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_Component
     {
-        [McpServerTool(Name = "Component_Get_All", Title = "Get list of all Components")]
+        [McpServerTool
+        (
+            Name = "Component_Get_All",
+            Title = "Get list of all Components"
+        )]
         [Description("Returns the list of all available components in the project.")]
-        public Task<CallToolResponse> GetAll(
+        public Task<CallToolResponse> GetAll
+        (
             [Description("Substring for searching components. Could be empty.")]
-            string search)
+            string search
+        )
         {
             return ToolRouter.Call("Component_Get_All", arguments =>
             {

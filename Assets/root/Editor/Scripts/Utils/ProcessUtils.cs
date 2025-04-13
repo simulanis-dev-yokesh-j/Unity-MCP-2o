@@ -1,9 +1,11 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using com.IvanMurzak.Unity.MCP.Common;
 using Debug = UnityEngine.Debug;
 
-namespace com.IvanMurzak.Unity.MCP.Common.Utils
+namespace com.IvanMurzak.Unity.MCP.Editor.Utils
 {
     public static class ProcessUtils
     {

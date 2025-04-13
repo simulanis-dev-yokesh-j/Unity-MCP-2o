@@ -8,18 +8,24 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_Component
     {
-        [McpServerTool(Name = "Component_Add", Title = "Add Component")]
-        [Description("Add new Component instance to a target GameObject.")]
-        public Task<CallToolResponse> Add(
-            [Description("Path to the GameObject.")]
-            string path,
-            [Description("Component class full name, including namespace.")]
-            string fullName)
+        [McpServerTool
+        (
+            Name = "Component_Add",
+            Title = "Add Component to a GameObject"
+        )]
+        [Description("Add a component to a GameObject.")]
+        public Task<CallToolResponse> Add
+        (
+            [Description("Full name of the Component. It should include full namespace path and the class name.")]
+            string componentName,
+            [Description("Path to the GameObject (including the name of the GameObject).")]
+            string gameObjectPath
+        )
         {
             return ToolRouter.Call("Component_Add", arguments =>
             {
-                arguments[nameof(path)] = path;
-                arguments[nameof(fullName)] = fullName;
+                arguments[nameof(componentName)] = componentName;
+                arguments[nameof(gameObjectPath)] = gameObjectPath;
             });
         }
     }
