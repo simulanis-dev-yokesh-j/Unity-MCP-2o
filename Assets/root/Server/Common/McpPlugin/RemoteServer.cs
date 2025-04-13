@@ -35,43 +35,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return _connectionManager.InvokeAsync<string, IResponseData<string>>(Consts.RPC.Server.SetOnListResourcesUpdated, string.Empty, cancellationToken);
         }
 
-        // public Task<IResponseData<string>> RespondOnCallTool(IResponseData<IResponseCallTool> data, CancellationToken cancellationToken = default)
-        // {
-        //     _logger.LogTrace("RespondOnCallTool.");
-        //     return _connectionManager.InvokeAsync<
-        //         IResponseData<IResponseCallTool>,
-        //         IResponseData<string>>(Consts.RPC.ResponseOnCallTool, data, cancellationToken);
-        // }
-        // public Task<IResponseData<string>> RespondOnListTool(IResponseData<IResponseListTool[]> data, CancellationToken cancellationToken = default)
-        // {
-        //     _logger.LogTrace("RespondOnListTool.");
-        //     return _connectionManager.InvokeAsync<
-        //         IResponseData<IResponseListTool[]>,
-        //         IResponseData<string>>(Consts.RPC.ResponseOnListTool, data, cancellationToken);
-        // }
-
-        // public Task<IResponseData<string>> RespondOnResourceContent(IResponseData<List<IResponseResourceContent>> data, CancellationToken cancellationToken = default)
-        // {
-        //     _logger.LogTrace("RespondOnResourceContent.");
-        //     return _connectionManager.InvokeAsync<
-        //         IResponseData<List<IResponseResourceContent>>,
-        //         IResponseData<string>>(Consts.RPC.ResponseOnResourceContent, data, cancellationToken);
-        // }
-        // public Task<IResponseData<string>> RespondOnListResources(IResponseData<List<IResponseListResource>> data, CancellationToken cancellationToken = default)
-        // {
-        //     _logger.LogTrace("RespondOnListResources.");
-        //     return _connectionManager.InvokeAsync<
-        //         IResponseData<List<IResponseListResource>>,
-        //         IResponseData<string>>(Consts.RPC.ResponseOnListResources, data, cancellationToken);
-        // }
-        // public Task<IResponseData<string>> RespondOnResourceTemplates(IResponseData<List<IResponseResourceTemplate>> data, CancellationToken cancellationToken = default)
-        // {
-        //     _logger.LogTrace("RespondOnResourceTemplates.");
-        //     return _connectionManager.InvokeAsync<
-        //         IResponseData<List<IResponseResourceTemplate>>,
-        //         IResponseData<string>>(Consts.RPC.ResponseOnListResourceTemplates, data, cancellationToken);
-        // }
-
         public Task<bool> Connect(CancellationToken cancellationToken = default)
         {
             _logger.LogTrace("Connecting... (to LocalServer: {0}).", _connectionManager.Endpoint);

@@ -66,28 +66,35 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
         async void OnListToolUpdated(Unit _)
         {
-            var tools = _mcpServer.ServerOptions.Capabilities?.Tools?.ToolCollection;
-            if (tools == null)
+            try
             {
-                _logger.LogError("Tools capability is not set. Cannot update tools.");
-                return;
-            }
-            // Fetch new tools from Plugin
-            var request = new RequestListTool();
-            var response = await _remoteApp.RunListTool(request);
-            if (response.IsError)
-            {
-                _logger.LogError("Failed to fetch tools from plugin: {Error}", response.Message);
-                return;
-            }
-            var pluginTools = response?.Value
-                ?.Select(x => x.ToMcpServerTool())
-                ?.ToArray() ?? Array.Empty<McpServerTool>();
+                var tools = _mcpServer.ServerOptions.Capabilities?.Tools?.ToolCollection;
+                if (tools == null)
+                {
+                    _logger.LogError("Tools capability is not set. Cannot update tools.");
+                    return;
+                }
+                // Fetch new tools from Plugin
+                var request = new RequestListTool();
+                var response = await _remoteApp.RunListTool(request);
+                if (response.IsError)
+                {
+                    _logger.LogError("Failed to fetch tools from plugin: {Error}", response.Message);
+                    return;
+                }
+                var pluginTools = response?.Value
+                    ?.Select(x => x.ToMcpServerTool())
+                    ?.ToArray() ?? Array.Empty<McpServerTool>();
 
-            // Update the tools collection
-            tools.Clear();
-            foreach (var tool in pluginTools)
-                tools.Add(tool);
+                // Update the tools collection
+                tools.Clear();
+                foreach (var tool in pluginTools)
+                    tools.Add(tool);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error updating tools: {Message}", ex.Message);
+            }
         }
 
         // async void OnListResourcesUpdated(Unit _)

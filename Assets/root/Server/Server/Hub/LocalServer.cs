@@ -20,16 +20,16 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
         }
 
-        public Task<IResponseData<string>> SetOnListToolsUpdated(CancellationToken cancellationToken = default)
+        public Task<IResponseData<string>> SetOnListToolsUpdated(string data, CancellationToken cancellationToken = default)
         {
             _onListToolUpdated.OnNext(Unit.Default);
-            return Task.FromResult<IResponseData<string>>(ResponseData<string>.Success(string.Empty, string.Empty));
+            return ResponseData<string>.Success(data, string.Empty).TaskFromResult();
         }
 
-        public Task<IResponseData<string>> SetOnListResourcesUpdated(CancellationToken cancellationToken = default)
+        public Task<IResponseData<string>> SetOnListResourcesUpdated(string data, CancellationToken cancellationToken = default)
         {
             _onListResourcesUpdated.OnNext(Unit.Default);
-            return Task.FromResult<IResponseData<string>>(ResponseData<string>.Success(string.Empty, string.Empty));
+            return ResponseData<string>.Success(data, string.Empty).TaskFromResult();
         }
 
         public new void Dispose()
