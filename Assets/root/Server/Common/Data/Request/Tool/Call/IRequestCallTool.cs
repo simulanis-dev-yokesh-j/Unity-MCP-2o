@@ -8,6 +8,6 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
     public interface IRequestCallTool : IRequestID, IDisposable
     {
         string Name { get; set; }
-        Dictionary<string, JsonElement> Arguments { get; set; }
+        IReadOnlyDictionary<string, JsonElement> Arguments { get; set; }
     }
 }

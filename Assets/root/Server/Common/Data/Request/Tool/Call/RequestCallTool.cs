@@ -9,12 +9,12 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
     {
         public string RequestID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
-        public Dictionary<string, JsonElement> Arguments { get; set; } = new();
+        public IReadOnlyDictionary<string, JsonElement> Arguments { get; set; } = new Dictionary<string, JsonElement>();
 
         public RequestCallTool() { }
-        public RequestCallTool(string name, Dictionary<string, JsonElement> arguments)
+        public RequestCallTool(string name, IReadOnlyDictionary<string, JsonElement> arguments)
             : this(Guid.NewGuid().ToString(), name, arguments) { }
-        public RequestCallTool(string requestId, string name, Dictionary<string, JsonElement> arguments)
+        public RequestCallTool(string requestId, string name, IReadOnlyDictionary<string, JsonElement> arguments)
         {
             RequestID = requestId ?? throw new ArgumentNullException(nameof(requestId));
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -23,7 +23,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data
 
         public virtual void Dispose()
         {
-            Arguments.Clear();
+            // Arguments.Clear();
         }
         ~RequestCallTool() => Dispose();
     }

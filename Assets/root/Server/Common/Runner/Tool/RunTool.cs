@@ -61,7 +61,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        public async Task<ResponseCallTool> Run(IDictionary<string, JsonElement>? namedParameters)
+        public async Task<ResponseCallTool> Run(IReadOnlyDictionary<string, JsonElement>? namedParameters)
         {
             var result = await Invoke(namedParameters);
             return result as ResponseCallTool ?? ResponseCallTool.Success(result?.ToString());
