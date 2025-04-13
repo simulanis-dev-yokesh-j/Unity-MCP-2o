@@ -3,11 +3,15 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
     public interface ILocalServer : IToolResponseReceiver, IResourceResponseReceiver, IDisposable
     {
+        Observable<Unit> OnListToolUpdated { get; }
+        Observable<Unit> OnListResourcesUpdated { get; }
+
         Task<IResponseData<string>> SetOnListToolsUpdated(CancellationToken cancellationToken = default);
         Task<IResponseData<string>> SetOnListResourcesUpdated(CancellationToken cancellationToken = default);
     }

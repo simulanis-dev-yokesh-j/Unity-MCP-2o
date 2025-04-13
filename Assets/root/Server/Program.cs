@@ -45,18 +45,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .WithListResourcesHandler(ResourceRouter.ListResources)
                     .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates);
 
-                // Setup SignalR connection builder -----------------------------------------------
-                // TODO: Replace raw TCP with SignalR
-                // builder.Services.AddSingleton(new HubConnectionBuilder()
-                //     .WithUrl(Environment.GetEnvironmentVariable("UNITY_URL") ?? Consts.Remote.URL)
-                //     .WithAutomaticReconnect()
-                //     .AddJsonProtocol()
-                //     .ConfigureLogging(logging =>
-                //     {
-                //         logging.AddNLog();
-                //         logging.SetMinimumLevel(LogLevel.Information);
-                //     }));
-
                 // Setup McpApp ----------------------------------------------------------------
                 builder.Services.AddMcpPlugin(configure =>
                 {

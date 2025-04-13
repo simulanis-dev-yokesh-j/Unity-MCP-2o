@@ -25,12 +25,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 public const string SetOnListToolsUpdated = "SetOnListToolsUpdated";
                 public const string SetOnListResourcesUpdated = "SetOnListResourcesUpdated";
             }
-
-            // public const string ResponseOnCallTool = "RespondOnCallTool";
-            // public const string ResponseOnListTool = "RespondOnListTool";
-            // public const string ResponseOnResourceContent = "RespondOnResourceContent";
-            // public const string ResponseOnListResources = "RespondOnListResources";
-            // public const string ResponseOnListResourceTemplates = "RespondOnResourceTemplates";
         }
     }
 }
