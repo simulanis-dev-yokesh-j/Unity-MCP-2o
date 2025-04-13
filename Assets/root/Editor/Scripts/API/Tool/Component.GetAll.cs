@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_Component
     {
-        [Tool
+        [McpPluginTool
         (
             "Component_Get_All",
             Title = "Get list of all Components",

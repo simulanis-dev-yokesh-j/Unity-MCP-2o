@@ -41,7 +41,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
-                var attribute = method.GetCustomAttribute<ResourceAttribute>();
+                var attribute = method.GetCustomAttribute<McpPluginResourceAttribute>();
                 if (attribute == null)
                     continue;
 
@@ -86,7 +86,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             return builder.WithResources(
                 from t in assembly.GetTypes()
-                where t.GetCustomAttribute<ResourceTypeAttribute>() is not null
+                where t.GetCustomAttribute<McpPluginResourceTypeAttribute>() is not null
                 select t);
         }
     }

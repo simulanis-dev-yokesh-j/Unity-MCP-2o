@@ -24,7 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 {
                     foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
                     {
-                        if (method.GetCustomAttribute<PromptAttribute>() is not null)
+                        if (method.GetCustomAttribute<McpPluginPromptAttribute>() is not null)
                         {
                             // builder.Services.AddSingleton((Func<IServiceProvider, Prompt>)(method.IsStatic ?
                             //     services => McpServerPrompt.Create(method, options: new() { Services = services }) :
@@ -46,7 +46,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             return builder.WithPrompts(
                 from t in assembly.GetTypes()
-                where t.GetCustomAttribute<PromptTypeAttribute>() is not null
+                where t.GetCustomAttribute<McpPluginPromptTypeAttribute>() is not null
                 select t);
         }
     }

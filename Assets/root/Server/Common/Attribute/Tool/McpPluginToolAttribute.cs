@@ -4,13 +4,13 @@ using System;
 namespace com.IvanMurzak.Unity.MCP.Common
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class ToolAttribute : Attribute
+    public sealed class McpPluginToolAttribute : Attribute
     {
         public string Name { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
 
-        public ToolAttribute(string name, string? title = null, string? description = null)
+        public McpPluginToolAttribute(string name, string? title = null, string? description = null)
         {
             Name = name;
             Title = title;

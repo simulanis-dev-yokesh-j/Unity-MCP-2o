@@ -40,14 +40,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             foreach (var method in targetType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             {
-                var attribute = method.GetCustomAttribute<ToolAttribute>();
+                var attribute = method.GetCustomAttribute<McpPluginToolAttribute>();
                 if (attribute == null)
                     continue;
 
                 if (string.IsNullOrEmpty(attribute.Name))
                     throw new ArgumentException($"Tool name cannot be null or empty. Type: {targetType.Name}, Method: {method.Name}");
 
-                var className = targetType.GetCustomAttribute<ToolTypeAttribute>()?.Path ?? targetType.FullName;
+                var className = targetType.GetCustomAttribute<McpPluginToolTypeAttribute>()?.Path ?? targetType.FullName;
                 if (className == null)
                     throw new InvalidOperationException($"Type {targetType.Name} does not have a full name.");
 
@@ -69,7 +69,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             return builder.WithTools(
                 from t in assembly.GetTypes()
-                where t.GetCustomAttribute<ToolTypeAttribute>() is not null
+                where t.GetCustomAttribute<McpPluginToolTypeAttribute>() is not null
                 select t);
         }
     }
