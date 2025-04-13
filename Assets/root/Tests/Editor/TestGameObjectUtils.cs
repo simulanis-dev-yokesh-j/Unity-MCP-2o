@@ -37,5 +37,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Tests
 
             yield return null;
         }
+
+        [UnityTest]
+        public IEnumerator GetPath()
+        {
+            var parentName = "root";
+            var childName = "nestedGo";
+            var child = new GameObject(parentName).AddChild(childName);
+
+            Assert.AreEqual(child.GetPath(), $"{parentName}/{childName}",
+                $"GameObject '{childName}' should have path '{parentName}/{childName}'");
+
+            yield return null;
+        }
     }
 }
