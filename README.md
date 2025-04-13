@@ -1,10 +1,27 @@
-# Unity Package Template
+# Unity MCP (Server + Plugin)
 
 <img width="100%" alt="Stats" src="https://user-images.githubusercontent.com/9135028/198754538-4dd93fc6-7eb2-42ae-8ac6-d7361c39e6ef.gif"/>
 
-Unity Editor supports NPM packages. It is way more flexible solution in comparison with classic Plugin that Unity is using for years. NPM package supports versioning and dependencies. You may update / downgrade any package very easily. Also, Unity Editor has UPM (Unity Package Manager) that makes the process even simpler.
+AI gate to Unity Editor and Unity player's build.
 
-This template repository is designed to be easily updated into a real Unity package. Please follow the instruction bellow, it will help you to go through the entire process of package creation, distribution and installing.
+## AI Tools
+
+### GameObject
+
+- Create
+- Destroy
+
+### Component
+
+- Get All from the project
+- Add to GamePbject
+
+### Prefabs
+
+### Materials
+
+### Scripts
+
 
 # Steps to make your package
 
