@@ -18,6 +18,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         /// </summary>
         /// <param name="namedParameters">A dictionary mapping parameter names to their values.</param>
         /// <returns>The result of the method execution, or null if the method is void.</returns>
-        Task<ResponseCallTool> Run(IDictionary<string, JsonElement>? namedParameters);
+        Task<ResponseCallTool> Run(IReadOnlyDictionary<string, JsonElement>? namedParameters);
     }
 }
