@@ -207,6 +207,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
+#pragma warning disable CS4014
+            DisposeAsync();
+            // DisposeAsync().Wait();
+            // Unity won't reload Domain if we call DisposeAsync().Wait() here.
+#pragma warning restore CS4014
+        }
+
+        public async Task DisposeAsync()
+        {
             connectionTask?.Dispose();
             connectionTask = null;
 
@@ -219,15 +228,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
             if (_hubConnection.Value == null)
                 return;
 
-            // DisposeAsync().AsTask().Wait();
-            // Unity won't reload Domain if we call DisposeAsync().AsTask().Wait() here.
-#pragma warning disable CS4014
-            DisposeAsync();
-#pragma warning restore CS4014
-        }
-
-        public async ValueTask DisposeAsync()
-        {
             if (_hubConnection.Value != null)
             {
                 try

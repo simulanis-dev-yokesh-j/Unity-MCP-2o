@@ -129,8 +129,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
+            DisposeAsync().Wait();
+        }
+        public Task DisposeAsync()
+        {
             _serverEventsDisposables.Dispose();
             _hubConnectionDisposable.Dispose();
+
+            return _connectionManager.DisposeAsync();
         }
     }
 }

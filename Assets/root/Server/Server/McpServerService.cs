@@ -47,8 +47,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
         {
             _logger.LogTrace("StopAsync.");
             Instance = null;
-            McpPlugin.StaticDispose();
-            return Task.CompletedTask;
+            return McpPlugin.StaticDisposeAsync();
         }
     }
 }

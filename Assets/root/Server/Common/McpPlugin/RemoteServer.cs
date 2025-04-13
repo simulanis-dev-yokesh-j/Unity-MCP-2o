@@ -87,5 +87,10 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             _connectionManager.Dispose();
         }
+
+        public Task DisposeAsync()
+        {
+            return _connectionManager.DisposeAsync();
+        }
     }
 }

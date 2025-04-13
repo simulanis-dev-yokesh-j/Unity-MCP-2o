@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
-    public interface IRpcRouter : IDisposable
+    public interface IRpcRouter : IDisposableAsync
     {
         HubConnectionState ConnectionState { get; }
         Task<bool> Connect(CancellationToken cancellationToken = default);

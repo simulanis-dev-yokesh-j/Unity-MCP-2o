@@ -51,10 +51,28 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public void Dispose()
         {
-            RemoteServer.Dispose();
-            _rpcRouter.Dispose();
-            instance = null;
+            DisposeAsync().Wait();
         }
+
+        public async Task DisposeAsync()
+        {
+            var localInstance = instance;
+            instance = null;
+
+            try
+            {
+                await _rpcRouter.DisposeAsync();
+                await RemoteServer.DisposeAsync();
+
+                if (localInstance != null)
+                    await localInstance.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error during async disposal: {0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+
         ~McpPlugin() => Dispose();
     }
 }
