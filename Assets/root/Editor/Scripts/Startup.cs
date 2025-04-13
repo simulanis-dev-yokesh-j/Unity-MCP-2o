@@ -22,13 +22,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             var message = "<b><color=yellow>STARTUP</color></b>";
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
 
-            new ConnectorBuilder()
+            new McpPluginBuilder()
+                .WithAppFeatures()
                 .WithConfig(config =>
                 {
-                    config.IPAddress = IPAddress.Loopback;
-                    config.PortServer = 60600;
-                    config.PortUnity = 60606;
-                    config.ConnectionType = Connector.ConnectionRole.Unity;
+
                 })
                 .AddLogging(loggingBuilder =>
                 {

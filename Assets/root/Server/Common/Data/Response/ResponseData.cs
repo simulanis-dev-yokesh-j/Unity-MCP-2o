@@ -1,49 +1,30 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System.Linq;
-using Microsoft.Extensions.Logging;
+
+using System;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public class ResponseData : IResponseData
+    public class ResponseData<T> : IResponseData<T>
     {
-        public bool IsSuccess { get; set; } = false;
+        public string RequestID { get; set; } = string.Empty;
+        public bool IsError { get; set; }
         public string? Message { get; set; }
-        public ResponseResourceContent[]? ResourceContents { get; set; }
-        public ResponseListResource[]? ListResources { get; set; }
-        public ResponseResourceTemplate[]? ListResourceTemplates { get; set; }
-
-        IResponseResourceContent[]? IResponseData.ResourceContents => ResourceContents;
-        IResponseListResource[]? IResponseData.ListResources => ListResources;
-        IResponseResourceTemplate[]? IResponseData.ListResourceTemplates => ListResourceTemplates;
+        public T? Value { get; set; }
 
         public ResponseData() { }
-        public ResponseData(bool isSuccess)
+        public ResponseData(string requestId, bool isError)
         {
-            IsSuccess = isSuccess;
+            RequestID = requestId ?? throw new ArgumentNullException(nameof(requestId));
+            IsError = isError;
         }
 
-        public static ResponseData Success(string? message = null) => new(isSuccess: true)
+        public static ResponseData<T> Success(string requestId, string? message = null) => new(requestId, isError: false)
         {
             Message = message
         };
-        public static ResponseData Error(string? message = null) => new(isSuccess: false)
+        public static ResponseData<T> Error(string requestId, string? message = null) => new(requestId, isError: true)
         {
             Message = "[Error] " + message
-        };
-        public static ResponseData CreateResourceContents(string? message, IResponseResourceContent[] resourceContents) => new(isSuccess: true)
-        {
-            Message = message,
-            ResourceContents = resourceContents.Cast<ResponseResourceContent>().ToArray()
-        };
-        public static ResponseData CreateListResources(string? message, IResponseListResource[] listResources) => new(isSuccess: true)
-        {
-            Message = message,
-            ListResources = listResources.Cast<ResponseListResource>().ToArray()
-        };
-        public static ResponseData CreateListResourceTemplates(string? message, IResponseResourceTemplate[] resourceTemplates) => new(isSuccess: true)
-        {
-            Message = message,
-            ListResourceTemplates = resourceTemplates.Cast<ResponseResourceTemplate>().ToArray()
         };
     }
 }

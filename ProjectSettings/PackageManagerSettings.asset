@@ -30,6 +30,13 @@ MonoBehaviour:
     m_Name: package.openupm.com
     m_Url: https://package.openupm.com
     m_Scopes:
+    - org.nuget.microsoft.aspnetcore.connections.abstractions
+    - org.nuget.microsoft.aspnetcore.http.connections.client
+    - org.nuget.microsoft.aspnetcore.http.connections.common
+    - org.nuget.microsoft.aspnetcore.signalr.client
+    - org.nuget.microsoft.aspnetcore.signalr.client.core
+    - org.nuget.microsoft.aspnetcore.signalr.common
+    - org.nuget.microsoft.aspnetcore.signalr.protocols.json
     - org.nuget.microsoft.bcl.asyncinterfaces
     - org.nuget.microsoft.bcl.memory
     - org.nuget.microsoft.bcl.timeprovider
@@ -46,6 +53,7 @@ MonoBehaviour:
     - org.nuget.microsoft.extensions.dependencyinjection.abstractions
     - org.nuget.microsoft.extensions.diagnostics
     - org.nuget.microsoft.extensions.diagnostics.abstractions
+    - org.nuget.microsoft.extensions.features
     - org.nuget.microsoft.extensions.fileproviders.abstractions
     - org.nuget.microsoft.extensions.fileproviders.physical
     - org.nuget.microsoft.extensions.filesystemglobbing

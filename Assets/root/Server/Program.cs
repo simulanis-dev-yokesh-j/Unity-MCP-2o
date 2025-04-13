@@ -1,13 +1,15 @@
 ﻿#if !IGNORE
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using com.IvanMurzak.Unity.MCP.Common;
 using NLog.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using NLog;
 using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
@@ -20,7 +22,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
             var logger = LogManager.Setup().LoadConfigurationFromFile("NLog.config").GetCurrentClassLogger();
             try
             {
-                var builder = Host.CreateApplicationBuilder(args);
+                var builder = WebApplication.CreateBuilder(args);
+
+                builder.Services.AddSignalR();
+
                 // Configure all logs to go to stderr. This is needed for MCP STDIO server to work properly.
                 builder.Logging.AddConsole(consoleLogOptions => consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace);
 
@@ -28,17 +33,17 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 // builder.Logging.ClearProviders();
                 builder.Logging.AddNLog();
 
-
-
                 // Setup MCP server ---------------------------------------------------------------
                 builder.Services
                     .AddMcpServer()
                     .WithStdioServerTransport()
-                    .WithPromptsFromAssembly()
-                    .WithToolsFromAssembly()
-                    .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates)
+                    // .WithPromptsFromAssembly()
+                    // .WithToolsFromAssembly()
+                    .WithCallToolHandler(ToolRouter.Call)
+                    .WithListToolsHandler(ToolRouter.ListAll)
+                    .WithReadResourceHandler(ResourceRouter.ReadResource)
                     .WithListResourcesHandler(ResourceRouter.ListResources)
-                    .WithReadResourceHandler(ResourceRouter.ReadResource);
+                    .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates);
 
                 // Setup SignalR connection builder -----------------------------------------------
                 // TODO: Replace raw TCP with SignalR
@@ -52,22 +57,64 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 //         logging.SetMinimumLevel(LogLevel.Information);
                 //     }));
 
-                // Setup Connector ----------------------------------------------------------------
-                builder.Services
-                    .AddConnector()
-                    .AddLogging(logging =>
-                    {
-                        logging.AddNLog();
-                        logging.SetMinimumLevel(LogLevel.Information);
-                    })
-                    .WithConfig(config =>
-                    {
-                        config.ConnectionType = Connector.ConnectionRole.Server;
-                    })
-                    .Build() // TODO: Build it right now is not the best idea
-                    .Connect();
+                // Setup McpApp ----------------------------------------------------------------
+                builder.Services.AddMcpPlugin(configure =>
+                {
+                    configure
+                        .WithServerFeatures()
+                        .AddLogging(logging =>
+                        {
+                            logging.AddNLog();
+                            logging.SetMinimumLevel(LogLevel.Information);
+                        })
+                        .WithConfig(config =>
+                        {
 
-                await builder.Build().RunAsync();
+                        });
+                });
+
+                // TODO: add reading from configs (json file and env variables)
+                // "http://localhost:60606");
+                // builder.WebHost.UseUrls(Consts.Hub.DefaultEndpoint);
+                builder.WebHost.UseKestrel(options =>
+                {
+                    options.ListenLocalhost(60606); // Bind to localhost only on port 60606
+                });
+
+                var app = builder.Build();
+
+                // Middleware ----------------------------------------------------------------
+                // ---------------------------------------------------------------------------
+
+                app.UseRouting();
+                app.MapHub<LocalServer>(Consts.Hub.LocalServer, options =>
+                {
+                    options.Transports = HttpTransports.All;
+                    options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                    options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                });
+                app.MapHub<RemoteApp>(Consts.Hub.RemoteApp, options =>
+                {
+                    options.Transports = HttpTransports.All;
+                    options.ApplicationMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                    options.TransportMaxBufferSize = 1024 * 1024 * 10; // 10 MB
+                });
+
+                if (logger.IsEnabled(NLog.LogLevel.Debug))
+                {
+                    var endpointDataSource = app.Services.GetRequiredService<Microsoft.AspNetCore.Routing.EndpointDataSource>();
+                    foreach (var endpoint in endpointDataSource.Endpoints)
+                        logger.Info($"Configured endpoint: {endpoint.DisplayName}");
+
+                    app.Use(async (context, next) =>
+                    {
+                        logger.Debug($"Request: {context.Request.Method} {context.Request.Path}");
+                        await next.Invoke();
+                        logger.Debug($"Response: {context.Response.StatusCode}");
+                    });
+                }
+
+                await app.RunAsync();
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections.Generic;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using com.IvanMurzak.Unity.MCP.Common.Utils;
@@ -19,7 +20,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             Name = "GameObject_CurrentScene",
             Description = "Get gameObject's components and the values of each explicit property."
         )]
-        public IResponseResourceContent[] CurrentScene(string uri, string path)
+        public ResponseResourceContent[] CurrentScene(string uri, string path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new System.Exception("[Error] Path to the GameObject is empty.");
@@ -41,7 +42,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             });
         }
 
-        public IResponseListResource[] CurrentSceneAll() => MainThread.Run(()
+        public ResponseListResource[] CurrentSceneAll() => MainThread.Run(()
             => EditorSceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(root => GameObjectUtils.GetAllRecursively(root))
                 .Select(kvp => new ResponseListResource($"gameObject://currentScene/{kvp.Key}", kvp.Value.name, Consts.MimeType.TextJson))

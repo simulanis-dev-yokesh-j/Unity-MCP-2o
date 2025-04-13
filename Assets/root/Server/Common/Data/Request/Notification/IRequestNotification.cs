@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Data
 {
-    public interface IRequestNotification : IDisposable
+    public interface IRequestNotification : IRequestID, IDisposable
     {
         string? Path { get; set; }
         string? Name { get; set; }

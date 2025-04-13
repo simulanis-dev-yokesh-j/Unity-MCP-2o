@@ -8,7 +8,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [ToolType]
     public partial class Tool_Component
     {
-        [Tool(Name = "Add", Description = "Add a component to a GameObject.")]
+        [Tool(Name = "Add Component to a GameObject", Description = "Add a component to a GameObject.")]
         public string Add(string path, string fullName)
         {
             if (string.IsNullOrEmpty(path))

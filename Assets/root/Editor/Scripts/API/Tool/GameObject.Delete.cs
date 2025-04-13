@@ -6,7 +6,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
     public partial class Tool_GameObject
     {
-        [Tool(Name = "Delete", Description = "Delete a GameObject.")]
+        [Tool(Name = "Delete GameObject", Description = "Delete a GameObject.")]
         public string Delete(string fullPath) => MainThread.Run(() =>
         {
             var go = GameObject.Find(fullPath);

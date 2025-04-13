@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             data.Parameters[name] = value;
             return data;
         }
-        public static IRequestData Build(this IRequestNotification data)
-            => new RequestData(data as RequestNotification ?? throw new System.InvalidOperationException("NotificationData is null"));
+        // public static IRequestCallTool Build(this IRequestNotification data)
+        //     => new RequestData(data as RequestNotification ?? throw new System.InvalidOperationException("NotificationData is null"));
     }
 }
