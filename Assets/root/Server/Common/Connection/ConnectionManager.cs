@@ -216,7 +216,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public async Task DisposeAsync()
         {
-            connectionTask?.Dispose();
             connectionTask = null;
 
             hubConnectionLogger?.Dispose();
