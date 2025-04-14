@@ -52,7 +52,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         private static async Task HandleBuildResult(string output, string error, bool force)
         {
-            if (output.Contains("Build FAILED"))
+            if (output.Contains("Build FAILED") || output.Contains("MSBUILD : error"))
             {
                 Debug.LogError($"{Consts.Log.Tag} <color=red>Build failed</color>. Check the output for details:\n{output}");
                 if (force)
