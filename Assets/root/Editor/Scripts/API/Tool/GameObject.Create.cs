@@ -24,6 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
+            path = StringUtils.TrimPath(path);
             var targetParent = string.IsNullOrEmpty(path) ? null : GameObjectUtils.FindByPath(path);
             if (targetParent == null && !string.IsNullOrEmpty(path))
                 return $"[Error] Parent GameObject '{path}' not found.";

@@ -21,7 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             string gameObjectPath
         )
         {
-            return ToolRouter.Call("Component_Add", arguments =>
+            return ToolRouter.Call("GameObject_Add_Component", arguments =>
             {
                 arguments[nameof(componentName)] = componentName;
                 arguments[nameof(gameObjectPath)] = gameObjectPath;

@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_FindByName",
             Title = "Find GameObject by name",
-            Description = "Find GameObject by name in the active scene. Returns metadata about each GameObject."
+            Description = "Find GameObject by name in the active scene. Returns metadata about GameObject and its children."
         )]
         public string FindByName
         (

@@ -28,7 +28,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Tests
             var childName = "nestedGo";
             new GameObject(parentName).AddChild(childName);
 
-            var prefixes = new[] { "", "./" };
+            var prefixes = new[] { "", "/" };
             foreach (var prefix in prefixes)
             {
                 Assert.IsNotNull(GameObjectUtils.FindByPath($"{prefix}{parentName}"), $"{prefix}{parentName} should not be null");

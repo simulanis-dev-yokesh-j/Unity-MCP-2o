@@ -23,8 +23,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             bool includeChildrenRecursively = false
         )
         {
-            if (string.IsNullOrEmpty(path))
-                return "[Error] GameObject path is empty.";
+            path = StringUtils.TrimPath(path);
 
             return MainThread.Run(() =>
             {
