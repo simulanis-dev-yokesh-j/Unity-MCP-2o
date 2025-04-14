@@ -16,6 +16,10 @@ Supports custom `tool` if any exists in your source code of a Unity project.
 
 ## AI Tools
 
+<table>
+<tr>
+<td valign="top">
+
 ### GameObject
 
 - ✅ Create
@@ -35,6 +39,14 @@ Supports custom `tool` if any exists in your source code of a Unity project.
 
 - ✅ Instantiate
 - 🔲 Create from scene
+
+### Editor
+
+- 🔲 Run Tests
+- 🔲 Start/stop Playmode in Editor
+
+</td>
+<td valign="top">
 
 ### Assets
 
@@ -59,10 +71,9 @@ Supports custom `tool` if any exists in your source code of a Unity project.
 
 - 🔲 Create
 
-### Editor
-
-- 🔲 Run Tests
-- 🔲 Start/stop Playmode in Editor
+</td>
+</tr>
+</table>
 
 # Installation
 
@@ -87,7 +98,7 @@ openupm add com.ivanmurzak.unity.mcp
 # Add custom `tool`
 > ⚠️ Not yet supported. There is a blocker issue in `csharp-sdk` for MCP server. Waiting for solution.
 
-Unity-MCP is designed to support custom `tool` development by project owner. MCP server takes data from Unity plugin and exposes it to a Client. So anyone in the MCP communication chain would receive the information about a new `tool`. Which LLM may decide to call at some point. 
+Unity-MCP is designed to support custom `tool` development by project owner. MCP server takes data from Unity plugin and exposes it to a Client. So anyone in the MCP communication chain would receive the information about a new `tool`. Which LLM may decide to call at some point.
 
 To add a custom `tool` you need:
 
