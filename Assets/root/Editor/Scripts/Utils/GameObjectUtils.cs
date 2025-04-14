@@ -4,11 +4,27 @@ using System.Linq;
 using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.Utils
 {
     public static class GameObjectUtils
     {
+        public static GameObject[] FindRootGameObjects(Scene? scene = null)
+        {
+            if (scene == null)
+            {
+                var rootGos = UnityEditor.SceneManagement.EditorSceneManager
+                    .GetActiveScene()
+                    .GetRootGameObjects();
+
+                return rootGos;
+            }
+            else
+            {
+                return scene.Value.GetRootGameObjects();
+            }
+        }
         public static GameObject FindByPath(string path, GameObject? root = null)
         {
             path = StringUtils.TrimPath(path);
@@ -19,10 +35,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             // If root is null, search in the active scene's root GameObjects
             if (root == null)
             {
-                var rootGos = UnityEditor.SceneManagement.EditorSceneManager
-                    .GetActiveScene()
-                    .GetRootGameObjects();
-
+                var rootGos = FindRootGameObjects();
                 var pathParts = path.Split('/');
 
                 root = rootGos.FirstOrDefault(go => go.name == pathParts[0]);
@@ -117,6 +130,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             }
 
             return path.ToString();
+        }
+        public static string Print(this GameObject go) => go == null
+            ? null
+            : $"instanceID: {go.GetInstanceID()}, path: {go.GetPath()}";
+        public static string Print(this IEnumerable<GameObject> gos)
+        {
+            var sb = new StringBuilder();
+            foreach (var go in gos)
+                sb.AppendLine(go.Print());
+
+            return sb.ToString();
         }
         public static GameObjectMetadata ToMetadata(this GameObject go, bool includeChildren = true, bool includeChildrenRecursively = false)
             => GameObjectMetadata.FromGameObject(go, includeChildren, includeChildrenRecursively);

@@ -29,7 +29,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             {
                 var go = GameObjectUtils.FindByPath(path);
                 if (go == null)
-                    return $"[Error] GameObject '{path}' not found.";
+                    return Error.NotFoundGameObjectAtPath(path);
 
                 return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
             });

@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
-using UnityEditor;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
@@ -25,7 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             fullPath = StringUtils.TrimPath(fullPath);
             var go = GameObjectUtils.FindByPath(fullPath);
             if (go == null)
-                return $"[Error] GameObject '{fullPath}' not found.";
+                return Error.NotFoundGameObjectAtPath(fullPath);
 
             var scene = go.scene;
             Object.DestroyImmediate(go);

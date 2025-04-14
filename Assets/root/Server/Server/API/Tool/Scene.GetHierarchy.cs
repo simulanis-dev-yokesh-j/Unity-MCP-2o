@@ -9,25 +9,19 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "GameObject_FindByPath",
-            Title = "Find GameObject by path"
+            Name = "Scene_GetHierarchyRoot",
+            Title = "Get Scene Hierarchy"
         )]
-        [Description("Find GameObject tree by the path to the root GameObject. Returns metadata about each GameObject.")]
-        public Task<CallToolResponse> FindByPath
+        [Description("This tool retrieves the list of root GameObjects in the specified scene.")]
+        public Task<CallToolResponse> GetHierarchyRoot
         (
-            [Description("Path to the GameObject.")]
-            string path,
-            [Description("Include children GameObjects in the result.")]
-            bool includeChildren = true,
-            [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
-            bool includeChildrenRecursively = false
+            [Description("Name of the loaded scene. If empty, the active scene will be used.")]
+            string? loadedSceneName = null
         )
         {
-            return ToolRouter.Call("GameObject_FindByPath", arguments =>
+            return ToolRouter.Call("Scene_GetHierarchyRoot", arguments =>
             {
-                arguments[nameof(path)] = path;
-                arguments[nameof(includeChildren)] = includeChildren;
-                arguments[nameof(includeChildrenRecursively)] = includeChildrenRecursively;
+                arguments[nameof(loadedSceneName)] = loadedSceneName ?? string.Empty;
             });
         }
     }

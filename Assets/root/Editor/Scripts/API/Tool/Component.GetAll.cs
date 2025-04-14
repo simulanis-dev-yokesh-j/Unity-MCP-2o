@@ -21,9 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             string? search = null
         )
         {
-            var componentTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => typeof(UnityEngine.Component).IsAssignableFrom(type) && !type.IsAbstract)
+            var componentTypes = AllComponentTypes
                 .Select(type => type.FullName)
                 .ToList();
 

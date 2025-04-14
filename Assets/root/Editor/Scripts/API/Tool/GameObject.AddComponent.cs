@@ -26,13 +26,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         {
             var go = GameObjectUtils.FindByPath(gameObjectPath);
             if (go == null)
-                return $"[Error] GameObject '{gameObjectPath}' not found.";
+                return Error.NotFoundGameObjectAtPath(gameObjectPath);
 
             var type = Type.GetType(componentName) ?? AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
                 .FirstOrDefault(t => t.FullName == componentName);
             if (type == null)
-                return $"[Error] Component type '{componentName}' not found.";
+                return Tool_Component.Error.NotFoundComponentType(componentName);
 
             go.AddComponent(type);
 

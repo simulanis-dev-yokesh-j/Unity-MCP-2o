@@ -24,14 +24,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             bool includeChildrenRecursively = false
         )
         {
-            if (string.IsNullOrEmpty(name))
-                return "[Error] GameObject name is empty.";
-
             return MainThread.Run(() =>
             {
+                if (string.IsNullOrEmpty(name))
+                    return Error.GameObjectNameIsEmpty();
+
                 var go = GameObject.Find(name);
                 if (go == null)
-                    return $"[Error] GameObject with name '{name}' not found.";
+                    return Error.NotFoundGameObjectWithName(name);
 
                 return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
             });
