@@ -6,9 +6,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public static class StringUtils
     {
-        public static string TrimPath(string path)
+        public static string? TrimPath(string? path)
             => path?.TrimEnd('/')?.TrimStart('/');
-        public static string Path_GetParentFolderPath(string path)
+        public static string? Path_GetParentFolderPath(string? path)
         {
             if (path == null)
                 return null;
@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             var lastSlashIndex = trimmedPath.LastIndexOf('/');
             return lastSlashIndex >= 0 ? trimmedPath.Substring(0, lastSlashIndex) : trimmedPath;
         }
-        public static string Path_GetLastName(string path)
+        public static string? Path_GetLastName(string? path)
             => path?.TrimEnd('/')?.Split('/')?.Last();
     }
 }
