@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using com.IvanMurzak.Unity.MCP.Common;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.Utils
@@ -10,14 +11,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
     {
         public static GameObject FindByPath(string path, GameObject? root = null)
         {
+            path = StringUtils.TrimPath(path);
+
             if (string.IsNullOrEmpty(path))
                 return null;
-
-            if (path.StartsWith("./"))
-                path = path[2..];
-
-            if (path.StartsWith("/"))
-                path = path[1..];
 
             // If root is null, search in the active scene's root GameObjects
             if (root == null)
@@ -46,7 +43,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             }
             else
             {
-
                 var pathParts = path.Split('/');
                 var currentGameObject = root;
 
