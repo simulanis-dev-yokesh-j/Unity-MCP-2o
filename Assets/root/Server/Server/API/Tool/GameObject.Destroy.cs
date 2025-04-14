@@ -4,7 +4,7 @@ using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace com.IvanMurzak.Unity.MCP.Editor.API
+namespace com.IvanMurzak.Unity.MCP.Server.API
 {
     public partial class Tool_GameObject
     {
