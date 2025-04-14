@@ -1,8 +1,8 @@
 # Unity MCP (Server + Plugin)
 
-<img width="100%" alt="Stats" src="https://user-images.githubusercontent.com/9135028/198754538-4dd93fc6-7eb2-42ae-8ac6-d7361c39e6ef.gif"/>
-
 [![openupm](https://img.shields.io/npm/v/com.ivanmurzak.unity.mcp?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.ivanmurzak.unity.mcp/) ![License](https://img.shields.io/github/license/IvanMurzak/Unity-MCP) [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
+
+<img width="100%" alt="Stats" src="https://user-images.githubusercontent.com/9135028/198754538-4dd93fc6-7eb2-42ae-8ac6-d7361c39e6ef.gif"/>
 
 | Unity Version | Editmode | Playmode | Standalone |
 |---------------|----------|----------|------------|
@@ -18,31 +18,89 @@ Supports custom `tool` if any exists in your source code of a Unity project.
 
 ### GameObject
 
-- Create
-- Destroy
-- Add Component
-- Remove Component
-- Find by name (optional recursive)
-- Find by path (optional recursive)
+- ✅ Create
+- ✅ Destroy
+- ✅ Add Component
+- ✅ Remove Component
+- ✅ Find by name (optional recursive)
+- ✅ Find by path (optional recursive)
 
 ### Component
 
-- Get All from the project (optional search by substring)
+- ✅ Get All from the project (optional search by substring)
+- 🔲 Remove
+- 🔲 Modify
 
 ### Prefabs
 
+- ✅ Instantiate
+- 🔲 Create from scene
+
+### Assets
+
+- ✅ Search
+- 🔲 Import
+- 🔲 Read
+
+### Scene
+
+- ✅ Get hierarchy
+- 🔲 Create scene
+- 🔲 Save scene
+- 🔲 Open scene
+
 ### Materials
+
+- 🔲 Create
+- 🔲 Update
+- 🔲 Assign to a Component on a GameObject
 
 ### Scripts
 
-## Add custom `tool`
+- 🔲 Create
 
-To add a custom `tool` just need to create `.cs` file in your project source. There is a sample a tool.
+### Editor
+
+- 🔲 Run Tests
+- 🔲 Start/stop Playmode in Editor
+
+# Installation
+
+1. [Install .NET 9.0](https://dotnet.microsoft.com/en-us/download)
+2. [Install OpenUPM-CLI](https://github.com/openupm/openupm-cli#installation)
+- Open command line in Unity project folder
+- Run the command
+
+```bash
+openupm add com.ivanmurzak.unity.mcp
+```
+
+# Usage
+
+1. Go 👉 `Tools/Unity-MCP/Server/Print Config`. It prints into `Console` window in Unity Editor the json string.
+2. Copy the json string.
+3. Insert the json string into your MCP Client app:
+- Claude dekstop
+    - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+    - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+# Add custom `tool`
+> ⚠️ Not yet supported. There is a blocker issue in `csharp-sdk` for MCP server. Waiting for solution.
+
+Unity-MCP is designed to support custom `tool` development by project owner. MCP server takes data from Unity plugin and exposes it to a Client. So anyone in the MCP communication chain would receive the information about a new `tool`. Which LLM may decide to call at some point. 
+
+To add a custom `tool` you need:
+
+1. To have a class with attribute `McpPluginToolType`.
+2. To have a method in the class with attribute `McpPluginTool`.
+3. [optional] Add `Description` attribute to each method argument to let LLM to understand it.
+4. [optional] Use `string? optional = null` properties with `?` and default value to mark them as `optional` for LLM.
 
 > Take a look that the line `=> MainThread.Run(() =>` it allows to run the code in Main thread which is needed to interact with Unity API. If you don't need it and running the tool in background thread is fine for the tool, don't use Main thread for efficience purpose.
 
 ```csharp
-public partial class Tool_GameObject
+[McpPluginToolType]
+public class Tool_GameObject
 {
     [McpPluginTool
     (
@@ -78,145 +136,10 @@ public partial class Tool_GameObject
 }
 ```
 
-# Steps to make your package
+# Contribution
 
-#### 1️⃣ Click the button to create new repository on GitHub using this template.
+Feel free to add new `tool` into the project.
 
-[![create new repository](https://user-images.githubusercontent.com/9135028/198753285-3d3c9601-0711-43c7-a8f2-d40ec42393a2.png)](https://github.com/IvanMurzak/Unity-Package-Template/generate)
-
-#### 2️⃣ Clone your new repository and open it in Unity Editor
-
-#### 3️⃣ Rename `Package`
-
-Your package should have unique identifier. It is called a `name` of the package. It support only limited symbols. There is a sample of the package name.
-
-```text
-com.github.your_name.package
-```
-
-- 👉 Instead of the word `package` use a word or couple of words that explains the main purpose of the package.
-- 👉 The `name` should be unique in the world.
-
-###### Option 1: Use script to rename package (recommended)
-
-For MacOS
-
-```bash
-
-```
-
-For Windows
-
-```bash
-cd Commands
-.\package_rename.bat Username PackageName
-```
-
-###### Option 2: Manual package rename
-
-Follow the instruction - [manual package rename](https://github.com/IvanMurzak/Unity-Package-Template/blob/main/Docs/Manual-Package-Rename.md)
-
-
-#### 3️⃣ Customize `Assets/root/package.json`
-
-- 👉 **Update** `name`
-  > Sample: `com.github.your_name.package`
-  > Instead of the word `package` use a word or couple of words that explains the main purpose of the package.
-  > The `name` should be unique in the world.
-
-- 👉 **Update** `unity` to setup minimum supported Unity version
-- 👉 **Update**
-  - `displayName` - visible name of the package,
-  - `version` - the version of the package (1.0.0),
-  - `description` - short description of the package,
-  - `author` - author of the package and url to the author (could be GitHub profile),
-  - `keywords` - array of keywords that describes the package.
-
-#### 4️⃣ Do you need Tests?
-
-<details>
-  <summary><b>❌ NO</b></summary>
-
-- 👉 **Delete** `Assets/root/Tests` folder
-- 👉 **Delete** `.github/workflows` folder
-
-</details>
-
-<details>
-  <summary><b>✅ YES</b></summary>
-
-- 👉 Make sure you executed `package-rename` script from the step #2. If not, please follow [manual package rename](https://github.com/IvanMurzak/Unity-Package-Template/blob/main/Docs/Manual-Package-Rename.md) instructions
-
-- 👉 Add GitHub Secrets
-  > At the GitHub repository, go to "Settings", then "Secrets and Variables", then "Actions", then click on "New repository secret"
-   1. Add `UNITY_EMAIL` - email of your Unity ID's account
-   2. Add `UNITY_PASSWORD` - password of your Unity ID's account
-   3. Add `UNITY_LICENSE` - license content. Could be taken from `Unity_lic.ulf` file. Just open it in any text editor and copy the entire content
-      1. Windows: The `Unity_lic.ulf` file is located at `C:/ProgramData/Unity/Unity_lic.ulf`
-      2. MacOS: `/Library/Application Support/Unity/Unity_lic.ulf`
-      3. Linux: `~/.local/share/unity3d/Unity/Unity_lic.ulf`
-
-</details>
-
-#### 4️⃣ Add files into `Assets/root` folder
-
-[Unity guidelines](https://docs.unity3d.com/Manual/cus-layout.html) about organizing files into the package root directory
-
-```text
-  <root>
-  ├── package.json
-  ├── README.md
-  ├── CHANGELOG.md
-  ├── LICENSE.md
-  ├── Third Party Notices.md
-  ├── Editor
-  │   ├── [company-name].[package-name].Editor.asmdef
-  │   └── EditorExample.cs
-  ├── Runtime
-  │   ├── [company-name].[package-name].asmdef
-  │   └── RuntimeExample.cs
-  ├── Tests
-  │   ├── Editor
-  │   │   ├── [company-name].[package-name].Editor.Tests.asmdef
-  │   │   └── EditorExampleTest.cs
-  │   └── Runtime
-  │        ├── [company-name].[package-name].Tests.asmdef
-  │        └── RuntimeExampleTest.cs
-  ├── Samples~
-  │        ├── SampleFolder1
-  │        ├── SampleFolder2
-  │        └── ...
-  └── Documentation~
-       └── [package-name].md
-```
-
-##### Final polishing
-
-- Update the `README.md` file (this file) with information about your package.
-- Copy the updated `README.md` to `Assets/root` as well.
-
-> ⚠️ Everything outside of the `root` folder won't be added to your package. But still could be used for testing or showcasing your package at your repository.
-
-#### 5️⃣ Deploy to any registry you like
-
-- [Deploy to OpenUPM](https://github.com/IvanMurzak/Unity-Package-Template/blob/main/Docs/Deploy-OpenUPM.md) (recommended)
-- [Deploy using GitHub](https://github.com/IvanMurzak/Unity-Package-Template/blob/main/Docs/Deploy-GitHub.md)
-- [Deploy to npmjs.com](https://github.com/IvanMurzak/Unity-Package-Template/blob/main/Docs/Deploy-npmjs.md)
-
-#### 6️⃣ Install your package into Unity Project
-
-When your package is distributed, you can install it into any Unity project.
-
-> Don't install into the same Unity project, please use another one.
-
-- [Install OpenUPM-CLI](https://github.com/openupm/openupm-cli#installation)
-- Open a command line at the root of Unity project (the folder which contains `Assets`)
-- Execute the command (for `OpenUPM` hosted package)
-
-  ```bash
-  openupm add YOUR_PACKAGE_NAME
-  ```
-
-# Final view in Unity Package Manager
-
-![image](https://user-images.githubusercontent.com/9135028/198777922-fdb71949-aee7-49c8-800f-7db885de9453.png)
+1. Fork the project.
+2. Implement new `tool` in your forked repository.
+3. Create Pull Request into original [Unity-MCP](https://github.com/IvanMurzak/Unity-MCP) repository.
