@@ -19,6 +19,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             string path
         )
         {
+            path = StringUtils.TrimPath(path);
+
             if (string.IsNullOrEmpty(path))
                 return "[Error] GameObject path is empty.";
 

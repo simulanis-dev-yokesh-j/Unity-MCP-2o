@@ -6,15 +6,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public static class StringUtils
     {
+        public static string TrimPath(string path)
+            => path?.TrimEnd('/')?.TrimStart('/');
         public static string Path_GetParentFoldePath(string path)
         {
+            if (path == null)
+                return null;
             var trimmedPath = path.TrimEnd('/');
             var lastSlashIndex = trimmedPath.LastIndexOf('/');
             return lastSlashIndex >= 0 ? trimmedPath.Substring(0, lastSlashIndex) : trimmedPath;
         }
         public static string Path_GetLastName(string path)
-        {
-            return path.TrimEnd('/').Split('/').Last();
-        }
+            => path?.TrimEnd('/')?.Split('/')?.Last();
     }
 }

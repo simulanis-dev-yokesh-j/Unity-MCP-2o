@@ -22,6 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
+            fullPath = StringUtils.TrimPath(fullPath);
             var go = GameObjectUtils.FindByPath(fullPath);
             if (go == null)
                 return $"[Error] GameObject '{fullPath}' not found.";
