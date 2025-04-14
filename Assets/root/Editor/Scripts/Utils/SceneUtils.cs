@@ -16,5 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                     yield return scene;
             }
         }
+        public static SceneMetadata ToMetadata(this Scene scene, int includeChildrenDepth = 3)
+            => SceneMetadata.FromScene(scene, includeChildrenDepth);
     }
 }

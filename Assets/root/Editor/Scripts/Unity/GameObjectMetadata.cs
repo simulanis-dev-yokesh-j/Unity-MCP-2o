@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public bool activeInHierarchy;
         public List<GameObjectMetadata> children = new();
 
-        public override string ToString()
+        public string Print()
         {
             var sb = new StringBuilder();
 
@@ -32,7 +32,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             return sb.ToString();
         }
 
-        private void AppendMetadata(StringBuilder sb, GameObjectMetadata metadata, int depth)
+        public static void AppendMetadata(StringBuilder sb, GameObjectMetadata metadata, int depth)
         {
             // Indent the path based on depth for better readability
             var indentedPath = new string(' ', depth * 2) + metadata.name;
@@ -45,13 +45,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 AppendMetadata(sb, child, depth + 1);
         }
 
-        public static GameObjectMetadata FromGameObject(GameObject go, bool includeChildren = true, bool includeChildrenRecursively = false)
+        public static GameObjectMetadata FromGameObject(GameObject go, int includeChildrenDepth = 3)
         {
             if (go == null)
                 return null;
-
-            if (includeChildrenRecursively && !includeChildren)
-                throw new System.ArgumentException("includeChildrenRecursively cannot be true if includeChildren is false.");
 
             // Create metadata for the GameObject
             var metadata = new GameObjectMetadata
@@ -64,12 +61,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 activeInHierarchy = go.activeInHierarchy
             };
 
-            if (includeChildren)
+            if (includeChildrenDepth > 0)
             {
                 metadata.children ??= new();
                 foreach (Transform child in go.transform)
                 {
-                    var childMetadata = FromGameObject(child.gameObject, includeChildrenRecursively, includeChildrenRecursively);
+                    var childMetadata = FromGameObject(child.gameObject, includeChildrenDepth - 1);
                     metadata.children.Add(childMetadata);
                 }
             }

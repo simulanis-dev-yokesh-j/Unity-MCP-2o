@@ -50,13 +50,13 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         options.Capabilities.Tools.ListChanged = true;
                     })
                     .WithStdioServerTransport()
-                    // .WithPromptsFromAssembly()
+                    .WithPromptsFromAssembly()
                     .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
-                    .WithListToolsHandler(ToolRouter.ListAll)
-                    .WithReadResourceHandler(ResourceRouter.ReadResource)
-                    .WithListResourcesHandler(ResourceRouter.ListResources)
-                    .WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates);
+                    .WithListToolsHandler(ToolRouter.ListAll);
+                //.WithReadResourceHandler(ResourceRouter.ReadResource)
+                //.WithListResourcesHandler(ResourceRouter.ListResources)
+                //.WithListResourceTemplatesHandler(ResourceRouter.ListResourceTemplates);
 
                 // Setup McpApp ----------------------------------------------------------------
                 builder.Services.AddMcpPlugin(configure =>

@@ -17,17 +17,14 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Path to the GameObject.")]
             string path,
-            [Description("Include children GameObjects in the result.")]
-            bool includeChildren = true,
-            [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
-            bool includeChildrenRecursively = false
+            [Description("Determines the depth of the hierarchy to include.")]
+            int includeChildrenDepth = 3
         )
         {
             return ToolRouter.Call("GameObject_FindByPath", arguments =>
             {
                 arguments[nameof(path)] = path;
-                arguments[nameof(includeChildren)] = includeChildren;
-                arguments[nameof(includeChildrenRecursively)] = includeChildrenRecursively;
+                arguments[nameof(includeChildrenDepth)] = includeChildrenDepth;
             });
         }
     }
