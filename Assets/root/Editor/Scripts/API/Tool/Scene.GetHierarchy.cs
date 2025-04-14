@@ -24,7 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 ? UnityEngine.SceneManagement.SceneManager.GetActiveScene()
                 : UnityEngine.SceneManagement.SceneManager.GetSceneByName(loadedSceneName);
 
-            if (scene.IsValid())
+            if (!scene.IsValid())
                 return Error.NotFoundSceneWithName(loadedSceneName);
 
             return GameObjectUtils.FindRootGameObjects(scene).Print();
