@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 
 namespace com.IvanMurzak.Unity.MCP.Server.API
 {
-    public partial class Tool_Component
+    public partial class Tool_Assets_Prefab
     {
         [McpServerTool
         (
-            Name = "Component_GetAll",
-            Title = "Get list of all Components"
+            Name = "Assets_Prefabs_GetAll",
+            Title = "Get list of all prefabs in the project"
         )]
-        [Description("Returns the list of all available components in the project.")]
+        [Description("Returns the list of all available prefabs in the project.")]
         public Task<CallToolResponse> GetAll
         (
-            [Description("Substring for searching components. Could be empty.")]
+            [Description("Substring for searching prefabs. Could be empty.")]
             string search
         )
         {
-            return ToolRouter.Call("Component_GetAll", arguments =>
+            return ToolRouter.Call("Assets_Prefabs_GetAll", arguments =>
             {
                 arguments[nameof(search)] = search;
             });
