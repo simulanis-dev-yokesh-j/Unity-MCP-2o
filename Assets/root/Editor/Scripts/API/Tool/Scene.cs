@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         public static class Error
         {
-            static string ScenesPrinted = string.Join("\n", SceneUtils.GetAllLoadedScenes().Select(scene => scene.name));
+            static string ScenesPrinted => string.Join("\n", SceneUtils.GetAllLoadedScenes().Select(scene => scene.name));
 
             public static string SceneNameIsEmpty()
                 => $"[Error] Scene name is empty. Available scenes:\n{ScenesPrinted}";

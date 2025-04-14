@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         public static class Error
         {
-            static string RootGOsPrinted = GameObjectUtils.FindRootGameObjects().Print();
+            static string RootGOsPrinted => GameObjectUtils.FindRootGameObjects().Print();
 
             public static string GameObjectPathIsEmpty()
                 => $"[Error] GameObject path is empty. Root GameObjects in the active scene:\n{RootGOsPrinted}";
