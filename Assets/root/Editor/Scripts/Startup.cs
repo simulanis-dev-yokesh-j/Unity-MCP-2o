@@ -45,8 +45,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         public static void RegisterJsonConverters()
         {
+            JsonUtils.AddConverter(new Color32Converter());
+            JsonUtils.AddConverter(new ColorConverter());
+            JsonUtils.AddConverter(new Matrix4x4Converter());
+            JsonUtils.AddConverter(new QuaternionConverter());
+            JsonUtils.AddConverter(new Vector2Converter());
+            JsonUtils.AddConverter(new Vector2IntConverter());
             JsonUtils.AddConverter(new Vector3Converter());
             JsonUtils.AddConverter(new Vector3IntConverter());
+            JsonUtils.AddConverter(new Vector4Converter());
         }
     }
 }
