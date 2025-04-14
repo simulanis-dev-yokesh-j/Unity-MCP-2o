@@ -142,7 +142,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
 
             return sb.ToString();
         }
-        public static GameObjectMetadata ToMetadata(this GameObject go, bool includeChildren = true, bool includeChildrenRecursively = false)
-            => GameObjectMetadata.FromGameObject(go, includeChildren, includeChildrenRecursively);
+        public static GameObjectMetadata ToMetadata(this GameObject go, int includeChildrenDepth = 3)
+            => GameObjectMetadata.FromGameObject(go, includeChildrenDepth);
     }
 }

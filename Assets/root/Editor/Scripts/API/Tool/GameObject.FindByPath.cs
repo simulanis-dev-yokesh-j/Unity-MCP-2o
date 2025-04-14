@@ -17,10 +17,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Path to the GameObject.")]
             string path,
-            [Description("Include children GameObjects in the result.")]
-            bool includeChildren = true,
-            [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
-            bool includeChildrenRecursively = false
+            [Description("Determines the depth of the hierarchy to include.")]
+            int includeChildrenDepth = 3
         )
         {
             path = StringUtils.TrimPath(path);
@@ -31,7 +29,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 if (go == null)
                     return Error.NotFoundGameObjectAtPath(path);
 
-                return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
+                return go.ToMetadata(includeChildrenDepth).Print();
             });
         }
     }

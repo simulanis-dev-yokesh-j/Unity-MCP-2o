@@ -18,10 +18,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Name of the target GameObject.")]
             string name,
-            [Description("Include children GameObjects in the result.")]
-            bool includeChildren = true,
-            [Description("Include children GameObjects recursively in the result. Ignored if 'includeChildren' is false.")]
-            bool includeChildrenRecursively = false
+            [Description("Determines the depth of the hierarchy to include.")]
+            int includeChildrenDepth = 3
         )
         {
             return MainThread.Run(() =>
@@ -33,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 if (go == null)
                     return Error.NotFoundGameObjectWithName(name);
 
-                return go.ToMetadata(includeChildren, includeChildrenRecursively).ToString();
+                return go.ToMetadata(includeChildrenDepth).Print();
             });
         }
     }
