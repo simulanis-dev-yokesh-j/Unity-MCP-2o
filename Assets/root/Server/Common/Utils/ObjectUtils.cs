@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public static JsonElement ToJsonElement(this object obj)
         {
             // Serialize the object to a UTF-8 byte array
-            var json = JsonSerializer.Serialize(obj);
+            var json = JsonUtils.Serialize(obj);
 
             // Parse the JSON string into a JsonDocument and return the root element
             using var doc = JsonDocument.Parse(json);
