@@ -3,7 +3,9 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using UnityEditor;
+using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
@@ -24,18 +26,32 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
-            // var prefabs = AssetDatabase.FindAssets("t:Prefab")
-            //     .Select(AssetDatabase.GUIDToAssetPath)
-            //     .ToList();
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
+            if (prefab == null)
+                return $"[Error] Prefab not found at path: {prefabAssetPath}";
 
-            // if (!string.IsNullOrEmpty(search))
-            // {
-            //     componentTypes = componentTypes
-            //         .Where(typeName => typeName != null && typeName.Contains(search, StringComparison.OrdinalIgnoreCase))
-            //         .ToList();
-            // }
+            var parentPath = StringUtils.Path_GetParentFoldePath(gameObjectPath);
+            var name = StringUtils.Path_GetLastName(gameObjectPath);
 
-            return "[Error] Not yet implemented";
+            // If need to place the prefab in another GameObject
+            if (parentPath != name)
+            {
+                var parentGo = GameObjectUtils.FindByPath(parentPath);
+                if (parentGo == null)
+                    return $"[Error] Parent GameObject not found at path: {parentPath}";
+
+                var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+
+                go.transform.SetParent(parentGo.transform, false);
+                go.name = name;
+            }
+            else
+            {
+                var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+                go.name = name;
+            }
+
+            return $"[Success] Prefab succesfully instantiated at path: {gameObjectPath}";
         });
     }
 }
