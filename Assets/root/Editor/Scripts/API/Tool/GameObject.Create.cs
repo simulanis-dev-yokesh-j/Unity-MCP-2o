@@ -20,7 +20,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             [Description("Path to the GameObject (excluding the name of the GameObject).")]
             string path,
             [Description("Name of the GameObject.")]
-            string name
+            string name,
+            [Description("Position of the GameObject.")]
+            Vector3? position = default,
+            [Description("Rotation of the GameObject. Euler angles in degrees.")]
+            Vector3? rotation = default,
+            [Description("Scale of the GameObject.")]
+            Vector3? scale = default
         )
         => MainThread.Run(() =>
         {
@@ -30,9 +36,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 return $"[Error] Parent GameObject '{path}' not found.";
 
             var go = new GameObject(name);
-            go.transform.position = new Vector3(0, 0, 0);
-            go.transform.rotation = Quaternion.identity;
-            go.transform.localScale = new Vector3(1, 1, 1);
+            go.transform.position = position ?? new Vector3(0, 0, 0);
+            go.transform.rotation = rotation == null
+                ? Quaternion.identity
+                : Quaternion.Euler(rotation.Value.x, rotation.Value.y, rotation.Value.z);
+            go.transform.localScale = scale ?? new Vector3(1, 1, 1);
+
             if (targetParent != null)
                 go.transform.SetParent(targetParent.transform, false);
 

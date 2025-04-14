@@ -34,6 +34,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
             jsonSerializerOptions.Converters.Add(converter);
         }
 
+        public static object? Deserialize(string json, Type type)
+            => JsonSerializer.Deserialize(json, type, jsonSerializerOptions);
+
+        public static JsonElement SerializeToElement(object data)
+            => JsonSerializer.SerializeToElement(data, jsonSerializerOptions);
+
+        public static string Serialize(object data)
+            => JsonSerializer.Serialize(data, jsonSerializerOptions);
+
         public static string ToJson(this IRequestCallTool? data, JsonSerializerOptions? options = null)
         {
             if (data == null)

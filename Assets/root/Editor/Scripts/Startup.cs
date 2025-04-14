@@ -3,6 +3,7 @@ using Debug = UnityEngine.Debug;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using UnityEditor;
+using com.IvanMurzak.Unity.MCP.Common.Json.Converters;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
@@ -13,6 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         static Startup()
         {
+            RegisterJsonConverters();
             BuildAndStart();
             BuildServerIfNeeded(force: true);
         }
@@ -39,6 +41,19 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .WithResourcesFromAssembly(typeof(Startup).Assembly)
                 .Build()
                 .Connect();
+        }
+
+        public static void RegisterJsonConverters()
+        {
+            JsonUtils.AddConverter(new Color32Converter());
+            JsonUtils.AddConverter(new ColorConverter());
+            JsonUtils.AddConverter(new Matrix4x4Converter());
+            JsonUtils.AddConverter(new QuaternionConverter());
+            JsonUtils.AddConverter(new Vector2Converter());
+            JsonUtils.AddConverter(new Vector2IntConverter());
+            JsonUtils.AddConverter(new Vector3Converter());
+            JsonUtils.AddConverter(new Vector3IntConverter());
+            JsonUtils.AddConverter(new Vector4Converter());
         }
     }
 }

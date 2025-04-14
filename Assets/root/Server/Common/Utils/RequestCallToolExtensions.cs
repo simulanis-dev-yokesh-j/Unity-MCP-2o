@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             data.Arguments ??= new Dictionary<string, JsonElement>()
             {
-                [name] = JsonSerializer.SerializeToElement(value)
+                [name] = JsonUtils.SerializeToElement(value)
             };
             return data;
         }
