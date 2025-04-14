@@ -21,14 +21,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         {
             path = StringUtils.TrimPath(path);
 
-            if (string.IsNullOrEmpty(path))
-                return "[Error] GameObject path is empty.";
-
             return MainThread.Run(() =>
             {
+                if (string.IsNullOrEmpty(path))
+                    return Error.GameObjectPathIsEmpty();
+
                 var go = GameObjectUtils.FindByPath(path);
                 if (go == null)
-                    return $"[Error] GameObject '{path}' not found.";
+                    return Error.NotFoundGameObjectAtPath(path);
 
                 return Runtime.Serializer.GameObject.Serialize(go);
             });

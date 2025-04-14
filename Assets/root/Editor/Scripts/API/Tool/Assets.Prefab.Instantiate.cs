@@ -28,7 +28,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
             if (prefab == null)
-                return $"[Error] Prefab not found at path: {prefabAssetPath}";
+                return Error.NotFoundPrefabAtPath(prefabAssetPath);
 
             var parentPath = StringUtils.Path_GetParentFolderPath(gameObjectPath);
             var name = StringUtils.Path_GetLastName(gameObjectPath);
@@ -38,7 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             {
                 var parentGo = GameObjectUtils.FindByPath(parentPath);
                 if (parentGo == null)
-                    return $"[Error] Parent GameObject not found at path: {parentPath}";
+                    return Tool_GameObject.Error.NotFoundGameObjectAtPath(parentPath);
 
                 var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 
