@@ -8,7 +8,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         public static string TrimPath(string path)
             => path?.TrimEnd('/')?.TrimStart('/');
-        public static string Path_GetParentFoldePath(string path)
+        public static string Path_GetParentFolderPath(string path)
         {
             if (path == null)
                 return null;

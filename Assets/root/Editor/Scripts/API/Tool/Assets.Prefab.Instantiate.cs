@@ -30,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (prefab == null)
                 return $"[Error] Prefab not found at path: {prefabAssetPath}";
 
-            var parentPath = StringUtils.Path_GetParentFoldePath(gameObjectPath);
+            var parentPath = StringUtils.Path_GetParentFolderPath(gameObjectPath);
             var name = StringUtils.Path_GetLastName(gameObjectPath);
 
             // If need to place the prefab in another GameObject
@@ -51,7 +51,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 go.name = name;
             }
 
-            return $"[Success] Prefab succesfully instantiated at path: {gameObjectPath}";
+            return $"[Success] Prefab successfully instantiated at path: {gameObjectPath}";
         });
     }
 }
