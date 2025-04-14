@@ -1,4 +1,3 @@
-using com.IvanMurzak.Unity.MCP.Server;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
@@ -10,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "Component_Get_All",
+            Name = "Component_GetAll",
             Title = "Get list of all Components"
         )]
         [Description("Returns the list of all available components in the project.")]
@@ -20,7 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             string search
         )
         {
-            return ToolRouter.Call("Component_Get_All", arguments =>
+            return ToolRouter.Call("Component_GetAll", arguments =>
             {
                 arguments[nameof(search)] = search;
             });

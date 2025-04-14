@@ -11,7 +11,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Component_Get_All",
+            "Component_GetAll",
             Title = "Get list of all Components",
             Description = "Returns the list of all available components in the project."
         )]
