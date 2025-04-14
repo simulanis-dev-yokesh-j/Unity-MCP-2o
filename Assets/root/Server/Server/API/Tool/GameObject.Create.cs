@@ -1,4 +1,3 @@
-using com.IvanMurzak.Unity.MCP.Server;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
