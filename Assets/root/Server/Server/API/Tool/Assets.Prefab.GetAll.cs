@@ -9,19 +9,22 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "Assets_Prefabs_GetAll",
-            Title = "Get list of all prefabs in the project"
+            Name = "Assets_Prefab_Instantiate",
+            Title = "Instantiate prefab in the current active scene"
         )]
-        [Description("Returns the list of all available prefabs in the project.")]
-        public Task<CallToolResponse> GetAll
+        [Description("Instantiates prefab in a scene.")]
+        public Task<CallToolResponse> Instantiate
         (
-            [Description("Substring for searching prefabs. Could be empty.")]
-            string search
+            [Description("Prefab asset path.")]
+            string prefabAssetPath,
+            [Description("GameObject path in the current active scene.")]
+            string gameObjectPath
         )
         {
-            return ToolRouter.Call("Assets_Prefabs_GetAll", arguments =>
+            return ToolRouter.Call("Assets_Prefab_Instantiate", arguments =>
             {
-                arguments[nameof(search)] = search;
+                arguments[nameof(prefabAssetPath)] = prefabAssetPath;
+                arguments[nameof(gameObjectPath)] = gameObjectPath;
             });
         }
     }

@@ -1,20 +1,19 @@
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System;
+using ModelContextProtocol.Protocol.Types;
+using ModelContextProtocol.Server;
 using System.ComponentModel;
-using System.Linq;
-using com.IvanMurzak.Unity.MCP.Common;
-using UnityEditor;
+using System.Threading.Tasks;
 
-namespace com.IvanMurzak.Unity.MCP.Editor.API
+namespace com.IvanMurzak.Unity.MCP.Server.API
 {
-    [McpPluginToolType]
+    [McpServerToolType]
     public partial class Tool_Assets
     {
-        [McpPluginTool
+        [McpServerTool
         (
-            "Assets_Search",
-            Title = "Search in the project assets",
-Description = @"Search the asset database using the search filter string.
+            Name = "Assets_Search",
+            Title = "Search in the project assets"
+        )]
+        [Description(@"Search the asset database using the search filter string.
 Available types:
 t:AnimationClip
 t:AudioClip
@@ -34,9 +33,8 @@ t:Sprite
 t:Texture
 t:VideoClip
 t:VisualEffectAsset
-t:VisualEffectSubgraph"
-        )]
-        public string Search
+t:VisualEffectSubgraph")]
+        public Task<CallToolResponse> Search
         (
 // <ref>https://docs.unity3d.com/ScriptReference/AssetDatabase.FindAssets.html</ref>
 [Description(@"Searching filter. Could be empty.
@@ -53,17 +51,12 @@ Searching is case insensitive.")]
             [Description("The folders where the search will start. If null, the search will be performed in all folders.")]
             string[]? searchInFolders = null
         )
-        => MainThread.Run(() =>
         {
-            var assetGuids = (searchInFolders?.Length ?? 0) == 0
-                ? AssetDatabase.FindAssets(filter ?? string.Empty)
-                : AssetDatabase.FindAssets(filter ?? string.Empty, searchInFolders);
-
-            var assetPaths = assetGuids
-                    .Select(AssetDatabase.GUIDToAssetPath)
-                    .ToList();
-
-            return string.Join("\n", assetPaths);
-        });
+            return ToolRouter.Call("Assets_Search", arguments =>
+            {
+                arguments[nameof(filter)] = filter ?? string.Empty;
+                arguments[nameof(searchInFolders)] = searchInFolders ?? new string[0];
+            });
+        }
     }
 }

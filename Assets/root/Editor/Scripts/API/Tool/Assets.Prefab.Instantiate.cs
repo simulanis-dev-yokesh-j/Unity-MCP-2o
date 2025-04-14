@@ -11,14 +11,16 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Assets_Prefabs_GetAll",
-            Title = "Get list of all prefabs",
-            Description = "Returns the list of all available prefabs in the project."
+            "Assets_Prefab_Instantiate",
+            Title = "Instantiate prefab in the current active scene",
+            Description = "Instantiates prefab in a scene."
         )]
-        public string GetAll
+        public string Instantiate
         (
-            [Description("Substring for searching prefabs. Could be empty.")]
-            string? search = null
+            [Description("Prefab asset path.")]
+            string prefabAssetPath,
+            [Description("GameObject path in the current active scene.")]
+            string gameObjectPath
         )
         => MainThread.Run(() =>
         {
@@ -33,7 +35,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             //         .ToList();
             // }
 
-            return string.Empty;
+            return "[Error] Not yet implemented";
         });
     }
 }
