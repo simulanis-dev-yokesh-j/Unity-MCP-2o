@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using com.IvanMurzak.Unity.MCP.Common;
 using Microsoft.AspNetCore.SignalR.Client;
 using R3;
@@ -130,36 +131,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // Configure MCP Client
             // -----------------------------------------------------------------
 
-            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Claude").First(),
-                isConfigured: () =>
-                {
-                    return false;
-                },
-                configure: () =>
-                {
-                    return false;
-                });
-
-            ConfigureClient(root.Query<VisualElement>("ConfigureClient-VS-Code").First(),
-                isConfigured: () =>
-                {
-                    return false;
-                },
-                configure: () =>
-                {
-                    return false;
-                });
-
-            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Cursor").First(),
-                isConfigured: () =>
-                {
-                    return false;
-                },
-                configure: () =>
-                {
-                    return false;
-                });
-
+#if UNITY_EDITOR_WIN
+            ConfigureClientsWindows(root);
+#elif UNITY_EDITOR_OSX || UNITY_EDITOR_LINUX
+            ConfigureClientsMacAndLinux(root);
+#endif
             // Provide raw json configuration
             // -----------------------------------------------------------------
 
@@ -167,13 +143,55 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             rawJsonField.value = Startup.RawJsonConfiguration;
         }
 
-        void ConfigureClient(VisualElement root, Func<bool> isConfigured, Func<bool> configure)
+        void ConfigureClientsWindows(VisualElement root)
+        {
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Claude").First(),
+                configPath: Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Claude",
+                    "claude_desktop_config.json"
+                ));
+
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-VS-Code").First(),
+                configPath: "Unknonwn");
+
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Cursor").First(),
+                configPath: Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    ".cursor",
+                    "mcp.json"
+                ));
+        }
+
+        void ConfigureClientsMacAndLinux(VisualElement root)
+        {
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Claude").First(),
+                configPath: Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    "Library",
+                    "Application Support",
+                    "Claude",
+                    "claude_desktop_config.json"
+                ));
+
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-VS-Code").First(),
+                configPath: "Unknonwn");
+
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Cursor").First(),
+                configPath: Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    ".cursor",
+                    "mcp.json"
+                ));
+        }
+
+        void ConfigureClient(VisualElement root, string configPath)
         {
             var statusCircle = root.Query<VisualElement>("configureStatusCircle").First();
             var statusText = root.Query<Label>("configureStatusText").First();
             var btnConfigure = root.Query<Button>("btnConfigure").First();
 
-            var isConfiguredResult = isConfigured();
+            var isConfiguredResult = IsMcpClientConfigured(configPath);
 
             statusCircle.RemoveFromClassList(USS_IndicatorClass_Connected);
             statusCircle.RemoveFromClassList(USS_IndicatorClass_Connecting);
@@ -188,7 +206,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
             btnConfigure.RegisterCallback<ClickEvent>(evt =>
             {
-                var configureResult = configure();
+                var configureResult = ConfigureMcpClient(configPath);
 
                 statusText.text = configureResult ? "Configured" : "Not Configured";
 
@@ -202,6 +220,44 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
                 btnConfigure.text = configureResult ? "Reconfigure" : "Configure";
             });
+        }
+
+        bool IsMcpClientConfigured(string configPath)
+        {
+            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+                return false;
+
+            try
+            {
+                var json = File.ReadAllText(configPath);
+                return json.Contains(Startup.ServerExecutableFile);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error reading config file: {ex.Message}");
+                return false;
+            }
+        }
+        bool ConfigureMcpClient(string configPath)
+        {
+            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+                return false;
+
+            try
+            {
+                var json = File.ReadAllText(configPath);
+
+                // Startup.RawJsonConfiguration
+                // Need to inject Startup.RawJsonConfiguration into root object of the `json`
+
+                File.WriteAllText(configPath, json);
+                return IsMcpClientConfigured(configPath);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error reading config file: {ex.Message}");
+                return false;
+            }
         }
     }
 }
