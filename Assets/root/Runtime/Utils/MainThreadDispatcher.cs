@@ -26,6 +26,10 @@ namespace com.IvanMurzak.Unity.MCP
             if (instance != null)
                 return;
 
+            // Only create the dispatcher in Play mode
+            if (!Application.isPlaying)
+                return;
+
             var obj = new GameObject("MainThreadDispatcher");
             instance = obj.AddComponent<MainThreadDispatcher>();
             DontDestroyOnLoad(obj);
