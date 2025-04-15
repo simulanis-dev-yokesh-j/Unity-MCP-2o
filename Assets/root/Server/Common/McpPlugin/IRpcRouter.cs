@@ -3,12 +3,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
     public interface IRpcRouter : IDisposableAsync
     {
-        HubConnectionState ConnectionState { get; }
+        ReadOnlyReactiveProperty<bool> KeepConnected { get; }
+        ReadOnlyReactiveProperty<HubConnectionState> ConnectionState { get; }
         Task<bool> Connect(CancellationToken cancellationToken = default);
         Task Disconnect(CancellationToken cancellationToken = default);
     }

@@ -17,7 +17,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
         readonly CompositeDisposable _serverEventsDisposables = new();
         readonly IDisposable _hubConnectionDisposable;
 
-        public HubConnectionState ConnectionState => _connectionManager.ConnectionState;
+        public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => _connectionManager.ConnectionState;
+        public ReadOnlyReactiveProperty<bool> KeepConnected => _connectionManager.KeepConnected;
 
         public RpcRouter(ILogger<RpcRouter> logger, IConnectionManager connectionManager, IMcpRunner localApp)
         {

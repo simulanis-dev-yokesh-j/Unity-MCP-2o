@@ -18,6 +18,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public Observable<Exception?> Reconnecting => _reconnectingSubject;
         public Observable<string?> Reconnected => _reconnectedSubject;
 
+        public Observable<HubConnectionState> State => Observable.Merge(
+            _closedSubject.Select(x => HubConnectionState.Disconnected),
+            _reconnectingSubject.Select(x => HubConnectionState.Reconnecting),
+            _reconnectedSubject.Select(x => HubConnectionState.Connected));
+
         public HubConnectionObservable(HubConnection hubConnection)
         {
             _hubConnection = hubConnection ?? throw new ArgumentNullException(nameof(hubConnection));

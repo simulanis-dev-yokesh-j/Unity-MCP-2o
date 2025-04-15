@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
@@ -16,7 +17,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public IMcpRunner McpRunner { get; private set; }
         public IRemoteServer RemoteServer { get; private set; }
-        public HubConnectionState ConnectionState => _rpcRouter.ConnectionState;
+        public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => _rpcRouter.ConnectionState;
+        public ReadOnlyReactiveProperty<bool> KeepConnected => _rpcRouter.KeepConnected;
 
         public McpPlugin(ILogger<McpPlugin> logger, IRpcRouter rpcRouter, IMcpRunner mcpRunner, IRemoteServer remoteServer)
         {

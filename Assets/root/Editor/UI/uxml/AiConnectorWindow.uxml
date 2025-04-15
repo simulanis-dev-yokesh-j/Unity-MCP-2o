@@ -18,9 +18,9 @@
                 <ui:Label text="Usually the server is hosted locally at:&#10;http://localhost:60606&#10;&#10;But feel free to connect to remote MCP server if needed. The connection under the hood is established using SignalR and supports wide range of features." class="section-desc" />
             </ui:Foldout>
             <ui:VisualElement name="ServerConnectionInfo" class="row">
-                <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
-                <ui:Label text="Disconnected" style="flex-grow: 1;" />
-                <ui:Button name="cursorButton" text="Connect" class="Button-Primary" />
+                <ui:VisualElement name="connectionStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
+                <ui:Label text="Disconnected" name="connectionStatusText" style="flex-grow: 1;" />
+                <ui:Button name="btnConnectOrDisconnect" text="Connect" class="Button-Primary" />
             </ui:VisualElement>
             <ui:VisualElement name="divider" class="Divider" style="flex-grow: 1;" />
             <ui:Label text="Configure MCP Client" class="Header" />
@@ -28,24 +28,24 @@
             <ui:VisualElement name="ConfigureClient-Claude" class="Frame-Group" style="flex-grow: 1;">
                 <ui:Label text="Claude Desktop" class="section-title" />
                 <ui:VisualElement class="row">
-                    <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
-                    <ui:Label text="Not configured" style="flex-grow: 1;" />
+                    <ui:VisualElement name="configureStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
+                    <ui:Label text="Not configured" name="configureStatusText" style="flex-grow: 1;" />
                     <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="ConfigureClient-VS-Code" class="Frame-Group" style="flex-grow: 1;">
                 <ui:Label text="VS Code Insiders" class="section-title" />
                 <ui:VisualElement class="row">
-                    <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
-                    <ui:Label text="Not configured" style="flex-grow: 1;" />
+                    <ui:VisualElement name="configureStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
+                    <ui:Label text="Not configured" name="configureStatusText" style="flex-grow: 1;" />
                     <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="ConfigureClient-Cursor" class="Frame-Group" style="flex-grow: 1;">
                 <ui:Label text="Cursor" class="section-title" />
                 <ui:VisualElement class="row">
-                    <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
-                    <ui:Label text="Not configured" style="flex-grow: 1;" />
+                    <ui:VisualElement name="configureStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
+                    <ui:Label text="Not configured" name="configureStatusText" style="flex-grow: 1;" />
                     <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>

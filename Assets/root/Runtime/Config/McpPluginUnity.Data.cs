@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP
         public class Data
         {
             public const int DefaultPort = 60606;
-            public const string DefaultHost = "http://localhost";
+            public const string DefaultHost = "http://localhost:60606";
 
             [SerializeField] public string host = DefaultHost;
             [SerializeField] public int port = DefaultPort;

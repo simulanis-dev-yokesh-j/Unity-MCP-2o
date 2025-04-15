@@ -1,5 +1,8 @@
 using System;
+using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Utils;
+using Microsoft.AspNetCore.SignalR.Client;
+using R3;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP
@@ -32,6 +35,34 @@ namespace com.IvanMurzak.Unity.MCP
 
             return data.logLevel.IsActive(level);
         }
+        public LogLevel LogLevel
+        {
+            get => data?.logLevel ?? LogLevel.Trace;
+            set
+            {
+                if (data == null)
+                    return;
+
+                data.logLevel = value;
+                NotifyChanged(data);
+            }
+        }
+        public string Host
+        {
+            get => data?.host ?? Data.DefaultHost;
+            set
+            {
+                if (data == null)
+                    return;
+
+                data.host = value;
+                NotifyChanged(data);
+            }
+        }
+        public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => McpPlugin.Instance.ConnectionState;
+        public ReadOnlyReactiveProperty<bool> IsConnected => McpPlugin.Instance.ConnectionState
+            .Select(x => x == HubConnectionState.Connected)
+            .ToReadOnlyReactiveProperty(false);
 
         public void OnValidate()
         {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Common
 {
@@ -13,7 +14,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
         protected readonly ILogger<RemoteServer> _logger;
         protected readonly IConnectionManager _connectionManager;
 
-        public HubConnectionState ConnectionState => throw new NotImplementedException();
+        public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => throw new NotImplementedException();
+        public ReadOnlyReactiveProperty<bool> KeepConnected => throw new NotImplementedException();
 
         public RemoteServer(ILogger<RemoteServer> logger, IConnectionManager connectionManager)
         {
