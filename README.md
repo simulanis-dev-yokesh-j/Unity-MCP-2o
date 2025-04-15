@@ -76,6 +76,10 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 </tr>
 </table>
 
+> **Legend:**
+> ✅ = Implemented & available
+> 🔲 = Planned / Not yet implemented
+
 # Installation
 
 1. [Install .NET 9.0](https://dotnet.microsoft.com/en-us/download)
