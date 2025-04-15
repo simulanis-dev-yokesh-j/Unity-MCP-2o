@@ -1,36 +1,60 @@
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
+using UnityEditor;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP
 {
+    [InitializeOnLoad]
     public class MainThreadDispatcher : MonoBehaviour
     {
-        private static readonly ConcurrentQueue<Action> _actions = new ConcurrentQueue<Action>();
-        private static MainThreadDispatcher _instance;
+        public static int MainThreadId = Thread.CurrentThread.ManagedThreadId;
+        public static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == MainThreadId;
+
+        static readonly ConcurrentQueue<Action> _actions = new ConcurrentQueue<Action>();
+        static MainThreadDispatcher instance;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
+        static void Initialize()
         {
-            if (_instance == null)
-            {
-                var obj = new GameObject("MainThreadDispatcher");
-                _instance = obj.AddComponent<MainThreadDispatcher>();
-                DontDestroyOnLoad(obj);
-            }
+            // Save the current main thread ID
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+
+            if (instance != null)
+                return;
+
+            var obj = new GameObject("MainThreadDispatcher");
+            instance = obj.AddComponent<MainThreadDispatcher>();
+            DontDestroyOnLoad(obj);
         }
 
-        public static void Enqueue(Action action)
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+        static void EditorInitialize()
         {
-            _actions.Enqueue(action);
-        }
+            // Save the current main thread ID
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
 
-        private void Update()
+            if (instance != null)
+                UnityEngine.Object.DestroyImmediate(instance.gameObject);
+
+            UnityEditor.Compilation.CompilationPipeline.compilationFinished += OnCompilationFinished;
+        }
+        static void OnCompilationFinished(object obj) => Initialize();
+#endif
+
+        public static void Enqueue(Action action) => _actions.Enqueue(action);
+
+        void Awake()
+        {
+            // Save the current main thread ID
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+        }
+        void Update()
         {
             while (_actions.TryDequeue(out var action))
-            {
                 action.Invoke();
-            }
         }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
+    using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+
     public class UnityLogger : ILogger
     {
         readonly string _categoryName;

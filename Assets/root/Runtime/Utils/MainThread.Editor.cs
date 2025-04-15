@@ -4,34 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 
-namespace com.IvanMurzak.Unity.MCP.Editor
+namespace com.IvanMurzak.Unity.MCP
 {
     public static class MainThread
     {
-        static int MainThreadId = Thread.CurrentThread.ManagedThreadId;
-        static MainThread()
-        {
-            // Ensure initialization happens on the main thread
-            if (Thread.CurrentThread.ManagedThreadId != 1)
-            {
-                EditorApplication.update += InitializeMainThreadId;
-            }
-            else
-            {
-                MainThreadId = Thread.CurrentThread.ManagedThreadId;
-            }
-        }
-
-        private static void InitializeMainThreadId()
-        {
-            MainThreadId = Thread.CurrentThread.ManagedThreadId;
-            EditorApplication.update -= InitializeMainThreadId;
-        }
-
         public static void Run<T>(Task task) => RunAsync(task).Wait();
         public static Task RunAsync(Task task)
         {
-            if (Thread.CurrentThread.ManagedThreadId == MainThreadId)
+            if (MainThreadDispatcher.IsMainThread)
             {
                 // Execute directly if already on the main thread
                 return task;
@@ -62,7 +42,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static T Run<T>(Task<T> task) => RunAsync(task).Result;
         public static Task<T> RunAsync<T>(Task<T> task)
         {
-            if (Thread.CurrentThread.ManagedThreadId == MainThreadId)
+            if (MainThreadDispatcher.IsMainThread)
             {
                 // Execute directly if already on the main thread
                 return task;
@@ -93,7 +73,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static T Run<T>(Func<T> func) => RunAsync(func).Result;
         public static Task<T> RunAsync<T>(Func<T> func)
         {
-            if (Thread.CurrentThread.ManagedThreadId == MainThreadId)
+            if (MainThreadDispatcher.IsMainThread)
             {
                 // Execute directly if already on the main thread
                 return Task.FromResult(func());
@@ -124,7 +104,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static void Run(Action action) => RunAsync(action).Wait();
         public static Task RunAsync(Action action)
         {
-            if (Thread.CurrentThread.ManagedThreadId == MainThreadId)
+            if (MainThreadDispatcher.IsMainThread)
             {
                 // Execute directly if already on the main thread
                 action();
