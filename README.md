@@ -11,9 +11,9 @@
 | 2023.2.20f1   | ![2023.2.20f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2023.2.20f1_editmode.yml?label=2023.2.20f1-editmode) | ![2023.2.20f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2023.2.20f1_playmode.yml?label=2023.2.20f1-playmode) | ![2023.2.20f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2023.2.20f1_standalone.yml?label=2023.2.20f1-standalone) |
 | 6000.0.46f1   | ![6000.0.46f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/6000.0.46f1_editmode.yml?label=6000.0.46f1-editmode) | ![6000.0.46f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/6000.0.46f1_playmode.yml?label=6000.0.46f1-playmode) | ![6000.0.46f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/6000.0.46f1_standalone.yml?label=6000.0.46f1-standalone) |
 
-AI gate to Unity Editor and Unity player's build.
+Unity-MCP acts as an AI-powered gateway between your Unity Editor and LLM, enabling seamless automation and intelligent control over your Unity projects. By integrating with the MCP server and client, it allows AI agents or external tools to interact with your Unity environment—creating, modifying, and managing GameObjects, Components, Assets, Scenes, and more.
 
-Supports custom `tool` if any exists in your source code of a Unity project.
+The system is extensible: you can define custom `tool`s directly in your Unity project codebase, exposing new capabilities to the AI or automation clients. This makes Unity-MCP a flexible foundation for building advanced workflows, rapid prototyping, or integrating AI-driven features into your development process.
 
 ## AI Tools
 
@@ -80,6 +80,7 @@ Supports custom `tool` if any exists in your source code of a Unity project.
 
 1. [Install .NET 9.0](https://dotnet.microsoft.com/en-us/download)
 2. [Install OpenUPM-CLI](https://github.com/openupm/openupm-cli#installation)
+
 - Open command line in Unity project folder
 - Run the command
 
@@ -89,14 +90,13 @@ openupm add com.ivanmurzak.unity.mcp
 
 # Usage
 
-1. Go 👉 `Tools/Unity-MCP/Server/Print Config`. It prints into `Console` window in Unity Editor the json string.
-2. Copy the json string.
-3. Insert the json string into your MCP Client app:
-- Claude dekstop
-    - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-    - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+1. Go 👉 `Window/AI Connector (Unity-MCP)`.
+2. Click configure on your MCP client.
+3. Restart your MCP client.
+4. Make sure `AI Connector` is "Connected" after restart.
 
 # Add custom `tool`
+
 > ⚠️ Not yet supported. There is a blocker issue in `csharp-sdk` for MCP server. Waiting for solution.
 
 Unity-MCP is designed to support custom `tool` development by project owner. MCP server takes data from Unity plugin and exposes it to a Client. So anyone in the MCP communication chain would receive the information about a new `tool`. Which LLM may decide to call at some point.
