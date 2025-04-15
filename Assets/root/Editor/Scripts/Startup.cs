@@ -1,7 +1,6 @@
 using com.IvanMurzak.Unity.MCP.Common;
 using Debug = UnityEngine.Debug;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using UnityEditor;
 using com.IvanMurzak.Unity.MCP.Common.Json.Converters;
 
@@ -34,7 +33,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 {
                     loggingBuilder.ClearProviders(); // 👈 Clears the default providers
                     loggingBuilder.AddProvider(new UnityLoggerProvider());
-                    loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+                    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
                 .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)

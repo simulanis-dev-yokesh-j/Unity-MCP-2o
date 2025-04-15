@@ -20,6 +20,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "logs.txt");
         public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
 
+        public static string RawJsonConfiguration => Consts.MCP_Client.ClaudeDesktop.Config.Replace("{0}", ServerExecutableFile.Replace('\\', '/'));
+
         public static Task BuildServerIfNeeded(bool force = true)
         {
             if (IsServerCompiled)
