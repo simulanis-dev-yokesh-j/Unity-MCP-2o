@@ -50,9 +50,9 @@
 }
 
 .section-desc {
-    font-size: 14px;
     color: rgb(85, 85, 85);
     margin-bottom: 8px;
+    text-wrap: normal;
 }
 
 .custom-label {
@@ -119,6 +119,9 @@
 }
 .ContentItem .unity-enum-field {
     width: 80px;
+}
+.ContentItem .unity-integer-field__input {
+    width: 10px;
 }
 
 .Divider {

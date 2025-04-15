@@ -1,23 +1,25 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/root/Editor/UI/uss/AiConnectorWindow.uss?fileID=7433441132597879392&amp;guid=c469a790f6006d54fa1d7bce6ec00d7c&amp;type=3#AiConnectorWindow" />
     <ui:ScrollView>
-        <ui:VisualElement class="container">
+        <ui:VisualElement class="container" style="min-width: 320px;">
             <ui:Box name="contHeader" style="background-color: rgba(222, 222, 222, 0); flex-direction: row; flex-shrink: 0;">
                 <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
                     <ui:Label text="AI Connector (MCP)" name="labelSettings" class="Header" />
                     <ui:VisualElement name="divider" class="Divider" />
                     <ui:EnumField label="Log Level:" name="dropdownDebugLevel" type="com.IvanMurzak.Unity.MCP.LogLevel, com.IvanMurzak.Unity.MCP.Runtime" value="Warning" class="ContentItem" style="align-self: flex-start;" />
                 </ui:VisualElement>
-                <ui:VisualElement name="imgLogoPivot" class="AnimatedSelectable" style="flex-grow: 0; align-self: flex-start; height: 90px; width: 90px; right: 0; margin-left: 15px; justify-content: flex-start; flex-shrink: 0; margin-right: -8px; align-items: center; margin-top: 10px;">
-                    <ui:VisualElement name="imgLogo" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: url(&quot;project://database/Assets/root/Editor/Gizmos/logo_512.png?fileID=2800000&amp;guid=bbb0f64bd8f15164781e01168cd6fa4f&amp;type=3#logo_512&quot;); -unity-background-scale-mode: scale-to-fit; align-self: stretch;" />
+                <ui:VisualElement name="imgLogoPivot" class="AnimatedSelectable" style="flex-grow: 0; height: 90px; width: 90px; right: 0; margin-left: 15px; flex-shrink: 0; margin-right: -8px; margin-top: 10px; flex-direction: row;">
+                    <ui:VisualElement name="imgLogo" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: url(&quot;project://database/Assets/root/Editor/Gizmos/logo_512.png?fileID=2800000&amp;guid=bbb0f64bd8f15164781e01168cd6fa4f&amp;type=3#logo_512&quot;); -unity-background-scale-mode: stretch-to-fill; align-self: stretch;" />
                 </ui:VisualElement>
             </ui:Box>
             <ui:VisualElement name="space" class="row" style="align-items: center; height: 20px;" />
             <ui:VisualElement class="row" style="align-items: center;">
-                <ui:VisualElement name="connectionStatus" class="status-indicator-circle" />
-                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
             </ui:VisualElement>
-            <ui:VisualElement name="Client" class="Frame-Group" style="flex-grow: 1;">
+            <ui:VisualElement name="divider" class="Divider" style="flex-grow: 1;" />
+            <ui:Label text="Configure MCP Client" class="Header" />
+            <ui:Label text="At least one client should be configured.&#10;Some clients need restart after configuration." class="section-desc" />
+            <ui:VisualElement name="ConfigureClient-Claude" class="Frame-Group" style="flex-grow: 1;">
                 <ui:Label text="Claude Desktop" class="section-title" />
                 <ui:VisualElement class="row">
                     <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
@@ -25,9 +27,27 @@
                     <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:Label text="Section 1 Title" class="section-title" />
-            <ui:Label text="Section 1 description goes here." class="section-desc" />
-            <ui:TextField name="readonlyText" multiline="true" readonly="true" selectOnFocus="true" value="This is a multi-line, read-only, selectable text box.&#10;You can copy from here." style="margin-top: 0; margin-right: 0; margin-left: 0; margin-bottom: 24px;" />
+            <ui:VisualElement name="ConfigureClient-VS-Code" class="Frame-Group" style="flex-grow: 1;">
+                <ui:Label text="VS Code Insiders" class="section-title" />
+                <ui:VisualElement class="row">
+                    <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
+                    <ui:Label text="Not configured" style="flex-grow: 1;" />
+                    <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="ConfigureClient-Claude" class="Frame-Group" style="flex-grow: 1;">
+                <ui:Label text="Cursor" class="section-title" />
+                <ui:VisualElement class="row">
+                    <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
+                    <ui:Label text="Not configured" style="flex-grow: 1;" />
+                    <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="ConfigureClient-Custom" class="Frame-Group" style="flex-grow: 1;">
+                <ui:Label text="Manual configuration" class="section-title" />
+                <ui:Label text="Copy paste the json into your MCP Client to configure it." name="Label" class="section-desc" />
+                <ui:TextField name="readonlyText" multiline="true" readonly="true" selectOnFocus="true" value="This is a multi-line, read-only, selectable text box.&#10;You can copy from here." style="margin-top: 4px; margin-right: 0; margin-left: 0; margin-bottom: 4px;" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:ScrollView>
 </ui:UXML>
