@@ -8,9 +8,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     {
         [SerializeField] VisualTreeAsset templateControlPanel;
 
-        // Dictionary<string, UITheme> uiThemes = new Dictionary<string, UITheme>();
-        DropdownField dropdownCurrentTheme;
-
         [MenuItem("Window/AI Connector (Unity-MCP)")]
         public static MainWindowEditor ShowWindow()
         {
@@ -56,12 +53,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public void CreateGUI()
         {
             rootVisualElement.Clear();
+            if (templateControlPanel == null)
+            {
+                Debug.LogError("'templateControlPanel' is not assigned. Please assign it in the inspector.");
+                return;
+            }
+
+            VisualElement ui = templateControlPanel.Instantiate();
 
             var config = McpPluginUnity.Instance;
-            var panel = templateControlPanel.Instantiate();
-            var root = new ScrollView();
+            var root = templateControlPanel.Instantiate();
             rootVisualElement.Add(root);
-            root.Add(panel);
 
             // uiThemes.Clear();
             // uiThemeColors.Clear();
@@ -69,15 +71,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // Settings
             // -----------------------------------------------------------------
 
-            var enumDebugLevel = panel.Query<EnumField>("dropdownLogLevelLevel").First();
-            dropdownCurrentTheme = panel.Query<DropdownField>("dropdownCurrentTheme").First();
+            var dropdownLogLevel = root.Query<EnumField>("dropdownLogLevel").First();
 
             UpdateDropdownCurrentTheme(config);
 
-            dropdownCurrentTheme.RegisterValueChangedCallback(evt =>
+            dropdownLogLevel.RegisterValueChangedCallback(evt =>
             {
-                // config.CurrentThemeName = evt.newValue;
-                SaveChanges($"[Theme] Theme Changed: {evt.newValue}");
+                SetLogLevel(evt.newValue as LogLevel? ?? LogLevel.Warning);
+                SaveChanges($"[AI Connector] LogLevel Changed: {evt.newValue}");
             });
 
             // enumDebugLevel.value = config.debugLevel;
@@ -90,15 +91,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // Themes
             // -----------------------------------------------------------------
 
-            var inputFieldNewThemeName = panel
+            var inputFieldNewThemeName = root
                 .Query<VisualElement>("contHeaderThemes").First()
                 .Query<TextField>("textFieldNewName").First();
 
-            var btnCreateNewTheme = panel
+            var btnCreateNewTheme = root
                 .Query<VisualElement>("contHeaderThemes").First()
                 .Query<Button>("btnCreateNew").First();
 
-            var rootThemes = panel
+            var rootThemes = root
                 .Query<VisualElement>("rootThemes").First();
 
             // btnCreateNewTheme.RegisterCallback<ClickEvent>(evt =>
@@ -115,6 +116,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
             // foreach (var theme in config.Themes)
             //     UIAddTheme(config, rootThemes, theme);
+        }
+        void SetLogLevel(LogLevel logLevel)
+        {
+            data.logLevel = logLevel;
+            McpPluginUnity.Instance. = logLevel;
         }
     }
 }
