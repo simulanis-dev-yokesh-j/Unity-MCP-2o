@@ -6,16 +6,21 @@
                 <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
                     <ui:Label text="AI Connector (MCP)" name="labelSettings" class="Header" />
                     <ui:VisualElement name="divider" class="Divider" />
-                    <ui:EnumField label="Log Level:" name="dropdownDebugLevel" type="com.IvanMurzak.Unity.MCP.LogLevel, com.IvanMurzak.Unity.MCP.Runtime" value="Warning" class="ContentItem" style="align-self: flex-start;" />
+                    <ui:EnumField label="Log Level" name="dropdownDebugLevel" type="com.IvanMurzak.Unity.MCP.LogLevel, com.IvanMurzak.Unity.MCP.Runtime" value="Warning" class="ContentItem" style="align-self: flex-start;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="imgLogoPivot" class="AnimatedSelectable" style="flex-grow: 0; height: 90px; width: 90px; right: 0; margin-left: 15px; flex-shrink: 0; margin-right: -8px; margin-top: 10px; flex-direction: row;">
                     <ui:VisualElement name="imgLogo" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: url(&quot;project://database/Assets/root/Editor/Gizmos/logo_512.png?fileID=2800000&amp;guid=bbb0f64bd8f15164781e01168cd6fa4f&amp;type=3#logo_512&quot;); -unity-background-scale-mode: stretch-to-fill; align-self: stretch;" />
                 </ui:VisualElement>
             </ui:Box>
-            <ui:VisualElement name="space" class="row" style="align-items: center; height: 20px;" />
+            <ui:Label text="Connect to MCP server" class="Header" />
+            <ui:Foldout text="Information" value="true">
+                <ui:Label text="Usually the server is hosted locally at:&#10;http://localhost:60606&#10;&#10;But feel free to connect to remote MCP server if needed" class="section-desc" />
+            </ui:Foldout>
+            <ui:TextField picking-mode="Ignore" label="Server URL" value="http://localhost:60606" name="InputServerURL" class="ContentItem" />
             <ui:VisualElement class="row" style="align-items: center;">
                 <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
             </ui:VisualElement>
+            <ui:VisualElement name="space" class="row" style="align-items: center; height: 20px;" />
             <ui:VisualElement name="divider" class="Divider" style="flex-grow: 1;" />
             <ui:Label text="Configure MCP Client" class="Header" />
             <ui:Label text="At least one client should be configured.&#10;Some clients need restart after configuration." class="section-desc" />
