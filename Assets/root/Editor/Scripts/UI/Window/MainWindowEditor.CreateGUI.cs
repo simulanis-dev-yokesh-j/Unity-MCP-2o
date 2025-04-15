@@ -44,7 +44,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 SaveChanges($"[AI Connector] LogLevel Changed: {evt.newValue}");
             });
 
-
             // Connection status
             // -----------------------------------------------------------------
 
@@ -131,31 +130,78 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // Configure MCP Client
             // -----------------------------------------------------------------
 
-            // var inputFieldNewThemeName = root
-            //     .Query<VisualElement>("contHeaderThemes").First()
-            //     .Query<TextField>("textFieldNewName").First();
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Claude").First(),
+                isConfigured: () =>
+                {
+                    return false;
+                },
+                configure: () =>
+                {
+                    return false;
+                });
 
-            // var btnCreateNewTheme = root
-            //     .Query<VisualElement>("contHeaderThemes").First()
-            //     .Query<Button>("btnCreateNew").First();
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-VS-Code").First(),
+                isConfigured: () =>
+                {
+                    return false;
+                },
+                configure: () =>
+                {
+                    return false;
+                });
 
-            // var rootThemes = root
-            //     .Query<VisualElement>("rootThemes").First();
+            ConfigureClient(root.Query<VisualElement>("ConfigureClient-Cursor").First(),
+                isConfigured: () =>
+                {
+                    return false;
+                },
+                configure: () =>
+                {
+                    return false;
+                });
 
-            // btnCreateNewTheme.RegisterCallback<ClickEvent>(evt =>
-            // {
-            //     var themeName = inputFieldNewThemeName.value;
-            //     inputFieldNewThemeName.value = "New Theme";
-            //     var theme = config.AddTheme(themeName);
+            // Provide raw json configuration
+            // -----------------------------------------------------------------
 
-            //     UpdateDropdownCurrentTheme(config);
+            var rawJsonField = root.Query<TextField>("rawJsonConfiguration").First();
+            rawJsonField.value = Startup.RawJsonConfiguration;
+        }
 
-            //     UIAddTheme(config, rootThemes, theme);
-            //     SaveChanges($"[Theme] Theme added: {themeName}");
-            // });
+        void ConfigureClient(VisualElement root, Func<bool> isConfigured, Func<bool> configure)
+        {
+            var statusCircle = root.Query<VisualElement>("configureStatusCircle").First();
+            var statusText = root.Query<Label>("configureStatusText").First();
+            var btnConfigure = root.Query<Button>("btnConfigure").First();
 
-            // foreach (var theme in config.Themes)
-            //     UIAddTheme(config, rootThemes, theme);
+            var isConfiguredResult = isConfigured();
+
+            statusCircle.RemoveFromClassList(USS_IndicatorClass_Connected);
+            statusCircle.RemoveFromClassList(USS_IndicatorClass_Connecting);
+            statusCircle.RemoveFromClassList(USS_IndicatorClass_Disconnected);
+
+            statusCircle.AddToClassList(isConfiguredResult
+                ? USS_IndicatorClass_Connected
+                : USS_IndicatorClass_Disconnected);
+
+            statusText.text = isConfiguredResult ? "Configured" : "Not Configured";
+            btnConfigure.text = isConfiguredResult ? "Reconfigure" : "Configure";
+
+            btnConfigure.RegisterCallback<ClickEvent>(evt =>
+            {
+                var configureResult = configure();
+
+                statusText.text = configureResult ? "Configured" : "Not Configured";
+
+                statusCircle.RemoveFromClassList(USS_IndicatorClass_Connected);
+                statusCircle.RemoveFromClassList(USS_IndicatorClass_Connecting);
+                statusCircle.RemoveFromClassList(USS_IndicatorClass_Disconnected);
+
+                statusCircle.AddToClassList(configureResult
+                    ? USS_IndicatorClass_Connected
+                    : USS_IndicatorClass_Disconnected);
+
+                btnConfigure.text = configureResult ? "Reconfigure" : "Configure";
+            });
         }
     }
 }

@@ -30,7 +30,7 @@
                 <ui:VisualElement class="row">
                     <ui:VisualElement name="configureStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
                     <ui:Label text="Not configured" name="configureStatusText" style="flex-grow: 1;" />
-                    <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
+                    <ui:Button name="btnConfigure" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="ConfigureClient-VS-Code" class="Frame-Group" style="flex-grow: 1;">
@@ -38,7 +38,7 @@
                 <ui:VisualElement class="row">
                     <ui:VisualElement name="configureStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
                     <ui:Label text="Not configured" name="configureStatusText" style="flex-grow: 1;" />
-                    <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
+                    <ui:Button name="btnConfigure" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="ConfigureClient-Cursor" class="Frame-Group" style="flex-grow: 1;">
@@ -46,13 +46,13 @@
                 <ui:VisualElement class="row">
                     <ui:VisualElement name="configureStatusCircle" class="status-indicator-circle status-indicator-circle-disconnected" />
                     <ui:Label text="Not configured" name="configureStatusText" style="flex-grow: 1;" />
-                    <ui:Button name="cursorButton" text="Configure" class="Button-Primary" />
+                    <ui:Button name="btnConfigure" text="Configure" class="Button-Primary" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="ConfigureClient-Custom" class="Frame-Group" style="flex-grow: 1;">
                 <ui:Label text="Manual configuration" class="section-title" />
                 <ui:Label text="Copy paste the json into your MCP Client to configure it." name="Label" class="section-desc" />
-                <ui:TextField name="readonlyText" multiline="true" readonly="true" selectOnFocus="true" value="This is a multi-line, read-only, selectable text box.&#10;You can copy from here." style="margin-top: 4px; margin-right: 0; margin-left: 0; margin-bottom: 4px;" />
+                <ui:TextField name="rawJsonConfiguration" multiline="true" readonly="true" selectOnFocus="true" value="This is a multi-line, read-only, selectable text box.&#10;You can copy from here." style="margin-top: 4px; margin-right: 0; margin-left: 0; margin-bottom: 4px;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:ScrollView>
