@@ -52,7 +52,8 @@
 .section-desc {
     color: rgb(85, 85, 85);
     margin-bottom: 8px;
-    text-wrap: normal;
+    white-space: normal;
+    white-space: normal;
 }
 
 .custom-label {

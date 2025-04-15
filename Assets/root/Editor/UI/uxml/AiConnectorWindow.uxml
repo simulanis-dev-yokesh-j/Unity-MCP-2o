@@ -13,14 +13,15 @@
                 </ui:VisualElement>
             </ui:Box>
             <ui:Label text="Connect to MCP server" class="Header" />
-            <ui:Foldout text="Information" value="true">
-                <ui:Label text="Usually the server is hosted locally at:&#10;http://localhost:60606&#10;&#10;But feel free to connect to remote MCP server if needed" class="section-desc" />
-            </ui:Foldout>
             <ui:TextField picking-mode="Ignore" label="Server URL" value="http://localhost:60606" name="InputServerURL" class="ContentItem" />
-            <ui:VisualElement class="row" style="align-items: center;">
+            <ui:Foldout text="Information" value="false">
+                <ui:Label text="Usually the server is hosted locally at:&#10;http://localhost:60606&#10;&#10;But feel free to connect to remote MCP server if needed. The connection under the hood is established using SignalR and supports wide range of features." class="section-desc" />
+            </ui:Foldout>
+            <ui:VisualElement class="row">
                 <ui:VisualElement name="connectionStatus" class="status-indicator-circle status-indicator-circle-disconnected" />
+                <ui:Label text="Disconnected" style="flex-grow: 1;" />
+                <ui:Button name="cursorButton" text="Connect" class="Button-Primary" />
             </ui:VisualElement>
-            <ui:VisualElement name="space" class="row" style="align-items: center; height: 20px;" />
             <ui:VisualElement name="divider" class="Divider" style="flex-grow: 1;" />
             <ui:Label text="Configure MCP Client" class="Header" />
             <ui:Label text="At least one client should be configured.&#10;Some clients need restart after configuration." class="section-desc" />
