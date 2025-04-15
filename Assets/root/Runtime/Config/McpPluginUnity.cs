@@ -30,9 +30,7 @@ namespace com.IvanMurzak.Unity.MCP
 
         public bool IsLogActive(LogLevel level)
         {
-            if (data == null)
-                return false;
-
+            data ??= new Data();
             return data.logLevel.IsActive(level);
         }
         public LogLevel LogLevel
@@ -40,9 +38,7 @@ namespace com.IvanMurzak.Unity.MCP
             get => data?.logLevel ?? LogLevel.Trace;
             set
             {
-                if (data == null)
-                    return;
-
+                data ??= new Data();
                 data.logLevel = value;
                 NotifyChanged(data);
             }
@@ -52,9 +48,7 @@ namespace com.IvanMurzak.Unity.MCP
             get => data?.host ?? Data.DefaultHost;
             set
             {
-                if (data == null)
-                    return;
-
+                data ??= new Data();
                 data.host = value;
                 NotifyChanged(data);
             }
