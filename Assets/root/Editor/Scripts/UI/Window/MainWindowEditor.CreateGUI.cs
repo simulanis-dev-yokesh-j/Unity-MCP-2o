@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
 using Microsoft.AspNetCore.SignalR.Client;
 using R3;
@@ -247,10 +249,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             {
                 var json = File.ReadAllText(configPath);
 
-                // Startup.RawJsonConfiguration
-                // Need to inject Startup.RawJsonConfiguration into root object of the `json`
+                // Parse the existing config as JsonObject
+                var rootObj = JsonNode.Parse(json)?.AsObject();
+                if (rootObj == null)
+                    throw new Exception("Config file is not a valid JSON object.");
 
-                File.WriteAllText(configPath, json);
+                // Parse the injected config as JsonObject
+                var injectObj = JsonNode.Parse(Startup.RawJsonConfiguration)?.AsObject();
+                if (injectObj == null)
+                    throw new Exception("Injected config is not a valid JSON object.");
+
+                // Merge: add/overwrite all properties from injectObj into rootObj
+                foreach (var kv in injectObj)
+                    rootObj[kv.Key] = kv.Value;
+
+                // Write back to file
+                File.WriteAllText(configPath, rootObj.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+
                 return IsMcpClientConfigured(configPath);
             }
             catch (Exception ex)
