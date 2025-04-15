@@ -6,7 +6,9 @@ using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP
 {
+#if UNITY_EDITOR
     [InitializeOnLoad]
+#endif
     public class MainThreadDispatcher : MonoBehaviour
     {
         public static int MainThreadId = Thread.CurrentThread.ManagedThreadId;
