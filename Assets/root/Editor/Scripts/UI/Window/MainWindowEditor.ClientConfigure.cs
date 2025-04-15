@@ -22,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 ));
 
             ConfigureClient(root.Query<VisualElement>("ConfigureClient-VS-Code").First(),
-                configPath: "Unknonwn");
+                configPath: "Unknown");
 
             ConfigureClient(root.Query<VisualElement>("ConfigureClient-Cursor").First(),
                 configPath: Path.Combine(
@@ -44,7 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 ));
 
             ConfigureClient(root.Query<VisualElement>("ConfigureClient-VS-Code").First(),
-                configPath: "Unknonwn");
+                configPath: "Unknown");
 
             ConfigureClient(root.Query<VisualElement>("ConfigureClient-Cursor").First(),
                 configPath: Path.Combine(
