@@ -1,19 +1,12 @@
-using System.Linq;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using com.IvanMurzak.Unity.MCP.Common;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
     public partial class MainWindowEditor : EditorWindow
     {
-        const string colorFillTemplateGuid = "07c8baad911b3e244bd677fa7d79370b";
-
         [SerializeField] VisualTreeAsset templateControlPanel;
-        // [SerializeField] VisualTreeAsset templateTheme;
-        // [SerializeField] VisualTreeAsset templateThemeColor;
 
         // Dictionary<string, UITheme> uiThemes = new Dictionary<string, UITheme>();
         DropdownField dropdownCurrentTheme;
