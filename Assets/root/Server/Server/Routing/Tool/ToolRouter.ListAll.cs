@@ -11,7 +11,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 {
     public static partial class ToolRouter
     {
-        public static async ValueTask<ListToolsResult> ListAll(RequestContext<ListToolsRequestParams> request, CancellationToken cancellationToken)
+        public static async Task<ListToolsResult> ListAll(RequestContext<ListToolsRequestParams> request, CancellationToken cancellationToken)
         {
             var logger = LogManager.GetCurrentClassLogger();
             logger.Trace("ListAll called");

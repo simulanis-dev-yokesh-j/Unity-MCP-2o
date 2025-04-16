@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Add Component to a GameObject"
         )]
         [Description("Add a component to a GameObject.")]
-        public ValueTask<CallToolResponse> AddComponent
+        public Task<CallToolResponse> AddComponent
         (
             [Description("Full name of the Component. It should include full namespace path and the class name.")]
             string componentName,

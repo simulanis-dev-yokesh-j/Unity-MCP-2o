@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Create GameObject"
         )]
         [Description("Create a new GameObject in the current active scene.")]
-        public ValueTask<CallToolResponse> Create
+        public Task<CallToolResponse> Create
         (
             [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]
             string path,

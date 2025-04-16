@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Find GameObject by InstanceId"
         )]
         [Description("Find GameObject in the active scene. Returns metadata about GameObject and its children.")]
-        public ValueTask<CallToolResponse> FindByInstanceId
+        public Task<CallToolResponse> FindByInstanceId
         (
             [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]
             int includeChildrenDepth = 0,

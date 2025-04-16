@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         )]
         [Description(@"Destroy a GameObject and all nested GameObjects recursively.
 Use 'instanceId' whenever possible, because it finds the exact GameObject, when 'path' may find a wrong one.")]
-        public ValueTask<CallToolResponse> Destroy
+        public Task<CallToolResponse> Destroy
         (
             [Description("Delete by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
