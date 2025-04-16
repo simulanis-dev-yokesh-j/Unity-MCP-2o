@@ -34,12 +34,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             // Find by 'instanceId'. Priority: 1. (Recommended)
             if (instanceId.HasValue && instanceId.Value != 0)
             {
-                if (instanceId == 0)
-                {
-                    error = Tool_GameObject.Error.GameObjectInstanceIdIsEmpty();
-                    return null;
-                }
-
                 go = FindByInstanceId(instanceId.Value);
                 if (go == null)
                 {
