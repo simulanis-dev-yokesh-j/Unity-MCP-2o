@@ -37,6 +37,9 @@ if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount o
                     return Error.NotFoundGameObjectAtPath(parentPath);
             }
 
+            if (string.IsNullOrEmpty(name))
+                return Error.GameObjectNameIsEmpty();
+
             var go = new GameObject(name);
             go.transform.position = position ?? Vector3.zero;
             go.transform.rotation = rotation == null
