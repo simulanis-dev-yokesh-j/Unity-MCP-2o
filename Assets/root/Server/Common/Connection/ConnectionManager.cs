@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<ConnectionManager> _logger;
-        readonly ReactiveProperty<HubConnection> _hubConnection = new(null);
+        readonly ReactiveProperty<HubConnection> _hubConnection = new();
         readonly Func<string, Task<HubConnection>> _hubConnectionBuilder;
         readonly ReactiveProperty<HubConnectionState> _connectionState = new(HubConnectionState.Disconnected);
         readonly ReactiveProperty<bool> _continueToReconnect = new(false);
@@ -204,7 +204,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         _logger.LogTrace("Retrying connection... {0}", Endpoint);
                         return await InternalConnect(cancellationToken);
                     }
-
+                    _connectionState.Value = HubConnectionState.Disconnected;
                     return false;
                 }).Unwrap();
             return await connectionTask;
@@ -260,16 +260,27 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 try
                 {
-                    await _hubConnection.Value.StopAsync();
-                    // await _hubConnection.Value.DisposeAsync();
+                    var tempHubConnection = _hubConnection.Value;
+                    _hubConnection.Dispose();
+                    await tempHubConnection.StopAsync()
+                        .ContinueWith(task =>
+                        {
+                            try
+                            {
+                                tempHubConnection.DisposeAsync();
+                            }
+                            catch { }
+                        });
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError("Error during async disposal: {0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
-
-            _hubConnection.Dispose();
+            else
+            {
+                _hubConnection.Dispose();
+            }
         }
 
         ~ConnectionManager() => Dispose();

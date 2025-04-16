@@ -23,7 +23,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             [Description("Prefab asset path.")]
             string prefabAssetPath,
             [Description("GameObject path in the current active scene.")]
-            string gameObjectPath
+            string gameObjectPath,
+            [Description("Transform position of the GameObject.")]
+            Vector3? position = default,
+            [Description("Transform rotation of the GameObject. Euler angles in degrees.")]
+            Vector3? rotation = default,
+            [Description("Transform scale of the GameObject.")]
+            Vector3? scale = default,
+            [Description("World or Local space of transform.")]
+            bool isLocalSpace = false
         )
         => MainThread.Run(() =>
         {
@@ -42,8 +50,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             go.name = name ?? prefab.name;
             go.transform.SetParent(parentGo.transform, false);
+            go.SetTransform(position, rotation, scale, isLocalSpace);
 
             var bounds = go.CalculateBounds();
+
+            EditorUtility.SetDirty(go);
+            EditorApplication.RepaintHierarchyWindow();
 
             return $"[Success] Prefab successfully instantiated.\n{go.Print()}";
         });

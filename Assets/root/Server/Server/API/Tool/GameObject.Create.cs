@@ -18,12 +18,14 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]
             string path,
-            [Description("Position of the GameObject.")]
+            [Description("Transform position of the GameObject.")]
             Vector3? position = default,
-            [Description("Rotation of the GameObject. Euler angles in degrees.")]
+            [Description("Transform rotation of the GameObject. Euler angles in degrees.")]
             Vector3? rotation = default,
-            [Description("Scale of the GameObject.")]
-            Vector3? scale = default
+            [Description("Transform scale of the GameObject.")]
+            Vector3? scale = default,
+            [Description("World or Local space of transform.")]
+            bool isLocalSpace = false
         )
         {
             return ToolRouter.Call("GameObject_Create", arguments =>
@@ -38,6 +40,8 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
 
                 if (scale != null)
                     arguments[nameof(scale)] = scale;
+
+                arguments[nameof(isLocalSpace)] = isLocalSpace;
             });
         }
     }

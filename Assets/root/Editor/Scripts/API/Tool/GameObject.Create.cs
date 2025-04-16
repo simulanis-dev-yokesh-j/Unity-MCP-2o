@@ -20,12 +20,14 @@ if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount o
         (
             [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]
             string path,
-            [Description("Position of the GameObject.")]
+            [Description("Transform position of the GameObject.")]
             Vector3? position = default,
-            [Description("Rotation of the GameObject. Euler angles in degrees.")]
+            [Description("Transform rotation of the GameObject. Euler angles in degrees.")]
             Vector3? rotation = default,
-            [Description("Scale of the GameObject.")]
-            Vector3? scale = default
+            [Description("Transform scale of the GameObject.")]
+            Vector3? scale = default,
+            [Description("World or Local space of transform.")]
+            bool isLocalSpace = false
         )
         => MainThread.Run(() =>
         {
@@ -41,11 +43,7 @@ if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount o
                 return Error.GameObjectNameIsEmpty();
 
             var go = new GameObject(name);
-            go.transform.position = position ?? Vector3.zero;
-            go.transform.rotation = rotation == null
-                ? Quaternion.identity
-                : Quaternion.Euler(rotation.Value.x, rotation.Value.y, rotation.Value.z);
-            go.transform.localScale = scale ?? Vector3.one;
+            go.SetTransform(position, rotation, scale, isLocalSpace);
 
             if (parentGo != null)
                 go.transform.SetParent(parentGo.transform, false);

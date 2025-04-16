@@ -215,5 +215,27 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             }
             return bounds;
         }
+        public static GameObject SetTransform(this GameObject go, Vector3? position = default, Vector3? rotation = default, Vector3? scale = default, bool isLocalSpace = false)
+        {
+            if (isLocalSpace)
+            {
+                if (position.HasValue)
+                    go.transform.localPosition = position.Value;
+                if (rotation.HasValue)
+                    go.transform.localRotation = Quaternion.Euler(rotation.Value.x, rotation.Value.y, rotation.Value.z);
+                if (scale.HasValue)
+                    go.transform.localScale = scale.Value;
+            }
+            else
+            {
+                if (position.HasValue)
+                    go.transform.position = position.Value;
+                if (rotation.HasValue)
+                    go.transform.rotation = Quaternion.Euler(rotation.Value.x, rotation.Value.y, rotation.Value.z);
+                if (scale.HasValue)
+                    go.transform.localScale = scale.Value;
+            }
+            return go;
+        }
     }
 }
