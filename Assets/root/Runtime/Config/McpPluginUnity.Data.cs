@@ -13,12 +13,14 @@ namespace com.IvanMurzak.Unity.MCP
 
             [SerializeField] public string host = DefaultHost;
             [SerializeField] public int port = DefaultPort;
+            [SerializeField] public bool keepConnected = true;
             [SerializeField] public LogLevel logLevel = LogLevel.Warning;
 
             public Data SetDefault()
             {
                 host = DefaultHost;
                 port = DefaultPort;
+                keepConnected = true;
                 logLevel = LogLevel.Warning;
                 return this;
             }

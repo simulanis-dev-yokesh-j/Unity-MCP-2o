@@ -9,22 +9,24 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "Scene_GetHierarchyRoot",
+            Name = "Scene_GetHierarchy",
             Title = "Get Scene Hierarchy"
         )]
         [Description("This tool retrieves the list of root GameObjects in the specified scene.")]
-        public Task<CallToolResponse> GetHierarchyRoot
+        public ValueTask<CallToolResponse> GetHierarchy
         (
             [Description("Determines the depth of the hierarchy to include.")]
             int includeChildrenDepth = 3,
-            [Description("Name of the loaded scene. If empty, the active scene will be used.")]
+            [Description("Name of the loaded scene. If empty string, the active scene will be used.")]
             string? loadedSceneName = null
         )
         {
-            return ToolRouter.Call("Scene_GetHierarchyRoot", arguments =>
+            return ToolRouter.Call("Scene_GetHierarchy", arguments =>
             {
                 arguments[nameof(includeChildrenDepth)] = includeChildrenDepth;
-                arguments[nameof(loadedSceneName)] = loadedSceneName ?? string.Empty;
+
+                if (loadedSceneName != null)
+                    arguments[nameof(loadedSceneName)] = loadedSceneName;
             });
         }
     }

@@ -20,26 +20,48 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         public static void BuildAndStart()
         {
-            var message = "<b><color=yellow>STARTUP</color></b>";
-            Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
+            // if (McpPluginUnity.Instance.LogLevel.IsActive(LogLevel.Trace))
+            // {
+            //     var message = "<b><color=yellow>Startup</color></b>";
+            //     Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
+            // }
 
-            new McpPluginBuilder()
+            McpPlugin.StaticDisposeAsync();
+
+            var mcpPlugin = new McpPluginBuilder()
                 .WithAppFeatures()
                 .WithConfig(config =>
                 {
-
+                    config.Endpoint = McpPluginUnity.Instance.Host;
                 })
                 .AddLogging(loggingBuilder =>
                 {
                     loggingBuilder.ClearProviders(); // 👈 Clears the default providers
                     loggingBuilder.AddProvider(new UnityLoggerProvider());
-                    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    loggingBuilder.SetMinimumLevel(McpPluginUnity.Instance.LogLevel switch
+                    {
+                        MCP.LogLevel.Trace => Microsoft.Extensions.Logging.LogLevel.Trace,
+                        MCP.LogLevel.Log => Microsoft.Extensions.Logging.LogLevel.Information,
+                        MCP.LogLevel.Warning => Microsoft.Extensions.Logging.LogLevel.Warning,
+                        MCP.LogLevel.Error => Microsoft.Extensions.Logging.LogLevel.Error,
+                        MCP.LogLevel.Exception => Microsoft.Extensions.Logging.LogLevel.Critical,
+                        _ => Microsoft.Extensions.Logging.LogLevel.Warning
+                    });
                 })
                 .WithToolsFromAssembly(typeof(Startup).Assembly)
                 .WithPromptsFromAssembly(typeof(Startup).Assembly)
                 .WithResourcesFromAssembly(typeof(Startup).Assembly)
-                .Build()
-                .Connect();
+                .Build();
+
+            if (McpPluginUnity.Instance.KeepConnected)
+            {
+                if (McpPluginUnity.Instance.LogLevel.IsActive(LogLevel.Log))
+                {
+                    var message = "<b><color=yellow>Connecting</color></b>";
+                    Debug.Log($"{Consts.Log.Tag} {message} <color=orange>ಠ‿ಠ</color>");
+                }
+                mcpPlugin.Connect();
+            }
         }
 
         public static void RegisterJsonConverters()

@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Get list of all Components"
         )]
         [Description("Returns the list of all available components in the project.")]
-        public Task<CallToolResponse> GetAll
+        public ValueTask<CallToolResponse> GetAll
         (
             [Description("Substring for searching components. Could be empty.")]
             string search

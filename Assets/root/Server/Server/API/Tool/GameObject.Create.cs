@@ -14,24 +14,21 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Create GameObject"
         )]
         [Description("Create a new GameObject in the current active scene.")]
-        public Task<CallToolResponse> Create
+        public ValueTask<CallToolResponse> Create
         (
-            [Description("Path to the parent GameObject.")]
+            [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]
             string path,
-            [Description("Name of the new GameObject.")]
-            string name,
             [Description("Position of the GameObject.")]
-            Vector3? position = null,
+            Vector3? position = default,
             [Description("Rotation of the GameObject. Euler angles in degrees.")]
-            Vector3? rotation = null,
+            Vector3? rotation = default,
             [Description("Scale of the GameObject.")]
-            Vector3? scale = null
+            Vector3? scale = default
         )
         {
             return ToolRouter.Call("GameObject_Create", arguments =>
             {
                 arguments[nameof(path)] = path;
-                arguments[nameof(name)] = name;
 
                 if (position != null)
                     arguments[nameof(position)] = position;

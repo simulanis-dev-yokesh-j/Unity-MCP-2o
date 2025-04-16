@@ -14,10 +14,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
         }
         public static IRequestCallTool SetOrAddParameter(this IRequestCallTool data, string name, object? value)
         {
-            data.Arguments ??= new Dictionary<string, JsonElement>()
-            {
-                [name] = JsonUtils.SerializeToElement(value)
-            };
+            data.Arguments ??= value == null
+                ? new Dictionary<string, JsonElement>()
+                : new Dictionary<string, JsonElement>() { [name] = JsonUtils.SerializeToElement(value) };
             return data;
         }
         // public static IRequestData BuildRequest(this IRequestTool data)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Editor.API;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,6 +25,67 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             {
                 return scene.Value.GetRootGameObjects();
             }
+        }
+        public static GameObject FindBy(int? instanceId, string? path, string? name, out string error)
+        {
+            path = StringUtils.TrimPath(path);
+            var go = default(GameObject);
+
+            // Find by 'instanceId'. Priority: 1. (Recommended)
+            if (instanceId.HasValue && instanceId.Value != 0)
+            {
+                if (instanceId == 0)
+                {
+                    error = Tool_GameObject.Error.GameObjectInstanceIdIsEmpty();
+                    return null;
+                }
+
+                go = FindByInstanceId(instanceId.Value);
+                if (go == null)
+                {
+                    error = Tool_GameObject.Error.NotFoundGameObjectWithInstanceId(instanceId.Value);
+                    return null;
+                }
+            }
+            // Find by 'path'. Priority: 2.
+            else if (!string.IsNullOrEmpty(path))
+            {
+                go = FindByPath(path);
+                if (go == null)
+                {
+                    error = Tool_GameObject.Error.NotFoundGameObjectAtPath(path);
+                    return null;
+                }
+            }
+            // Find by 'name'. Priority: 3.
+            else if (!string.IsNullOrEmpty(name))
+            {
+                go = GameObject.Find(name);
+                if (go == null)
+                {
+                    error = Tool_GameObject.Error.NotFoundGameObjectWithName(name);
+                    return null;
+                }
+            }
+            // No valid arguments provided
+            else
+            {
+                error = "[Error] No valid arguments provided to find GameObject.";
+                return null;
+            }
+            error = null;
+            return go;
+        }
+        public static GameObject FindByInstanceId(int instanceId)
+        {
+            if (instanceId == 0)
+                return null;
+
+            var obj = UnityEditor.EditorUtility.InstanceIDToObject(instanceId);
+            if (obj is not GameObject go)
+                return null;
+
+            return go;
         }
         public static GameObject FindByPath(string path, GameObject? root = null)
         {
@@ -133,7 +195,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
         }
         public static string Print(this GameObject go) => go == null
             ? null
-            : $"instanceID: {go.GetInstanceID()}, path: {go.GetPath()}";
+            : $"instanceID: {go.GetInstanceID()}, path: {go.GetPath()}, bounds: {JsonUtils.Serialize(go.CalculateBounds())}";
+
         public static string Print(this IEnumerable<GameObject> gos)
         {
             var sb = new StringBuilder();
@@ -144,5 +207,19 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
         }
         public static GameObjectMetadata ToMetadata(this GameObject go, int includeChildrenDepth = 3)
             => GameObjectMetadata.FromGameObject(go, includeChildrenDepth);
+
+        public static Bounds CalculateBounds(this GameObject go)
+        {
+            var renderers = go.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0)
+                return new Bounds(go.transform.position, Vector3.zero);
+
+            var bounds = renderers[0].bounds;
+            foreach (var renderer in renderers.Skip(1))
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+            return bounds;
+        }
     }
 }

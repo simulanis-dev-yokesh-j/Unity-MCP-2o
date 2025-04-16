@@ -13,16 +13,16 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public const string Version = "0.1.0";
 
         readonly ILogger<ConnectionManager> _logger;
-        readonly ReactiveProperty<HubConnection> _hubConnection = new();
+        readonly ReactiveProperty<HubConnection> _hubConnection = new(null);
         readonly Func<string, Task<HubConnection>> _hubConnectionBuilder;
-        readonly ReactiveProperty<HubConnectionState> _connectionStateSubject = new(HubConnectionState.Disconnected);
+        readonly ReactiveProperty<HubConnectionState> _connectionState = new(HubConnectionState.Disconnected);
         readonly ReactiveProperty<bool> _continueToReconnect = new(false);
 
         Task<bool>? connectionTask;
         HubConnectionLogger? hubConnectionLogger;
         HubConnectionObservable? hubConnectionObservable;
         CancellationTokenSource? internalCts;
-        public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => _connectionStateSubject.ToReadOnlyReactiveProperty();
+        public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => _connectionState.ToReadOnlyReactiveProperty();
         public ReadOnlyReactiveProperty<HubConnection> HubConnection => _hubConnection.ToReadOnlyReactiveProperty();
         public ReadOnlyReactiveProperty<bool> KeepConnected => _continueToReconnect.ToReadOnlyReactiveProperty();
         public string Endpoint { get; set; } = string.Empty;
@@ -37,12 +37,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 if (hubConnection == null)
                 {
-                    _connectionStateSubject.Value = HubConnectionState.Disconnected;
+                    _connectionState.Value = HubConnectionState.Disconnected;
                     return;
                 }
 
                 hubConnection.ToObservable().State
-                    .Subscribe(state => _connectionStateSubject.Value = state);
+                    .Subscribe(state => _connectionState.Value = state);
             });
         }
 
@@ -172,12 +172,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
             }
 
             _logger.LogDebug("Connecting to {0}...", Endpoint);
-            connectionTask = _hubConnection.Value.StartAsync(cancellationToken)
+            connectionTask = _hubConnection.CurrentValue.StartAsync(cancellationToken)
                 .ContinueWith(async task =>
                 {
                     if (task.IsCompletedSuccessfully)
                     {
                         _logger.LogInformation("Connection started successfully {0}.", Endpoint);
+                        _connectionState.Value = HubConnectionState.Connected;
                         return true;
                     }
 
@@ -193,14 +194,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                     if (_continueToReconnect.CurrentValue)
                     {
-                        _logger.LogWarning("Waiting before retry... {0}", Endpoint);
+                        _logger.LogTrace("Waiting before retry... {0}", Endpoint);
                         await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); // Wait before retrying
 
                         // Cancel the current connection task to allow for a new connection attempt
                         // connectionTask?.Dispose();
                         connectionTask = null;
 
-                        _logger.LogWarning("Retrying connection... {0}", Endpoint);
+                        _logger.LogTrace("Retrying connection... {0}", Endpoint);
                         return await InternalConnect(cancellationToken);
                     }
 
@@ -211,8 +212,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public Task Disconnect(CancellationToken cancellationToken = default)
         {
-            _continueToReconnect.Value = false;
             connectionTask = null;
+            _continueToReconnect.Value = false;
 
             // Cancel the internal token to stop any ongoing connection attempts
             CancelInternalToken(dispose: false);
@@ -245,10 +246,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public async Task DisposeAsync()
         {
             connectionTask = null;
+            _continueToReconnect.Value = false;
 
             hubConnectionLogger?.Dispose();
             hubConnectionObservable?.Dispose();
-            _connectionStateSubject.Dispose();
+
+            _connectionState.Dispose();
             _continueToReconnect.Dispose();
 
             CancelInternalToken(dispose: true);
@@ -258,7 +261,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 try
                 {
                     await _hubConnection.Value.StopAsync();
-                    await _hubConnection.Value.DisposeAsync();
+                    // await _hubConnection.Value.DisposeAsync();
                 }
                 catch (Exception ex)
                 {

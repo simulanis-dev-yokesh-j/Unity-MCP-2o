@@ -46,6 +46,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             {
                 McpPluginUnity.Instance.LogLevel = evt.newValue as LogLevel? ?? LogLevel.Warning;
                 SaveChanges($"[AI Connector] LogLevel Changed: {evt.newValue}");
+                Startup.BuildAndStart();
             });
 
             // Connection status
@@ -75,6 +76,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .Subscribe(tuple =>
                 {
                     var (connectionState, keepConnected) = tuple;
+
+                    inputFieldHost.isReadOnly = keepConnected || connectionState switch
+                    {
+                        HubConnectionState.Connected => true,
+                        HubConnectionState.Disconnected => false,
+                        HubConnectionState.Reconnecting => true,
+                        _ => false
+                    };
 
                     connectionStatusCircle.RemoveFromClassList(USS_IndicatorClass_Connected);
                     connectionStatusCircle.RemoveFromClassList(USS_IndicatorClass_Connecting);
@@ -117,17 +126,32 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 if (btnConnectOrDisconnect.text == ServerButtonText_Connect)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Stop;
-                    McpPlugin.Instance.Connect();
+                    McpPluginUnity.Instance.KeepConnected = true;
+                    McpPluginUnity.Instance.Save();
+                    if (McpPlugin.HasInstance)
+                    {
+                        McpPlugin.Instance.Connect();
+                    }
+                    else
+                    {
+                        Startup.BuildAndStart();
+                    }
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Disconnect)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Connect;
-                    McpPlugin.Instance.Disconnect();
+                    McpPluginUnity.Instance.KeepConnected = false;
+                    McpPluginUnity.Instance.Save();
+                    if (McpPlugin.HasInstance)
+                        McpPlugin.Instance.Disconnect();
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Stop)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Connect;
-                    McpPlugin.Instance.Disconnect();
+                    McpPluginUnity.Instance.KeepConnected = false;
+                    McpPluginUnity.Instance.Save();
+                    if (McpPlugin.HasInstance)
+                        McpPlugin.Instance.Disconnect();
                 }
             });
 

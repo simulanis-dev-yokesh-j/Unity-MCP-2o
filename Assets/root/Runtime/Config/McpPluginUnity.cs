@@ -53,6 +53,16 @@ namespace com.IvanMurzak.Unity.MCP
                 NotifyChanged(data);
             }
         }
+        public bool KeepConnected
+        {
+            get => data?.keepConnected ?? true;
+            set
+            {
+                data ??= new Data();
+                data.keepConnected = value;
+                NotifyChanged(data);
+            }
+        }
         public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => McpPlugin.Instance.ConnectionState;
         public ReadOnlyReactiveProperty<bool> IsConnected => McpPlugin.Instance.ConnectionState
             .Select(x => x == HubConnectionState.Connected)

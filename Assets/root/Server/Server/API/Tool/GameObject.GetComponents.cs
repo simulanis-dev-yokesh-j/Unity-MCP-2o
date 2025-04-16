@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Get GameObject components"
         )]
         [Description("Get all components of a GameObject by path. Returns property values of each component.")]
-        public Task<CallToolResponse> GetComponents
+        public ValueTask<CallToolResponse> GetComponents
         (
             [Description("Path to the GameObject.")]
             string path

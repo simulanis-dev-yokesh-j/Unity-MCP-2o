@@ -1,6 +1,5 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
-using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 
@@ -10,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Scene_GetHierarchyRoot",
+            "Scene_GetHierarchy",
             Title = "Get Scene Hierarchy",
             Description = "This tool retrieves the list of root GameObjects in the specified scene."
         )]
@@ -18,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Determines the depth of the hierarchy to include.")]
             int includeChildrenDepth = 3,
-            [Description("Name of the loaded scene. If empty, the active scene will be used.")]
+            [Description("Name of the loaded scene. If empty string, the active scene will be used.")]
             string? loadedSceneName = null
         )
         => MainThread.Run(() =>

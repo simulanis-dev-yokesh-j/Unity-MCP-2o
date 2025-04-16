@@ -9,7 +9,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
 {
     public static partial class ResourceRouter
     {
-        public static async Task<ReadResourceResult> ReadResource(RequestContext<ReadResourceRequestParams> request, CancellationToken cancellationToken)
+        public static async ValueTask<ReadResourceResult> ReadResource(
+            RequestContext<ReadResourceRequestParams> request,
+            CancellationToken cancellationToken
+        )
         {
             if (request?.Params?.Uri == null)
                 return new ReadResourceResult().SetError("null", "[Error] Request or Uri is null");

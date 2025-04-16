@@ -50,7 +50,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         options.Capabilities.Tools.ListChanged = true;
                     })
                     .WithStdioServerTransport()
-                    .WithPromptsFromAssembly()
+                    //.WithPromptsFromAssembly()
                     .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
                     .WithListToolsHandler(ToolRouter.ListAll);
