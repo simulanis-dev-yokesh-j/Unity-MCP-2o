@@ -2,7 +2,9 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 
@@ -20,6 +22,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Component by 'instanceId'.")]
             int componentInstanceId,
+            [Description("Json Object with only required to modify properties and fields. It should respect the original structure of the component.")]
+            ComponentData dataToChange,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
