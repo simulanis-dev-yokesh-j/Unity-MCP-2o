@@ -1,4 +1,5 @@
 using System;
+using com.IvanMurzak.Unity.MCP.Common;
 using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP
@@ -12,14 +13,14 @@ namespace com.IvanMurzak.Unity.MCP
             public const string DefaultHost = "http://localhost:60606";
 
             [SerializeField] public string host = DefaultHost;
-            [SerializeField] public int port = DefaultPort;
+            [SerializeField] public int port = Consts.Hub.DefaultPort;
             [SerializeField] public bool keepConnected = true;
             [SerializeField] public LogLevel logLevel = LogLevel.Warning;
 
             public Data SetDefault()
             {
                 host = DefaultHost;
-                port = DefaultPort;
+                port = Consts.Hub.DefaultPort;
                 keepConnected = true;
                 logLevel = LogLevel.Warning;
                 return this;

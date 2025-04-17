@@ -17,10 +17,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
         public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");
         public static string ServerExecutableFile => Path.Combine(ServerExecutableFolder, $"{ServerProjectName}");
-        public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "logs.txt");
+        public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log.txt");
         public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
 
-        public static string RawJsonConfiguration => Consts.MCP_Client.ClaudeDesktop.Config.Replace("{0}", ServerExecutableFile.Replace('\\', '/'));
+        public static string RawJsonConfiguration(int port) => Consts.MCP_Client.ClaudeDesktop.Config(
+            ServerExecutableFile.Replace('\\', '/'),
+            port
+        );
 
         public static Task BuildServerIfNeeded(bool force = true)
         {
@@ -84,8 +87,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 Debug.Log($"{Consts.Log.Tag} Build succeeded:\n{output}");
             else
                 Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
-
-            MenuItems.PrintConfig();
         }
 
         public static void CopyServerSources()

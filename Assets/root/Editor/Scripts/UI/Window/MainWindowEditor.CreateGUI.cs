@@ -167,7 +167,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // -----------------------------------------------------------------
 
             var rawJsonField = root.Query<TextField>("rawJsonConfiguration").First();
-            rawJsonField.value = Startup.RawJsonConfiguration;
+            rawJsonField.value = Startup.RawJsonConfiguration(McpPluginUnity.Instance.Port);
         }
     }
 }

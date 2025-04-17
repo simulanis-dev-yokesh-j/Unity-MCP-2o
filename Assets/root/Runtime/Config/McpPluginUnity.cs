@@ -53,6 +53,16 @@ namespace com.IvanMurzak.Unity.MCP
                 NotifyChanged(data);
             }
         }
+        public int Port
+        {
+            get
+            {
+                if (Uri.TryCreate(Host, UriKind.Absolute, out var uri) && uri.Port > 0)
+                    return uri.Port;
+
+                return Consts.Hub.DefaultPort;
+            }
+        }
         public bool KeepConnected
         {
             get => data?.keepConnected ?? true;
@@ -74,7 +84,7 @@ namespace com.IvanMurzak.Unity.MCP
 
             if (data.port < 0 || data.port > 65535)
             {
-                data.port = Data.DefaultPort;
+                data.port = Consts.Hub.DefaultPort;
                 changed = true;
             }
 

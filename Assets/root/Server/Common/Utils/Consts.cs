@@ -24,15 +24,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             public static partial class ClaudeDesktop
             {
-                public const string Config =
-                    "{\r\n" +
-                    "  \"mcpServers\": {\r\n" +
-                    "    \"Unity-MCP\": {\r\n" +
-                    "      \"command\": \"{0}\",\r\n" +
-                    "      \"args\": []\r\n" +
-                    "    }\r\n" +
-                    "  }\r\n" +
-                    "}";
+                public static string Config(string executablePath, int port) => @"
+{
+  ""mcpServers"": {
+    ""Unity-MCP"": {
+      ""command"": ""{0}"",
+      ""args"": [
+        ""{1}""
+      ]
+    }
+  }
+}".Replace("{0}", executablePath).Replace("{1}", port.ToString());
+
             }
         }
     }
