@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
+using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,42 +14,45 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_Create",
             Title = "Create a new GameObject",
-            Description = "Create a new GameObject."
+            Description = @"Create a new GameObject at specific path.
+if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount of operations."
         )]
         public string Create
         (
-            [Description("Path to the GameObject (excluding the name of the GameObject).")]
+            [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]
             string path,
-            [Description("Name of the GameObject.")]
-            string name,
-            [Description("Position of the GameObject.")]
+            [Description("Transform position of the GameObject.")]
             Vector3? position = default,
-            [Description("Rotation of the GameObject. Euler angles in degrees.")]
+            [Description("Transform rotation of the GameObject. Euler angles in degrees.")]
             Vector3? rotation = default,
-            [Description("Scale of the GameObject.")]
-            Vector3? scale = default
+            [Description("Transform scale of the GameObject.")]
+            Vector3? scale = default,
+            [Description("World or Local space of transform.")]
+            bool isLocalSpace = false
         )
         => MainThread.Run(() =>
         {
-            path = StringUtils.TrimPath(path);
-            var targetParent = string.IsNullOrEmpty(path) ? null : GameObjectUtils.FindByPath(path);
-            if (targetParent == null && !string.IsNullOrEmpty(path))
-                return $"[Error] Parent GameObject '{path}' not found.";
+            var parentGo = default(GameObject);
+            if (StringUtils.Path_ParseParent(path, out var parentPath, out var name))
+            {
+                parentGo = GameObjectUtils.FindByPath(parentPath);
+                if (parentGo == null)
+                    return Error.NotFoundGameObjectAtPath(parentPath);
+            }
+
+            if (string.IsNullOrEmpty(name))
+                return Error.GameObjectNameIsEmpty();
 
             var go = new GameObject(name);
-            go.transform.position = position ?? new Vector3(0, 0, 0);
-            go.transform.rotation = rotation == null
-                ? Quaternion.identity
-                : Quaternion.Euler(rotation.Value.x, rotation.Value.y, rotation.Value.z);
-            go.transform.localScale = scale ?? new Vector3(1, 1, 1);
+            go.SetTransform(position, rotation, scale, isLocalSpace);
 
-            if (targetParent != null)
-                go.transform.SetParent(targetParent.transform, false);
+            if (parentGo != null)
+                go.transform.SetParent(parentGo.transform, false);
 
             EditorUtility.SetDirty(go);
             EditorApplication.RepaintHierarchyWindow();
 
-            return $"[Success] Created GameObject '{name}' at path '{path}'.";
+            return $"[Success] Created GameObject.\n{go.Print()}";
         });
     }
 }

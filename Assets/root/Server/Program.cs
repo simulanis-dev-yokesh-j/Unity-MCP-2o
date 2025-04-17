@@ -50,7 +50,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         options.Capabilities.Tools.ListChanged = true;
                     })
                     .WithStdioServerTransport()
-                    .WithPromptsFromAssembly()
+                    //.WithPromptsFromAssembly()
                     .WithToolsFromAssembly()
                     .WithCallToolHandler(ToolRouter.Call)
                     .WithListToolsHandler(ToolRouter.ListAll);
@@ -74,12 +74,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         });
                 });
 
-                // TODO: add reading from configs (json file and env variables)
-                // "http://localhost:60606");
                 // builder.WebHost.UseUrls(Consts.Hub.DefaultEndpoint);
                 builder.WebHost.UseKestrel(options =>
                 {
-                    options.ListenLocalhost(60606); // Bind to localhost only on port 60606
+                    options.ListenLocalhost(GetPort(args));
                 });
 
                 var app = builder.Build();
@@ -126,6 +124,17 @@ namespace com.IvanMurzak.Unity.MCP.Server
             {
                 LogManager.Shutdown();
             }
+        }
+        static int GetPort(string[] args)
+        {
+            if (args.Length > 0 && int.TryParse(args[0], out var parsedPort))
+                return parsedPort;
+
+            var envPort = Environment.GetEnvironmentVariable(Consts.Env.Port);
+            if (envPort != null && int.TryParse(envPort, out var parsedEnvPort))
+                return parsedEnvPort;
+
+            return Consts.Hub.DefaultPort;
         }
     }
 }

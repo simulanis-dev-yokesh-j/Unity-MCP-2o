@@ -36,7 +36,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 return;
             }
 
-            instance = this;
+            _instance.Value = this;
         }
 
         public Task<bool> Connect(CancellationToken cancellationToken = default)
@@ -67,8 +67,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public async Task DisposeAsync()
         {
-            var localInstance = instance;
-            instance = null;
+            var localInstance = _instance.CurrentValue;
+            if (localInstance == this)
+                _instance.Value = null;
 
             try
             {

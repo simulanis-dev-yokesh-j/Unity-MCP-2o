@@ -60,6 +60,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
             return builder;
         }
 
+        public static IMcpPluginBuilder WithToolsFromAssembly(this IMcpPluginBuilder builder, IEnumerable<Assembly> assemblies)
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+            if (assemblies == null)
+                throw new ArgumentNullException(nameof(assemblies));
+
+            foreach (var assembly in assemblies)
+                WithToolsFromAssembly(builder, assembly);
+
+            return builder;
+        }
         public static IMcpPluginBuilder WithToolsFromAssembly(this IMcpPluginBuilder builder, Assembly? assembly = null)
         {
             if (builder == null)

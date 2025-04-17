@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static IEnumerator Init()
         {
             yield return null; // let's Unity initialize itself and project resources first
-            var config = McpPluginUnity.Instance; // it triggers the loading of the config
+            McpPluginUnity.Init(); // it triggers the loading of the config
             MainWindowEditor.ShowWindow();
         }
     }

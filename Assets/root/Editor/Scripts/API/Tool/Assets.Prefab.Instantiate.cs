@@ -1,9 +1,8 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System;
 using System.ComponentModel;
-using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
+using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,7 +21,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             [Description("Prefab asset path.")]
             string prefabAssetPath,
             [Description("GameObject path in the current active scene.")]
-            string gameObjectPath
+            string gameObjectPath,
+            [Description("Transform position of the GameObject.")]
+            Vector3? position = default,
+            [Description("Transform rotation of the GameObject. Euler angles in degrees.")]
+            Vector3? rotation = default,
+            [Description("Transform scale of the GameObject.")]
+            Vector3? scale = default,
+            [Description("World or Local space of transform.")]
+            bool isLocalSpace = false
         )
         => MainThread.Run(() =>
         {
@@ -30,28 +37,25 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (prefab == null)
                 return Error.NotFoundPrefabAtPath(prefabAssetPath);
 
-            var parentPath = StringUtils.Path_GetParentFolderPath(gameObjectPath);
-            var name = StringUtils.Path_GetLastName(gameObjectPath);
-
-            // If need to place the prefab in another GameObject
-            if (parentPath != name)
+            var parentGo = default(GameObject);
+            if (StringUtils.Path_ParseParent(gameObjectPath, out var parentPath, out var name))
             {
-                var parentGo = GameObjectUtils.FindByPath(parentPath);
+                parentGo = GameObjectUtils.FindByPath(parentPath);
                 if (parentGo == null)
                     return Tool_GameObject.Error.NotFoundGameObjectAtPath(parentPath);
-
-                var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-
-                go.transform.SetParent(parentGo.transform, false);
-                go.name = name;
-            }
-            else
-            {
-                var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-                go.name = name;
             }
 
-            return $"[Success] Prefab successfully instantiated at path: {gameObjectPath}";
+            var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            go.name = name ?? prefab.name;
+            go.transform.SetParent(parentGo.transform, false);
+            go.SetTransform(position, rotation, scale, isLocalSpace);
+
+            var bounds = go.CalculateBounds();
+
+            EditorUtility.SetDirty(go);
+            EditorApplication.RepaintHierarchyWindow();
+
+            return $"[Success] Prefab successfully instantiated.\n{go.Print()}";
         });
     }
 }

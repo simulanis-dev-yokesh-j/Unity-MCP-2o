@@ -8,6 +8,31 @@ namespace com.IvanMurzak.Unity.MCP.Common
     {
         public static string? TrimPath(string? path)
             => path?.TrimEnd('/')?.TrimStart('/');
+
+        public static bool Path_ParseParent(string? path, out string? parentPath, out string? name)
+        {
+            path = TrimPath(path);
+            if (string.IsNullOrEmpty(path))
+            {
+                parentPath = null;
+                name = null;
+                return false;
+            }
+
+            var lastSlashIndex = path.LastIndexOf('/');
+            if (lastSlashIndex >= 0)
+            {
+                parentPath = path.Substring(0, lastSlashIndex);
+                name = path.Substring(lastSlashIndex + 1);
+                return true;
+            }
+            else
+            {
+                parentPath = null;
+                name = path;
+                return false;
+            }
+        }
         public static string? Path_GetParentFolderPath(string? path)
         {
             if (path == null)

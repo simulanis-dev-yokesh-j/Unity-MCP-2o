@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
 using R3;
 using UnityEditor;
@@ -41,21 +42,22 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // -----------------------------------------------------------------
 
             var dropdownLogLevel = root.Query<EnumField>("dropdownLogLevel").First();
-            dropdownLogLevel.value = McpPluginUnity.Instance.LogLevel;
+            dropdownLogLevel.value = McpPluginUnity.LogLevel;
             dropdownLogLevel.RegisterValueChangedCallback(evt =>
             {
-                McpPluginUnity.Instance.LogLevel = evt.newValue as LogLevel? ?? LogLevel.Warning;
+                McpPluginUnity.LogLevel = evt.newValue as LogLevel? ?? LogLevel.Warning;
                 SaveChanges($"[AI Connector] LogLevel Changed: {evt.newValue}");
+                McpPluginUnity.BuildAndStart();
             });
 
             // Connection status
             // -----------------------------------------------------------------
 
             var inputFieldHost = root.Query<TextField>("InputServerURL").First();
-            inputFieldHost.value = McpPluginUnity.Instance.Host;
+            inputFieldHost.value = McpPluginUnity.Host;
             inputFieldHost.RegisterValueChangedCallback(evt =>
             {
-                McpPluginUnity.Instance.Host = evt.newValue;
+                McpPluginUnity.Host = evt.newValue;
                 SaveChanges($"[AI Connector] Host Changed: {evt.newValue}");
             });
 
@@ -67,14 +69,24 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .Query<VisualElement>("ServerConnectionInfo").First()
                 .Query<Label>("connectionStatusText").First();
 
-            Observable.CombineLatest(
-                    McpPluginUnity.Instance.ConnectionState,
-                    McpPlugin.Instance.KeepConnected,
+            McpPlugin.DoAlways(plugin =>
+            {
+                Observable.CombineLatest(
+                    McpPluginUnity.ConnectionState,
+                    plugin.KeepConnected,
                     (connectionState, keepConnected) => (connectionState, keepConnected)
                 )
                 .Subscribe(tuple =>
                 {
                     var (connectionState, keepConnected) = tuple;
+
+                    inputFieldHost.isReadOnly = keepConnected || connectionState switch
+                    {
+                        HubConnectionState.Connected => true,
+                        HubConnectionState.Disconnected => false,
+                        HubConnectionState.Reconnecting => true,
+                        _ => false
+                    };
 
                     connectionStatusCircle.RemoveFromClassList(USS_IndicatorClass_Connected);
                     connectionStatusCircle.RemoveFromClassList(USS_IndicatorClass_Connecting);
@@ -97,7 +109,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             ? "Connecting..."
                             : "Disconnected",
                         HubConnectionState.Reconnecting => "Reconnecting...",
-                        _ => McpPluginUnity.Instance.IsConnected.CurrentValue.ToString() ?? "Unknown"
+                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
 
                     btnConnectOrDisconnect.text = connectionState switch
@@ -107,27 +119,44 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             ? ServerButtonText_Stop
                             : ServerButtonText_Connect,
                         HubConnectionState.Reconnecting => ServerButtonText_Stop,
-                        _ => McpPluginUnity.Instance.IsConnected.CurrentValue.ToString() ?? "Unknown"
+                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
                 })
                 .AddTo(_disposables);
+            }).AddTo(_disposables);
+
 
             btnConnectOrDisconnect.RegisterCallback<ClickEvent>(evt =>
             {
                 if (btnConnectOrDisconnect.text == ServerButtonText_Connect)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Stop;
-                    McpPlugin.Instance.Connect();
+                    McpPluginUnity.KeepConnected = true;
+                    McpPluginUnity.Save();
+                    if (McpPlugin.HasInstance)
+                    {
+                        McpPlugin.Instance.Connect();
+                    }
+                    else
+                    {
+                        McpPluginUnity.BuildAndStart();
+                    }
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Disconnect)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Connect;
-                    McpPlugin.Instance.Disconnect();
+                    McpPluginUnity.KeepConnected = false;
+                    McpPluginUnity.Save();
+                    if (McpPlugin.HasInstance)
+                        McpPlugin.Instance.Disconnect();
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Stop)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Connect;
-                    McpPlugin.Instance.Disconnect();
+                    McpPluginUnity.KeepConnected = false;
+                    McpPluginUnity.Save();
+                    if (McpPlugin.HasInstance)
+                        McpPlugin.Instance.Disconnect();
                 }
             });
 
@@ -143,7 +172,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // -----------------------------------------------------------------
 
             var rawJsonField = root.Query<TextField>("rawJsonConfiguration").First();
-            rawJsonField.value = Startup.RawJsonConfiguration;
+            rawJsonField.value = Startup.RawJsonConfiguration(McpPluginUnity.Port);
         }
     }
 }

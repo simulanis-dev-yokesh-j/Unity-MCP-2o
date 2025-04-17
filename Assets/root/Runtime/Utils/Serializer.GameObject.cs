@@ -2,7 +2,7 @@ using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using System.Linq;
 
-namespace com.IvanMurzak.Unity.Runtime
+namespace com.IvanMurzak.Unity.MCP.Utils
 {
     /// <summary>
     /// Serializes Unity components to JSON format.

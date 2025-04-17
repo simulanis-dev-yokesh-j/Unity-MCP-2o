@@ -154,7 +154,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     throw new Exception("Config file is not a valid JSON object.");
 
                 // Parse the injected config as JsonObject
-                var injectObj = JsonNode.Parse(Startup.RawJsonConfiguration)?.AsObject();
+                var injectObj = JsonNode.Parse(Startup.RawJsonConfiguration(McpPluginUnity.Port))?.AsObject();
                 if (injectObj == null)
                     throw new Exception("Injected config is not a valid JSON object.");
 

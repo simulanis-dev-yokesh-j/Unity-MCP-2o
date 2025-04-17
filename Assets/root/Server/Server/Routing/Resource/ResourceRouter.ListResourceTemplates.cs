@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
@@ -10,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 {
     public static partial class ResourceRouter
     {
-        public static async Task<ListResourceTemplatesResult> ListResourceTemplates(RequestContext<ListResourceTemplatesRequestParams> request, CancellationToken cancellationToken)
+        public static async ValueTask<ListResourceTemplatesResult> ListResourceTemplates(RequestContext<ListResourceTemplatesRequestParams> request, CancellationToken cancellationToken)
         {
             var mcpServerService = McpServerService.Instance;
             if (mcpServerService == null)

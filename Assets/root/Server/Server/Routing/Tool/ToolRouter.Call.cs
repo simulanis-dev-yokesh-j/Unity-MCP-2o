@@ -61,14 +61,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
             var arguments = new Dictionary<string, object>();
             configureArguments?.Invoke(arguments);
 
-            return Call_(name, args =>
+            return CallWithJson(name, args =>
             {
                 foreach (var kvp in arguments)
                     args[kvp.Key] = kvp.Value.ToJsonElement();
             });
         }
 
-        public static Task<CallToolResponse> Call_(string name, Action<Dictionary<string, JsonElement>> configureArguments)
+        public static Task<CallToolResponse> CallWithJson(string name, Action<Dictionary<string, JsonElement>> configureArguments)
         {
             var mcpServer = McpServerService.Instance?.McpServer;
             if (mcpServer == null)

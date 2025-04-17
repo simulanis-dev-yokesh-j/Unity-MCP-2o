@@ -16,10 +16,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             public static string NotFoundGameObjectAtPath(string path)
                 => $"[Error] GameObject '{path}' not found. Root GameObjects in the active scene:\n{RootGOsPrinted}";
 
+            public static string GameObjectInstanceIdIsEmpty()
+                => $"[Error] GameObject InstanceId is empty. Root GameObjects in the active scene:\n{RootGOsPrinted}";
             public static string GameObjectNameIsEmpty()
                 => $"[Error] GameObject name is empty. Root GameObjects in the active scene:\n{RootGOsPrinted}";
             public static string NotFoundGameObjectWithName(string name)
                 => $"[Error] GameObject with name '{name}' not found. Root GameObjects in the active scene:\n{RootGOsPrinted}";
+            public static string NotFoundGameObjectWithInstanceId(int instanceId)
+                => $"[Error] GameObject with InstanceId '{instanceId}' not found. Root GameObjects in the active scene:\n{RootGOsPrinted}";
         }
     }
 }

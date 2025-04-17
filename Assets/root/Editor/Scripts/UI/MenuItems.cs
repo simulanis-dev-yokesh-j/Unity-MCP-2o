@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     public static class MenuItems
     {
         [MenuItem("Tools/Unity-MCP/Build and Start", priority = 1000)]
-        public static void BuildAndStart() => Startup.BuildAndStart();
+        public static void BuildAndStart() => McpPluginUnity.BuildAndStart();
 
         [MenuItem("Tools/Unity-MCP/Connect", priority = 1001)]
         public static void Editor_Connect() => McpPlugin.Instance.Connect();
@@ -29,14 +29,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         [MenuItem("Tools/Unity-MCP/Server/Build", priority = 1010)]
         public static Task CompileServer() => Startup.BuildServer();
 
-        [MenuItem("Tools/Unity-MCP/Server/Print Config", priority = 1011)]
-        public static void PrintConfig()
-        {
-            Debug.Log($"{Consts.Log.Tag} Copy and paste this config to <color=orange>Claude Desktop</color> config.json");
-            Debug.Log($"{Consts.Log.Tag} Server Config is RIGHT HERE:\n{Startup.RawJsonConfiguration}");
-        }
-
-        [MenuItem("Tools/Unity-MCP/Server/Open Logs", priority = 1012)]
+        [MenuItem("Tools/Unity-MCP/Server/Open Logs", priority = 1011)]
         public static void OpenLogs()
         {
             if (System.IO.File.Exists(Startup.ServerLogsPath))

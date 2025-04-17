@@ -16,22 +16,21 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [Description("Create a new GameObject in the current active scene.")]
         public Task<CallToolResponse> Create
         (
-            [Description("Path to the parent GameObject.")]
+            [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]
             string path,
-            [Description("Name of the new GameObject.")]
-            string name,
-            [Description("Position of the GameObject.")]
-            Vector3? position = null,
-            [Description("Rotation of the GameObject. Euler angles in degrees.")]
-            Vector3? rotation = null,
-            [Description("Scale of the GameObject.")]
-            Vector3? scale = null
+            [Description("Transform position of the GameObject.")]
+            Vector3? position = default,
+            [Description("Transform rotation of the GameObject. Euler angles in degrees.")]
+            Vector3? rotation = default,
+            [Description("Transform scale of the GameObject.")]
+            Vector3? scale = default,
+            [Description("World or Local space of transform.")]
+            bool isLocalSpace = false
         )
         {
             return ToolRouter.Call("GameObject_Create", arguments =>
             {
                 arguments[nameof(path)] = path;
-                arguments[nameof(name)] = name;
 
                 if (position != null)
                     arguments[nameof(position)] = position;
@@ -41,6 +40,8 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
 
                 if (scale != null)
                     arguments[nameof(scale)] = scale;
+
+                arguments[nameof(isLocalSpace)] = isLocalSpace;
             });
         }
     }

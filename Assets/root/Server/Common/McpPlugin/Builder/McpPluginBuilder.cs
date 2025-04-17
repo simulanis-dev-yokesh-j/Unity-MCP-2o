@@ -20,25 +20,6 @@ namespace com.IvanMurzak.Unity.MCP.Common
         {
             _services = services ?? new ServiceCollection();
 
-            // _services.AddOptions<HttpConnectionOptions>()
-            //     .Configure(options =>
-            //     {
-            //         options.Transports = HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents;
-            //         options.Url = new Uri("http://localhost:60606/connector");
-            //         options.SkipNegotiation = false;
-            //         options.WebSocketConfiguration = wsOptions =>
-            //         {
-            //             wsOptions.KeepAliveInterval = TimeSpan.FromSeconds(30);
-            //         };
-            //         // options.WebSockets.ClientWebSocketOptions.KeepAliveInterval = TimeSpan.FromSeconds(30);
-            //     });
-            // _services.AddSingleton<IConnectionFactory, HttpConnectionFactory>();
-            // _services.Add
-
-            // _services.AddSingleton(new HubConnectionBuilder()
-            //     .WithUrl("http://localhost:60606/connector") // TODO: add reading from configs (json file and env variables)
-            //     .WithAutomaticReconnect());
-
             _services.AddTransient<IConnectionManager, ConnectionManager>();
             _services.AddSingleton<IRpcRouter, RpcRouter>();
             _services.AddSingleton<IMcpPlugin, McpPlugin>();
@@ -46,7 +27,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _services.AddSingleton(_tools);
             _services.AddSingleton(_resources);
 
-            Func<string, Task<HubConnection>> hubConnectionBuilder = (endpoint) =>
+            Func<string, Task<HubConnection>> hubConnectionBuilder = (string endpoint) =>
             {
                 var hubConnection = new HubConnectionBuilder()
                     .WithUrl(endpoint)

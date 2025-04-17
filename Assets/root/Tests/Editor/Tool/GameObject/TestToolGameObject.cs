@@ -29,7 +29,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Tests
             var childName = "nestedGo";
             var child = new GameObject(parentName).AddChild(childName);
 
-            var path = new Tool_GameObject().FindByName(childName);
+            var path = new Tool_GameObject().Find(name: childName);
 
             Assert.IsNotNull(path, $"{childName} should not be null");
             Assert.IsTrue(path.Contains(childName), $"{childName} should be found in the path");
