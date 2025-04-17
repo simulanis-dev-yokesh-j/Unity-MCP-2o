@@ -41,13 +41,13 @@ namespace com.IvanMurzak.Unity.MCP.Utils
 
                 return new ComponentDataLight()
                 {
-                    Type = component.GetType().FullName,
-                    IsEnabled = component is MonoBehaviour mh
+                    type = component.GetType().FullName,
+                    isEnabled = component is MonoBehaviour mh
                         ? mh.enabled
                             ? ComponentData.Enabled.True
                             : ComponentData.Enabled.False
                         : ComponentData.Enabled.NA,
-                    InstanceId = component.GetInstanceID(),
+                    instanceId = component.GetInstanceID(),
                 };
             }
             public static ComponentData BuildData(UnityEngine.Component component)
@@ -57,14 +57,14 @@ namespace com.IvanMurzak.Unity.MCP.Utils
 
                 var result = new ComponentData()
                 {
-                    Type = component.GetType().FullName,
-                    IsEnabled = component is MonoBehaviour mh
+                    type = component.GetType().FullName,
+                    isEnabled = component is MonoBehaviour mh
                         ? mh.enabled
                             ? ComponentData.Enabled.True
                             : ComponentData.Enabled.False
                         : ComponentData.Enabled.NA,
-                    InstanceId = component.GetInstanceID(),
-                    Properties = new()
+                    instanceId = component.GetInstanceID(),
+                    properties = new()
                 };
                 var type = component.GetType();
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -72,7 +72,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 foreach (var field in type.GetFields(flags))
                 {
                     var value = field.GetValue(component);
-                    result.Properties.Add(new(field.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
+                    result.properties.Add(new(field.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
                 }
 
                 foreach (var prop in type.GetProperties(flags))
@@ -84,10 +84,10 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                             var value = prop.GetValue(component);
                             if (value is UnityEngine.Object obj)
                             {
-                                result.Properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))));
+                                result.properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))));
                                 continue;
                             }
-                            result.Properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
+                            result.properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
                         }
                         catch { /* skip inaccessible properties */ }
                     }

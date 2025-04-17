@@ -7,9 +7,9 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Unity
     [System.Serializable]
     public class ComponentDataLight
     {
-        public string Type { get; set; } = string.Empty;
-        public Enabled IsEnabled { get; set; }
-        public int InstanceId { get; set; }
+        public string type { get; set; } = string.Empty;
+        public Enabled isEnabled { get; set; }
+        public int instanceId { get; set; }
 
         public ComponentDataLight() { }
 

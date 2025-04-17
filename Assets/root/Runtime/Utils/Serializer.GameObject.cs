@@ -18,11 +18,11 @@ namespace com.IvanMurzak.Unity.MCP.Utils
 
                 return new GameObjectData()
                 {
-                    Name = go.name,
-                    Tag = go.tag,
-                    Layer = go.layer,
-                    InstanceId = go.GetInstanceID(),
-                    Components = go.GetComponents<UnityEngine.Component>()
+                    name = go.name,
+                    tag = go.tag,
+                    layer = go.layer,
+                    instanceId = go.GetInstanceID(),
+                    components = go.GetComponents<UnityEngine.Component>()
                         .Select(c => Component.BuildData(c))
                         .Where(c => c != null)
                         .ToList()

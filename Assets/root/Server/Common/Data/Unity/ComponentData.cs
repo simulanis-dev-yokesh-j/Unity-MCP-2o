@@ -7,7 +7,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Unity
     [System.Serializable]
     public class ComponentData : ComponentDataLight
     {
-        public List<SerializedMember> Properties { get; set; } = new();
+        public List<SerializedMember> properties { get; set; } = new();
 
         public ComponentData() { }
     }

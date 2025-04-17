@@ -4,32 +4,34 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Utils
     [System.Serializable]
     public class SerializedMember
     {
-        public string name = string.Empty;
-        public string type = string.Empty;
-        public string json = string.Empty;
+        public string? name;
+        public string? type;
+        public string? json;
 
         public SerializedMember[]? properties;
 
-        public string Name
-        {
-            get => name;
-            set => name = value;
-        }
-        public string Type
-        {
-            get => type;
-            set => type = value;
-        }
-        public string Json
-        {
-            get => json;
-            set => json = value;
-        }
-        public SerializedMember[]? Properties
-        {
-            get => properties;
-            set => properties = value;
-        }
+        // Does it needed for Json serialization?
+        // --------------------------------------
+        // public string Name
+        // {
+        //     get => name;
+        //     set => name = value;
+        // }
+        // public string Type
+        // {
+        //     get => type;
+        //     set => type = value;
+        // }
+        // public string Json
+        // {
+        //     get => json;
+        //     set => json = value;
+        // }
+        // public SerializedMember[]? Properties
+        // {
+        //     get => properties;
+        //     set => properties = value;
+        // }
         public SerializedMember() { }
         public SerializedMember(string name, string type, string json)
         {

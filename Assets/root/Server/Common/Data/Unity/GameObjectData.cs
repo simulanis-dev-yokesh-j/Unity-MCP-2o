@@ -6,7 +6,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Unity
     [System.Serializable]
     public class GameObjectData : GameObjectDataLight
     {
-        public List<ComponentData> Components { get; set; } = new();
+        public List<ComponentData> components { get; set; } = new();
 
         public GameObjectData() { }
     }
