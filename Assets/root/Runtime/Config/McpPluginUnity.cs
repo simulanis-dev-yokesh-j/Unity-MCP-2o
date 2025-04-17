@@ -21,8 +21,6 @@ namespace com.IvanMurzak.Unity.MCP
                 return instance;
             }
         }
-        static TResult Do<TResult>(Func<McpPluginUnity, TResult> func)
-            => Safe.Run(func, Instance, Instance?.data?.logLevel ?? LogLevel.Trace);
 
         public static void Init()
         {

@@ -69,9 +69,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .Query<VisualElement>("ServerConnectionInfo").First()
                 .Query<Label>("connectionStatusText").First();
 
-            Observable.CombineLatest(
+            McpPlugin.DoAlways(plugin =>
+            {
+                Observable.CombineLatest(
                     McpPluginUnity.ConnectionState,
-                    McpPlugin.Instance.KeepConnected,
+                    plugin.KeepConnected,
                     (connectionState, keepConnected) => (connectionState, keepConnected)
                 )
                 .Subscribe(tuple =>
@@ -121,6 +123,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     };
                 })
                 .AddTo(_disposables);
+            }).AddTo(_disposables);
+
 
             btnConnectOrDisconnect.RegisterCallback<ClickEvent>(evt =>
             {
