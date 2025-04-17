@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "GameObject_Add_Component",
+            "GameObject_AddComponent",
             Title = "Add Component to a GameObject",
             Description = "Add a component to a GameObject."
         )]

@@ -9,7 +9,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "GameObject_Add_Component",
+            Name = "GameObject_AddComponent",
             Title = "Add Component to a GameObject"
         )]
         [Description("Add a component to a GameObject.")]
@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             string? name = null
         )
         {
-            return ToolRouter.Call("GameObject_Add_Component", arguments =>
+            return ToolRouter.Call("GameObject_AddComponent", arguments =>
             {
                 arguments[nameof(componentName)] = componentName;
 
