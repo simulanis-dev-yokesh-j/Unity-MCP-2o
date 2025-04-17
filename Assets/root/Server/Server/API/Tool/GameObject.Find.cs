@@ -9,11 +9,11 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "GameObject_FindByInstanceId",
+            Name = "GameObject_Find",
             Title = "Find GameObject by InstanceId"
         )]
         [Description("Find GameObject in the active scene. Returns metadata about GameObject and its children.")]
-        public Task<CallToolResponse> FindByInstanceId
+        public Task<CallToolResponse> Find
         (
             [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]
             int includeChildrenDepth = 0,
@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             string? name = null
         )
         {
-            return ToolRouter.Call("GameObject_FindByInstanceId", arguments =>
+            return ToolRouter.Call("GameObject_Find", arguments =>
             {
                 arguments[nameof(includeChildrenDepth)] = includeChildrenDepth;
 

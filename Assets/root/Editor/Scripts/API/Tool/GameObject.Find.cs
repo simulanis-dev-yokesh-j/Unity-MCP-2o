@@ -1,9 +1,9 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
+using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
-using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
@@ -11,9 +11,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "GameObject_FindByInstanceId",
-            Title = "Find GameObject by InstanceId",
-            Description = "Find GameObject in the active scene. Returns metadata about GameObject and its children."
+            "GameObject_Find",
+            Title = "Find GameObject in Scene",
+            Description = "Find GameObject in the active scene. Returns metadata about GameObject and its children. Also it returns Components preview just for the target GameObject."
         )]
         public string Find
         (
@@ -34,7 +34,20 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 if (error != null)
                     return error;
 
-                return go.ToMetadata(includeChildrenDepth).Print();
+                var components = go.GetComponents<UnityEngine.Component>();
+                var componentsPreview = components
+                    .Select(c => MCP.Utils.Serializer.Component.BuildDataLight(c))
+                    .ToList();
+
+                return @$"[Success] Found GameObject.
+# Components preview:
+{JsonUtils.Serialize(componentsPreview)}
+
+# GameObject bounds:
+{JsonUtils.Serialize(go.CalculateBounds())}
+
+# GameObject information:
+{go.ToMetadata(includeChildrenDepth).Print()}";
             });
         }
     }
