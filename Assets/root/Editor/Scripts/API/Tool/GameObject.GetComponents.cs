@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
+using com.IvanMurzak.Unity.MCP.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
@@ -30,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 if (go == null)
                     return Error.NotFoundGameObjectAtPath(path);
 
-                return Runtime.Serializer.GameObject.Serialize(go);
+                return Serializer.GameObject.Serialize(go);
             });
         }
     }

@@ -6,13 +6,14 @@ using System;
 using System.Threading.Tasks;
 using Debug = UnityEngine.Debug;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
+using com.IvanMurzak.Unity.MCP.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
     static partial class Startup
     {
         public const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
-        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", PackageName, "Server"));
+        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", Consts.PackageName, "Server"));
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
         public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
         public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");

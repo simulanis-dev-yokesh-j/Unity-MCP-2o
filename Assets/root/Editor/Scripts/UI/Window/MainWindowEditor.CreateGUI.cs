@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
 using R3;
 using UnityEditor;
@@ -41,22 +42,22 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // -----------------------------------------------------------------
 
             var dropdownLogLevel = root.Query<EnumField>("dropdownLogLevel").First();
-            dropdownLogLevel.value = McpPluginUnity.Instance.LogLevel;
+            dropdownLogLevel.value = McpPluginUnity.LogLevel;
             dropdownLogLevel.RegisterValueChangedCallback(evt =>
             {
-                McpPluginUnity.Instance.LogLevel = evt.newValue as LogLevel? ?? LogLevel.Warning;
+                McpPluginUnity.LogLevel = evt.newValue as LogLevel? ?? LogLevel.Warning;
                 SaveChanges($"[AI Connector] LogLevel Changed: {evt.newValue}");
-                Startup.BuildAndStart();
+                McpPluginUnity.BuildAndStart();
             });
 
             // Connection status
             // -----------------------------------------------------------------
 
             var inputFieldHost = root.Query<TextField>("InputServerURL").First();
-            inputFieldHost.value = McpPluginUnity.Instance.Host;
+            inputFieldHost.value = McpPluginUnity.Host;
             inputFieldHost.RegisterValueChangedCallback(evt =>
             {
-                McpPluginUnity.Instance.Host = evt.newValue;
+                McpPluginUnity.Host = evt.newValue;
                 SaveChanges($"[AI Connector] Host Changed: {evt.newValue}");
             });
 
@@ -69,7 +70,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 .Query<Label>("connectionStatusText").First();
 
             Observable.CombineLatest(
-                    McpPluginUnity.Instance.ConnectionState,
+                    McpPluginUnity.ConnectionState,
                     McpPlugin.Instance.KeepConnected,
                     (connectionState, keepConnected) => (connectionState, keepConnected)
                 )
@@ -106,7 +107,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             ? "Connecting..."
                             : "Disconnected",
                         HubConnectionState.Reconnecting => "Reconnecting...",
-                        _ => McpPluginUnity.Instance.IsConnected.CurrentValue.ToString() ?? "Unknown"
+                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
 
                     btnConnectOrDisconnect.text = connectionState switch
@@ -116,7 +117,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             ? ServerButtonText_Stop
                             : ServerButtonText_Connect,
                         HubConnectionState.Reconnecting => ServerButtonText_Stop,
-                        _ => McpPluginUnity.Instance.IsConnected.CurrentValue.ToString() ?? "Unknown"
+                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
                 })
                 .AddTo(_disposables);
@@ -126,30 +127,30 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 if (btnConnectOrDisconnect.text == ServerButtonText_Connect)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Stop;
-                    McpPluginUnity.Instance.KeepConnected = true;
-                    McpPluginUnity.Instance.Save();
+                    McpPluginUnity.KeepConnected = true;
+                    McpPluginUnity.Save();
                     if (McpPlugin.HasInstance)
                     {
                         McpPlugin.Instance.Connect();
                     }
                     else
                     {
-                        Startup.BuildAndStart();
+                        McpPluginUnity.BuildAndStart();
                     }
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Disconnect)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Connect;
-                    McpPluginUnity.Instance.KeepConnected = false;
-                    McpPluginUnity.Instance.Save();
+                    McpPluginUnity.KeepConnected = false;
+                    McpPluginUnity.Save();
                     if (McpPlugin.HasInstance)
                         McpPlugin.Instance.Disconnect();
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Stop)
                 {
                     btnConnectOrDisconnect.text = ServerButtonText_Connect;
-                    McpPluginUnity.Instance.KeepConnected = false;
-                    McpPluginUnity.Instance.Save();
+                    McpPluginUnity.KeepConnected = false;
+                    McpPluginUnity.Save();
                     if (McpPlugin.HasInstance)
                         McpPlugin.Instance.Disconnect();
                 }
@@ -167,7 +168,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             // -----------------------------------------------------------------
 
             var rawJsonField = root.Query<TextField>("rawJsonConfiguration").First();
-            rawJsonField.value = Startup.RawJsonConfiguration(McpPluginUnity.Instance.Port);
+            rawJsonField.value = Startup.RawJsonConfiguration(McpPluginUnity.Port);
         }
     }
 }

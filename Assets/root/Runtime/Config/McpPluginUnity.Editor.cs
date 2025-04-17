@@ -10,8 +10,8 @@ namespace com.IvanMurzak.Unity.MCP
         public static string ResourcesFileName => "Unity-MCP-ConnectionConfig";
         public static string AssetsFilePath => $"Assets/Resources/{ResourcesFileName}.json";
 #if UNITY_EDITOR
-        public TextAsset AssetFile => UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(AssetsFilePath);
-        public void InvalidateAssetFile() => UnityEditor.AssetDatabase.ImportAsset(AssetsFilePath, UnityEditor.ImportAssetOptions.ForceUpdate);
+        public static TextAsset AssetFile => UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(AssetsFilePath);
+        public static void InvalidateAssetFile() => UnityEditor.AssetDatabase.ImportAsset(AssetsFilePath, UnityEditor.ImportAssetOptions.ForceUpdate);
 #endif
 
         public static McpPluginUnity GetOrCreateInstance()
@@ -49,16 +49,17 @@ namespace com.IvanMurzak.Unity.MCP
             return null;
         }
 
-        public void Save()
+        public static void Save()
         {
 #if UNITY_EDITOR
-            OnValidate();
+            Validate();
             try
             {
                 var directory = Path.GetDirectoryName(AssetsFilePath);
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
+                var data = Instance.data ??= new Data();
                 var json = JsonUtility.ToJson(data, true);
                 File.WriteAllText(AssetsFilePath, json);
 

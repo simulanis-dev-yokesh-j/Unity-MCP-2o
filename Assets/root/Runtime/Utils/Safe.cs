@@ -51,6 +51,20 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 return false;
             }
         }
+        public static TResult Run<TInput, TResult>(Func<TInput, TResult> action, TInput input, LogLevel logLevel)
+        {
+            try
+            {
+                return action.Invoke(input);
+            }
+            catch (Exception e)
+            {
+                if (logLevel.IsActive(LogLevel.Exception))
+                    Debug.LogException(e);
+
+                return default;
+            }
+        }
         public static bool Run(WeakAction action, LogLevel logLevel)
         {
             try

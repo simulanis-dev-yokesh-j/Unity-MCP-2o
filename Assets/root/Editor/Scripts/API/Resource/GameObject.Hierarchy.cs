@@ -2,7 +2,7 @@ using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
-using com.IvanMurzak.Unity.Runtime;
+using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 

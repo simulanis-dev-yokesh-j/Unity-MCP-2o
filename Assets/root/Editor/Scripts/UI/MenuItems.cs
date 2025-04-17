@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     public static class MenuItems
     {
         [MenuItem("Tools/Unity-MCP/Build and Start", priority = 1000)]
-        public static void BuildAndStart() => Startup.BuildAndStart();
+        public static void BuildAndStart() => McpPluginUnity.BuildAndStart();
 
         [MenuItem("Tools/Unity-MCP/Connect", priority = 1001)]
         public static void Editor_Connect() => McpPlugin.Instance.Connect();

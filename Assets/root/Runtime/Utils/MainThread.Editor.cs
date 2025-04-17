@@ -1,10 +1,9 @@
 #if UNITY_EDITOR
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 
-namespace com.IvanMurzak.Unity.MCP
+namespace com.IvanMurzak.Unity.MCP.Utils
 {
     public static class MainThread
     {

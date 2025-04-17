@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace com.IvanMurzak.Unity.MCP
+namespace com.IvanMurzak.Unity.MCP.Utils
 {
     public static class MainThread
     {
