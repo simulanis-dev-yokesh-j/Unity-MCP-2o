@@ -17,14 +17,26 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Full name of the Component. It should include full namespace path and the class name.")]
             string componentName,
-            [Description("Path to the GameObject (including the name of the GameObject).")]
-            string gameObjectPath
+            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            int? instanceId = null,
+            [Description("GameObject by 'path'. Priority: 2.")]
+            string? path = null,
+            [Description("GameObject by 'name'. Priority: 3.")]
+            string? name = null
         )
         {
             return ToolRouter.Call("GameObject_Add_Component", arguments =>
             {
                 arguments[nameof(componentName)] = componentName;
-                arguments[nameof(gameObjectPath)] = gameObjectPath;
+
+                if (instanceId != null)
+                    arguments[nameof(instanceId)] = instanceId;
+
+                if (path != null)
+                    arguments[nameof(path)] = path;
+
+                if (name != null)
+                    arguments[nameof(name)] = name;
             });
         }
     }
