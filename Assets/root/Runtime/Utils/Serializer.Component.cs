@@ -28,14 +28,14 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 // Debug.Log($"{component.name}.{component.GetType().Name} : {json}");
                 return json;
             }
-            internal static ComponentData BuildData(UnityEngine.Component component)
+            public static ComponentData BuildData(UnityEngine.Component component)
             {
                 if (component == null)
                     return null;
 
                 var result = new ComponentData()
                 {
-                    Class = component.GetType().FullName,
+                    Type = component.GetType().FullName,
                     IsEnabled = ComponentData.Enabled.NA,
                     InstanceId = component.GetInstanceID(),
                     Properties = new()

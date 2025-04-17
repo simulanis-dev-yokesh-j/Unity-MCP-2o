@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
+using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
@@ -12,27 +13,31 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_GetComponents",
             Title = "Get GameObject components",
-            Description = "Get all components of a GameObject by path. Returns property values of each component."
+            Description = "Get components of the target GameObject. Returns property values of each component."
         )]
         public string GetComponents
         (
-            [Description("Path to the GameObject.")]
-            string path
+            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
+            int[] componentInstanceIds,
+            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            int? instanceId = null,
+            [Description("GameObject by 'path'. Priority: 2.")]
+            string? path = null,
+            [Description("GameObject by 'name'. Priority: 3.")]
+            string? name = null
         )
+        => MainThread.Run(() =>
         {
-            path = StringUtils.TrimPath(path);
+            var go = GameObjectUtils.FindBy(instanceId, path, name, out var error);
+            if (error != null)
+                return error;
 
-            return MainThread.Run(() =>
-            {
-                if (string.IsNullOrEmpty(path))
-                    return Error.GameObjectPathIsEmpty();
+            var components = go.GetComponents<UnityEngine.Component>()
+                .Where(c => componentInstanceIds.Length == 0 || componentInstanceIds.Contains(c.GetInstanceID()))
+                .Select(c => Serializer.Component.BuildData(c))
+                .ToList();
 
-                var go = GameObjectUtils.FindByPath(path);
-                if (go == null)
-                    return Error.NotFoundGameObjectAtPath(path);
-
-                return Serializer.GameObject.Serialize(go);
-            });
-        }
+            return $"[Success] Found {components.Count} components in GameObject.\n{go.Print()}\n{JsonUtils.Serialize(components)}";
+        });
     }
 }

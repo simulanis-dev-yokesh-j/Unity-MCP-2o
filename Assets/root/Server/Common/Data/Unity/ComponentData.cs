@@ -7,7 +7,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Unity
     [System.Serializable]
     public class ComponentData
     {
-        public string Class { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
         public Enabled IsEnabled { get; set; }
         public int InstanceId { get; set; }
         public List<SerializedMember> Properties { get; set; } = new();
