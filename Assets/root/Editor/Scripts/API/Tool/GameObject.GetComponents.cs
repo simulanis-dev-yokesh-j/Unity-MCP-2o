@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_GetComponents",
             Title = "Get GameObject components",
-            Description = "Get components of the target GameObject. Returns property values of each component."
+            Description = "Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found."
         )]
         public string GetComponents
         (
@@ -32,12 +32,21 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (error != null)
                 return error;
 
-            var components = go.GetComponents<UnityEngine.Component>()
+            var allComponents = go.GetComponents<UnityEngine.Component>();
+            var components = allComponents
                 .Where(c => componentInstanceIds.Length == 0 || componentInstanceIds.Contains(c.GetInstanceID()))
                 .Select(c => Serializer.Component.BuildData(c))
                 .ToList();
 
-            return $"[Success] Found {components.Count} components in GameObject.\n{go.Print()}\n{JsonUtils.Serialize(components)}";
+            if (components.Count > 1)
+                return $"[Success] Found {components.Count} components in GameObject.\n{go.Print()}\n{JsonUtils.Serialize(components)}";
+
+            var componentInstanceIdsString = string.Join(", ", componentInstanceIds);
+            var availableComponentsPreview = allComponents
+                .Select(c => Serializer.Component.BuildDataLight(c))
+                .ToList();
+
+            return $"[Error] No components with instanceIds [{componentInstanceIdsString}] found in GameObject.\n{go.Print()}\nAvailable components preview:\n{availableComponentsPreview}";
         });
     }
 }

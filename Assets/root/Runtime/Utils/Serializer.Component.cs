@@ -24,9 +24,31 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     return null;
 
                 var list = BuildData(component);
-                var json = JsonUtils.JsonSerialize(list);
-                // Debug.Log($"{component.name}.{component.GetType().Name} : {json}");
-                return json;
+                return JsonUtils.JsonSerialize(list);
+            }
+            public static string SerializeLight(UnityEngine.Component component)
+            {
+                if (component == null)
+                    return null;
+
+                var list = BuildDataLight(component);
+                return JsonUtils.JsonSerialize(list);
+            }
+            public static ComponentDataLight BuildDataLight(UnityEngine.Component component)
+            {
+                if (component == null)
+                    return null;
+
+                return new ComponentDataLight()
+                {
+                    Type = component.GetType().FullName,
+                    IsEnabled = component is MonoBehaviour mh
+                        ? mh.enabled
+                            ? ComponentData.Enabled.True
+                            : ComponentData.Enabled.False
+                        : ComponentData.Enabled.NA,
+                    InstanceId = component.GetInstanceID(),
+                };
             }
             public static ComponentData BuildData(UnityEngine.Component component)
             {
@@ -36,16 +58,14 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 var result = new ComponentData()
                 {
                     Type = component.GetType().FullName,
-                    IsEnabled = ComponentData.Enabled.NA,
+                    IsEnabled = component is MonoBehaviour mh
+                        ? mh.enabled
+                            ? ComponentData.Enabled.True
+                            : ComponentData.Enabled.False
+                        : ComponentData.Enabled.NA,
                     InstanceId = component.GetInstanceID(),
                     Properties = new()
                 };
-                if (component is MonoBehaviour mh)
-                {
-                    result.IsEnabled = mh.enabled
-                        ? ComponentData.Enabled.True
-                        : ComponentData.Enabled.False;
-                }
                 var type = component.GetType();
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 

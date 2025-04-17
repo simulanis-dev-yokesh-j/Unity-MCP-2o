@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "GameObject_GetComponents",
             Title = "Get GameObject components"
         )]
-        [Description("Get components of the target GameObject. Returns property values of each component.")]
+        [Description("Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found.")]
         public Task<CallToolResponse> GetComponents
         (
             [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
