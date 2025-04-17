@@ -19,13 +19,15 @@ namespace com.IvanMurzak.Unity.MCP.Common
             .Take(1)
             .Subscribe(instance =>
             {
+                if (instance == null)
+                    return;
                 try
                 {
                     func(instance);
                 }
                 catch (Exception e)
                 {
-                    instance._logger.LogError(e, "[McpPlugin] Error in Do()");
+                    instance?._logger.LogError(e, "[McpPlugin] Error in Do()");
                 }
             });
 
@@ -33,32 +35,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
             .Where(x => x != null)
             .Subscribe(instance =>
             {
+                if (instance == null)
+                    return;
                 try
                 {
                     func(instance);
                 }
                 catch (Exception e)
                 {
-                    instance._logger.LogError(e, "[McpPlugin] Error in Do()");
+                    instance?._logger.LogError(e, "[McpPlugin] Error in Do()");
                 }
             });
-
-        public IDisposable OnInstanceCreated(Action<McpPlugin> action)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            return _instance
-                .Where(x => x != null)
-                .Subscribe(action);
-            //.AddTo(_disposables);
-        }
-        public IDisposable OnInstanceDestroyed(Action action)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            return _instance
-                .Where(x => x == null)
-                .Subscribe(plugin => action());
-            //.AddTo(_disposables);
-        }
 
         public static Task StaticDisposeAsync()
             => _instance.CurrentValue?.DisposeAsync() ?? Task.CompletedTask;
