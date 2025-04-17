@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Get Scene Hierarchy"
         )]
         [Description("This tool retrieves the list of root GameObjects in the specified scene.")]
-        public ValueTask<CallToolResponse> GetHierarchy
+        public Task<CallToolResponse> GetHierarchy
         (
             [Description("Determines the depth of the hierarchy to include.")]
             int includeChildrenDepth = 3,

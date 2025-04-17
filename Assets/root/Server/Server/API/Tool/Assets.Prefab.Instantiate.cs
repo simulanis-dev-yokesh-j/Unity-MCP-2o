@@ -1,3 +1,4 @@
+using com.IvanMurzak.Unity.MCP.Server.API.Data;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Instantiate prefab in the current active scene"
         )]
         [Description("Instantiates prefab in a scene.")]
-        public ValueTask<CallToolResponse> Instantiate
+        public Task<CallToolResponse> Instantiate
         (
             [Description("Prefab asset path.")]
             string prefabAssetPath,

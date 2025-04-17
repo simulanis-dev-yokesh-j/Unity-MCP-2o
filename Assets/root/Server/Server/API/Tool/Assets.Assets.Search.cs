@@ -34,7 +34,7 @@ t:Texture
 t:VideoClip
 t:VisualEffectAsset
 t:VisualEffectSubgraph")]
-        public ValueTask<CallToolResponse> Search
+        public Task<CallToolResponse> Search
         (
 // <ref>https://docs.unity3d.com/ScriptReference/AssetDatabase.FindAssets.html</ref>
 [Description(@"Searching filter. Could be empty.

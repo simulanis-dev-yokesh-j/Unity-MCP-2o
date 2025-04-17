@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 {
     public static partial class ToolRouter
     {
-        public static async ValueTask<CallToolResponse> Call(RequestContext<CallToolRequestParams> request, CancellationToken cancellationToken)
+        public static async Task<CallToolResponse> Call(RequestContext<CallToolRequestParams> request, CancellationToken cancellationToken)
         {
             var logger = LogManager.GetCurrentClassLogger();
             logger.Trace("Call called");
@@ -56,19 +56,19 @@ namespace com.IvanMurzak.Unity.MCP.Server
             return response.Value.ToCallToolRespose();
         }
 
-        public static ValueTask<CallToolResponse> Call(string name, Action<Dictionary<string, object>> configureArguments)
+        public static Task<CallToolResponse> Call(string name, Action<Dictionary<string, object>> configureArguments)
         {
             var arguments = new Dictionary<string, object>();
             configureArguments?.Invoke(arguments);
 
-            return Call_(name, args =>
+            return CallWithJson(name, args =>
             {
                 foreach (var kvp in arguments)
                     args[kvp.Key] = kvp.Value.ToJsonElement();
             });
         }
 
-        public static ValueTask<CallToolResponse> Call_(string name, Action<Dictionary<string, JsonElement>> configureArguments)
+        public static Task<CallToolResponse> CallWithJson(string name, Action<Dictionary<string, JsonElement>> configureArguments)
         {
             var mcpServer = McpServerService.Instance?.McpServer;
             if (mcpServer == null)
@@ -77,14 +77,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
             var arguments = new Dictionary<string, JsonElement>();
             configureArguments?.Invoke(arguments);
 
-            var request = new RequestContext<CallToolRequestParams>(mcpServer)
+            var request = new RequestContext<CallToolRequestParams>(mcpServer, new CallToolRequestParams()
             {
-                Params = new CallToolRequestParams()
-                {
-                    Name = name,
-                    Arguments = arguments
-                }
-            };
+                Name = name,
+                Arguments = arguments
+            });
             return Call(request, default);
 
             // Do we need to return the 'response'? It may work even better.
