@@ -1,4 +1,5 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System;
 using System.ComponentModel;
 using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
@@ -11,14 +12,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "GameObject_GetComponents",
-            Title = "Get GameObject components",
-            Description = "Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found."
+            "GameObject_ModifyComponent",
+            Title = "Modify Component at GameObject",
+            Description = "Modify existed component at GameObject."
         )]
-        public string GetComponents
+        public string ModifyComponent
         (
-            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
-            int[] componentInstanceIds,
+            [Description("Component by 'instanceId'.")]
+            int componentInstanceId,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
@@ -33,15 +34,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 return error;
 
             var allComponents = go.GetComponents<UnityEngine.Component>();
-            var components = allComponents
-                .Where(c => componentInstanceIds.Length == 0 || componentInstanceIds.Contains(c.GetInstanceID()))
-                .Select(c => Serializer.Component.BuildData(c))
-                .ToList();
+            var component = allComponents.FirstOrDefault(c => c.GetInstanceID() == componentInstanceId);
+            if (component == null)
+                return Error.NotFoundComponent(componentInstanceId, allComponents);
 
-            if (components.Count == 0)
-                return Error.NotFoundComponents(componentInstanceIds, allComponents);
+            // Modify component here (change properties, fields, etc.)
 
-            return $"[Success] Found {components.Count} components in GameObject.\n{go.Print()}\n{JsonUtils.Serialize(components)}";
+
+            return $"[Success] Modify component '{componentInstanceId}' at GameObject.\n{go.Print()}";
         });
     }
 }

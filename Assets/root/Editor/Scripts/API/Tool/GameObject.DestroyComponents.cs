@@ -37,7 +37,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             var destroyCounter = 0;
             var stringBuilder = new StringBuilder();
 
-            foreach (var component in go.GetComponents<UnityEngine.Component>())
+            var allComponents = go.GetComponents<UnityEngine.Component>();
+            foreach (var component in allComponents)
             {
                 var componentFullName = component.GetType().FullName;
                 var componentInstanceId = component.GetInstanceID();
@@ -49,9 +50,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 }
             }
 
-            return destroyCounter > 0
-                ? $"[Success] Destroyed {destroyCounter} components from GameObject.\n{stringBuilder.ToString()}"
-                : $"[Error] No components found to destroy in GameObject.\n{go.Print()}";
+            if (destroyCounter == 0)
+                return Error.NotFoundComponents(componentInstanceIds, allComponents);
+
+            return $"[Success] Destroyed {destroyCounter} components from GameObject.\n{stringBuilder.ToString()}";
         });
     }
 }
