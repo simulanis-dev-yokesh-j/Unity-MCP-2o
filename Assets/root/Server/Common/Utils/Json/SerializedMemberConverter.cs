@@ -1,5 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
@@ -37,8 +38,41 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
                         case "type":
                             member.type = reader.GetString();
                             break;
+                        case "value":
+                            // Handle the "value" property
+                            // Deserialize the "value" field based on the type
+                            var valueType = TypeUtils.GetType(member.type);
+                            if (valueType != null)
+                            {
+                                member.value = JsonUtils.Deserialize(ref reader, valueType, options);
+                            }
+                            else
+                            {
+                                throw new JsonException($"Unknown type: {member.type}");
+                                // try
+                                // {
+                                //     using (var jsonDocument = JsonDocument.Parse(ref reader.ToRea, JsonUtils.JsonSerializerOptions))
+                                //     {
+                                //         jsonDocument.RootElement.WriteTo(writer);
+                                //     }
+                                // }
+                                // catch
+                                // {
+                                //     // If the Json property is invalid, write an empty object
+                                //     writer.WriteStartObject();
+                                //     writer.WriteEndObject();
+                                // }
+                            }
+                            break;
                         case "json":
+                            // Handle the "json" property
+                            // Read the raw JSON string and store it in the member
                             member.json = reader.GetString();
+                            break;
+                        case "properties":
+                            // Handle the "properties" property
+                            // Deserialize the properties as a list of SerializedMember objects
+                            member.properties = JsonUtils.Deserialize<List<SerializedMember>>(ref reader, options);
                             break;
                         default:
                             // Skip unknown properties
@@ -47,6 +81,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
                     }
                 }
             }
+
 
             return member;
         }
@@ -67,30 +102,49 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
             // Write the "type" property
             writer.WriteString("type", value.type);
 
-            writer.WritePropertyName("value");
-            // Write the "json" property as an unwrapped object
-            if (!string.IsNullOrEmpty(value.json))
+            if (value.value != null)
             {
                 try
                 {
-                    using (var jsonDocument = JsonDocument.Parse(value.json))
-                    {
-                        jsonDocument.RootElement.WriteTo(writer);
-                    }
+                    var jsonElement = JsonUtils.SerializeToElement(value.value, options);
+
+                    writer.WritePropertyName("value");
+                    jsonElement.WriteTo(writer);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // If the Json property is invalid, write an empty object
-                    writer.WriteStartObject();
-                    writer.WriteEndObject();
+                    // Handle or log the exception as needed
+                    throw new JsonException($"Failed to serialize value: {ex.Message}", ex);
                 }
             }
-            else
+            else if (!string.IsNullOrEmpty(value.json))
             {
-                // If the Json property is null or empty, write an empty object
-                writer.WriteStartObject();
-                writer.WriteEndObject();
+                writer.WritePropertyName("json");
+                writer.WriteRawValue(value.json);
             }
+            // Write the "json" property as an unwrapped object
+            // if (!string.IsNullOrEmpty(json))
+            // {
+            //     try
+            //     {
+            //         using (var jsonDocument = JsonDocument.Parse(json))
+            //         {
+            //             jsonDocument.RootElement.WriteTo(writer);
+            //         }
+            //     }
+            //     catch
+            //     {
+            //         // If the Json property is invalid, write an empty object
+            //         writer.WriteStartObject();
+            //         writer.WriteEndObject();
+            //     }
+            // }
+            // else
+            // {
+            //     // If the Json property is null or empty, write an empty object
+            //     writer.WriteStartObject();
+            //     writer.WriteEndObject();
+            // }
 
             writer.WriteEndObject();
         }

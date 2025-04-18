@@ -19,6 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");
         public static string ServerExecutableFile => Path.Combine(ServerExecutableFolder, $"{ServerProjectName}");
         public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log.txt");
+        public static string ServerErrorLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log-error.txt");
         public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
 
         public static string RawJsonConfiguration(int port) => Consts.MCP_Client.ClaudeDesktop.Config(

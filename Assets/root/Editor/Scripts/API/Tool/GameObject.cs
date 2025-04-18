@@ -56,6 +56,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
                 return $"[Error] No components with instanceIds [{componentInstanceIdsString}] found in GameObject.\nAvailable components preview:\n{previewJson}";
             }
+            public static string ComponentPropertyNameIsEmpty()
+                => $"[Error] Component property name is empty. It should be a valid property name.";
+            public static string ComponentPropertyTypeIsEmpty()
+                => $"[Error] Component property type is empty. It should be a valid property type.";
         }
     }
 }

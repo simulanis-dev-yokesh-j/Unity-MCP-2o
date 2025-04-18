@@ -1,13 +1,24 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
+using System.Linq;
 
-namespace com.IvanMurzak.Unity.MCP.Editor.Utils
+namespace com.IvanMurzak.Unity.MCP.Common.Data.Utils
 {
     public static class TypeUtils
     {
-        public static object CastTo(object obj, string typeFullName, out string error)
+        public static Type? GetType(string? typeFullName) => string.IsNullOrEmpty(typeFullName)
+            ? null
+            : Type.GetType(typeFullName) ??
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a => a.GetTypes())
+                    .FirstOrDefault(t => t.FullName == typeFullName);
+
+        public static object? CastTo(object obj, string typeFullName, out string? error)
         {
-            var type = Type.GetType(typeFullName);
+            var type = GetType(typeFullName) ??
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a => a.GetTypes())
+                    .FirstOrDefault(t => t.FullName == typeFullName);
             if (type == null)
             {
                 error = $"[Error] Type '{typeFullName}' not found.";
@@ -16,10 +27,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             return CastTo(obj, type, out error);
         }
 
-        public static T CastTo<T>(object obj, out string error)
+        public static T? CastTo<T>(object obj, out string? error)
             => CastTo(obj, typeof(T), out error) is T typedObj ? typedObj : default;
 
-        public static object CastTo(object obj, Type type, out string error)
+        public static object? CastTo(object obj, Type type, out string? error)
         {
             if (obj == null)
             {
@@ -32,7 +43,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                 return default;
             }
 
-            error = string.Empty;
+            error = null;
             return obj;
         }
     }

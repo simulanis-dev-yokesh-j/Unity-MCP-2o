@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
+using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
+using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {
@@ -48,29 +50,46 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (error != null)
                 return error;
 
-            var type = Type.GetType(data.type);
+            var type = TypeUtils.GetType(data.type);
             if (type == null)
                 return Error.InvalidComponentType(data.type);
 
             if (!type.IsAssignableFrom(component.GetType()))
                 return Error.TypeMismatch(data.type, component.GetType().FullName);
 
+            // Validate properties
             if (data.properties == null || data.properties.Count == 0)
-                return $"[Error] No properties provided to modify in component '{data.instanceId}' at GameObject.\n{go.Print()}";
+                return $"[Error] No properties provided to modify in component with 'instanceId'={data.instanceId} at GameObject with 'instanceId'={go.GetInstanceID()}.\n{go.Print()}";
+
+            // Validate properties
+            foreach (var property in data.properties)
+            {
+                if (string.IsNullOrEmpty(property.name))
+                    return Error.ComponentPropertyNameIsEmpty();
+
+                if (string.IsNullOrEmpty(property.type))
+                    return Error.ComponentPropertyTypeIsEmpty();
+            }
 
             var changedProperties = new List<string>(data.properties.Count);
 
             // Modify component here (change properties, fields, etc.)
             foreach (var property in data.properties)
             {
+                var targetType = TypeUtils.GetType(property.type);
+                if (targetType == null)
+                {
+                    if (McpPluginUnity.IsLogActive(LogLevel.Error))
+                        Debug.LogError($"[Error] Type '{property.type}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.\n{go.Print()}");
+                }
+
                 var propInfo = type.GetProperty(property.name);
                 if (propInfo != null && propInfo.CanWrite)
                 {
-                    var propType = Type.GetType(property.type);
-                    if (propType == null)
+                    if (targetType == null)
                         return Error.InvalidComponentPropertyType(property, propInfo);
 
-                    var propValue = JsonUtils.Deserialize(property.json, propType);
+                    var propValue = property.value; // JsonUtils.Deserialize(property.json, targetType);
 
                     propInfo.SetValue(component, propValue);
 
@@ -81,15 +100,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 var fieldInfo = type.GetField(property.name);
                 if (fieldInfo != null)
                 {
-                    var fieldType = Type.GetType(property.type);
-                    if (fieldType == null)
+                    if (targetType == null)
                         return Error.InvalidComponentFieldType(property, fieldInfo);
 
-                    var fieldValue = JsonUtils.Deserialize(property.json, fieldType);
+                    var fieldValue = property.value; // JsonUtils.Deserialize(property.json, targetType);
 
                     fieldInfo.SetValue(component, fieldValue);
 
                     changedProperties.Add(property.name);
+                    continue;
                 }
             }
 

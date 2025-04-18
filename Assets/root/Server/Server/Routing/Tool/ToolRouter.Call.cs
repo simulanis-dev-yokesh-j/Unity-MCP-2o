@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
@@ -40,10 +39,15 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 return new CallToolResponse().SetError("[Error] 'ToolRunner' is null");
 
             var requestData = new RequestCallTool(request.Params.Name, request.Params.Arguments);
+            if (logger.IsTraceEnabled)
+                logger.Trace("Call tool:\n{0}", JsonUtils.Serialize(requestData));
 
             var response = await toolRunner.RunCallTool(requestData, cancellationToken);
             if (response == null)
                 return new CallToolResponse().SetError("[Error] Resource is null");
+
+            if (logger.IsTraceEnabled)
+                logger.Trace("Call tool response:\n{0}", JsonUtils.Serialize(response));
 
             if (response.IsError)
                 return new CallToolResponse().SetError(response.Message ?? "[Error] Got an error during running tool");
@@ -51,8 +55,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (response.Value == null)
                 return new CallToolResponse().SetError("[Error] Tool returned null value");
 
-            if (logger.IsTraceEnabled)
-                logger.Trace("Call, request: {0}", JsonSerializer.Serialize(requestData));
             return response.Value.ToCallToolRespose();
         }
 

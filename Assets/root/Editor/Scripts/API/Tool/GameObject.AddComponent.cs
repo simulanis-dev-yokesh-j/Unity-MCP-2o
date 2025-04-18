@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 
@@ -33,9 +34,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (error != null)
                 return error;
 
-            var type = Type.GetType(componentName) ?? AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .FirstOrDefault(t => t.FullName == componentName);
+            var type = TypeUtils.GetType(componentName);
             if (type == null)
                 return Tool_Component.Error.NotFoundComponentType(componentName);
 

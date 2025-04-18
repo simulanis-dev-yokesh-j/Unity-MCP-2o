@@ -1,7 +1,7 @@
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
@@ -44,7 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     .ToList()
             };
 
-            logger.Trace("ListAll, result: {0}", JsonSerializer.Serialize(result));
+            logger.Trace("ListAll, result: {0}", JsonUtils.Serialize(result));
             return result;
         }
     }

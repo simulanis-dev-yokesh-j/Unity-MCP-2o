@@ -3,6 +3,8 @@ using UnityEngine;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
+using System.Linq;
+using System;
 
 namespace com.IvanMurzak.Unity.MCP.Utils
 {
@@ -58,8 +60,8 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 var result = new ComponentData()
                 {
                     type = component.GetType().FullName,
-                    isEnabled = component is MonoBehaviour mh
-                        ? mh.enabled
+                    isEnabled = component is Behaviour behaviour
+                        ? behaviour.enabled
                             ? ComponentData.Enabled.True
                             : ComponentData.Enabled.False
                         : ComponentData.Enabled.NA,
@@ -72,25 +74,31 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 foreach (var field in type.GetFields(flags))
                 {
                     var value = field.GetValue(component);
-                    result.properties.Add(new(field.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
+                    // result.properties.Add(new(field.Name, value));
+                    // result.properties.Add(new(field.Name, JsonUtility.ToJson(value)));
+
+                    result.properties.Add(SerializedMember.FromJson(field.Name, value.GetType(), value is UnityEngine.Object obj
+                        ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
+                        : JsonUtility.ToJson(value)));
                 }
 
-                foreach (var prop in type.GetProperties(flags))
+                foreach (var prop in type.GetProperties(flags)
+                    .Where(prop => prop.GetCustomAttribute<ObsoleteAttribute>() == null)
+                    .Where(prop => prop.CanRead))
                 {
-                    if (prop.CanRead)
+                    try
                     {
-                        try
-                        {
-                            var value = prop.GetValue(component);
-                            if (value is UnityEngine.Object obj)
-                            {
-                                result.properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))));
-                                continue;
-                            }
-                            result.properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
-                        }
-                        catch { /* skip inaccessible properties */ }
+                        var value = prop.GetValue(component);
+                        // result.properties.Add(new(prop.Name, obj));
+                        // result.properties.Add(new(prop.Name, JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))));
+                        // result.properties.Add(new(prop.Name, value));
+                        // result.properties.Add(new(prop.Name, JsonUtility.ToJson(value)));
+
+                        result.properties.Add(SerializedMember.FromJson(prop.Name, value.GetType(), value is UnityEngine.Object obj
+                            ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
+                            : JsonUtility.ToJson(value)));
                     }
+                    catch { /* skip inaccessible properties */ }
                 }
 
                 return result;

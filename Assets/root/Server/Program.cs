@@ -31,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     configure.ClientTimeoutInterval = TimeSpan.FromMinutes(5);
                     configure.KeepAliveInterval = TimeSpan.FromSeconds(15);
                     configure.HandshakeTimeout = TimeSpan.FromSeconds(15);
-                    configure.JsonSerialize();
+                    configure.JsonSerialize(JsonUtils.JsonSerializerOptions);
                 });
 
                 // Configure all logs to go to stderr. This is needed for MCP STDIO server to work properly.

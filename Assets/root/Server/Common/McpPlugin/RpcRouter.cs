@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
     public class RpcRouter : IRpcRouter
     {
         readonly ILogger<RpcRouter> _logger;
-        readonly IMcpRunner _localApp;
+        readonly IMcpRunner _mcpRunner;
         readonly IConnectionManager _connectionManager;
         readonly CompositeDisposable _serverEventsDisposables = new();
         readonly IDisposable _hubConnectionDisposable;
@@ -20,11 +20,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => _connectionManager.ConnectionState;
         public ReadOnlyReactiveProperty<bool> KeepConnected => _connectionManager.KeepConnected;
 
-        public RpcRouter(ILogger<RpcRouter> logger, IConnectionManager connectionManager, IMcpRunner localApp)
+        public RpcRouter(ILogger<RpcRouter> logger, IConnectionManager connectionManager, IMcpRunner mcpRunner)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogTrace("Ctor.");
-            _localApp = localApp ?? throw new ArgumentNullException(nameof(localApp));
+            _mcpRunner = mcpRunner ?? throw new ArgumentNullException(nameof(mcpRunner));
             _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
 
             _connectionManager.Endpoint = Consts.Hub.DefaultEndpoint + Consts.Hub.RemoteApp;
@@ -57,35 +57,35 @@ namespace com.IvanMurzak.Unity.MCP.Common
             hubConnection.On<RequestCallTool, IResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, async data =>
                 {
                     _logger.LogDebug("Call Tool called.");
-                    return await _localApp.RunCallTool(data);
+                    return await _mcpRunner.RunCallTool(data);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestListTool, IResponseData<ResponseListTool[]>>(Consts.RPC.Client.RunListTool, async data =>
                 {
                     _logger.LogDebug("List Tool called.");
-                    return await _localApp.RunListTool(data);
+                    return await _mcpRunner.RunListTool(data);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestResourceContent, IResponseData<ResponseResourceContent[]>>(Consts.RPC.Client.RunResourceContent, async data =>
                 {
                     _logger.LogDebug("Read Resource content called.");
-                    return await _localApp.RunResourceContent(data);
+                    return await _mcpRunner.RunResourceContent(data);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestListResources, IResponseData<ResponseListResource[]>>(Consts.RPC.Client.RunListResources, async data =>
                 {
                     _logger.LogDebug("List Resources called.");
-                    return await _localApp.RunListResources(data);
+                    return await _mcpRunner.RunListResources(data);
                 })
                 .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestListResourceTemplates, IResponseData<ResponseResourceTemplate[]>>(Consts.RPC.Client.RunListResourceTemplates, async data =>
                 {
                     _logger.LogDebug("List Resource Templates called.");
-                    return await _localApp.RunResourceTemplates(data);
+                    return await _mcpRunner.RunResourceTemplates(data);
                 })
                 .AddTo(_serverEventsDisposables);
         }

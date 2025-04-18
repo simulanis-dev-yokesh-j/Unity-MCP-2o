@@ -41,7 +41,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (components.Count == 0)
                 return Error.NotFoundComponents(componentInstanceIds, allComponents);
 
-            return $"[Success] Found {components.Count} components in GameObject.\n{go.Print()}\n{JsonUtils.Serialize(components)}";
+            return @$"[Success] Found {components.Count} components in GameObject with 'instanceId'={go.GetInstanceID()}.
+{go.Print()}
+
+# Components:
+{JsonUtils.Serialize(components)}";
         });
     }
 }
