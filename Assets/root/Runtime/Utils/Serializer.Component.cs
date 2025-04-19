@@ -44,7 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 return new ComponentDataLight()
                 {
                     type = component.GetType().FullName,
-                    isEnabled = component is MonoBehaviour mh
+                    isEnabled = component is Behaviour mh
                         ? mh.enabled
                             ? ComponentData.Enabled.True
                             : ComponentData.Enabled.False
@@ -65,19 +65,20 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                             ? ComponentData.Enabled.True
                             : ComponentData.Enabled.False
                         : ComponentData.Enabled.NA,
-                    instanceId = component.GetInstanceID(),
-                    properties = new()
+                    instanceId = component.GetInstanceID()
                 };
                 var type = component.GetType();
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-                foreach (var field in type.GetFields(flags))
+                foreach (var field in type.GetFields(flags)
+                    .Where(field => field.GetCustomAttribute<ObsoleteAttribute>() == null))
                 {
                     var value = field.GetValue(component);
                     // result.properties.Add(new(field.Name, value));
                     // result.properties.Add(new(field.Name, JsonUtility.ToJson(value)));
 
-                    result.properties.Add(SerializedMember.FromJson(field.Name, value.GetType(), value is UnityEngine.Object obj
+                    result.fields ??= new();
+                    result.fields.Add(SerializedMember.FromJson(field.Name, value.GetType(), value is UnityEngine.Object obj
                         ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
                         : JsonUtility.ToJson(value)));
                 }
@@ -94,6 +95,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                         // result.properties.Add(new(prop.Name, value));
                         // result.properties.Add(new(prop.Name, JsonUtility.ToJson(value)));
 
+                        result.properties ??= new();
                         result.properties.Add(SerializedMember.FromJson(prop.Name, value.GetType(), value is UnityEngine.Object obj
                             ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
                             : JsonUtility.ToJson(value)));

@@ -22,8 +22,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
             Converters =
             {
                 new JsonStringEnumConverter(),
+                new InstanceIdConverter(),
                 new SerializedMemberConverter(),
-                new InstanceIdConverter()
+                // new SerializedMemberConverterFactory()
             }
         };
 
@@ -35,6 +36,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 throw new ArgumentNullException(nameof(converter));
             jsonSerializerOptions.Converters.Add(converter);
         }
+
+        public static T? Deserialize<T>(string json, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize<T>(json, options ?? jsonSerializerOptions);
 
         public static object? Deserialize(string json, Type type, JsonSerializerOptions? options = null)
             => JsonSerializer.Deserialize(json, type, options ?? jsonSerializerOptions);

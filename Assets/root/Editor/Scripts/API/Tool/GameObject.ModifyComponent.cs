@@ -1,9 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
@@ -57,9 +55,20 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (!type.IsAssignableFrom(component.GetType()))
                 return Error.TypeMismatch(data.type, component.GetType().FullName);
 
-            // Validate properties
-            if (data.properties == null || data.properties.Count == 0)
-                return $"[Error] No properties provided to modify in component with 'instanceId'={data.instanceId} at GameObject with 'instanceId'={go.GetInstanceID()}.\n{go.Print()}";
+            // Validate - at least one field or property should be provided
+            if (data.fields == null || data.fields.Count == 0 ||
+                data.properties == null || data.properties.Count == 0)
+                return $"[Error] Neither fields and properties provided to modify in component with 'instanceId'={data.instanceId} at GameObject with 'instanceId'={go.GetInstanceID()}.\n{go.Print()}";
+
+            // Validate fields
+            foreach (var field in data.fields)
+            {
+                if (string.IsNullOrEmpty(field.name))
+                    return Error.ComponentFieldNameIsEmpty();
+
+                if (string.IsNullOrEmpty(field.type))
+                    return Error.ComponentFieldTypeIsEmpty();
+            }
 
             // Validate properties
             foreach (var property in data.properties)
@@ -71,49 +80,80 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                     return Error.ComponentPropertyTypeIsEmpty();
             }
 
+            var changedFields = new List<string>(data.fields.Count);
             var changedProperties = new List<string>(data.properties.Count);
 
-            // Modify component here (change properties, fields, etc.)
+            // Modify fields
+            foreach (var field in data.fields)
+            {
+                var targetType = TypeUtils.GetType(field.type);
+                if (targetType == null)
+                {
+                    if (McpPluginUnity.IsLogActive(LogLevel.Error))
+                        Debug.LogError($"[Error] Type '{field.type}' not found. Can't modify field '{field.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                }
+
+                var fieldInfo = type.GetField(field.name);
+                if (fieldInfo == null)
+                {
+                    if (McpPluginUnity.IsLogActive(LogLevel.Warning))
+                        Debug.LogWarning($"[Error] Field '{field.name}' not found. Can't modify field '{field.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                    continue;
+                }
+                if (targetType == null)
+                    return Error.InvalidComponentFieldType(field, fieldInfo);
+
+                var fieldValue = JsonUtility.FromJson(field.valueJsonElement.Value.GetRawText(), targetType);
+
+                fieldInfo.SetValue(component, fieldValue);
+
+                changedFields.Add(field.name);
+            }
+
+            // Modify properties
             foreach (var property in data.properties)
             {
                 var targetType = TypeUtils.GetType(property.type);
                 if (targetType == null)
                 {
-                    if (McpPluginUnity.IsLogActive(LogLevel.Error))
-                        Debug.LogError($"[Error] Type '{property.type}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.\n{go.Print()}");
+                    if (McpPluginUnity.IsLogActive(LogLevel.Warning))
+                        Debug.LogWarning($"[Error] Type '{property.type}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
                 }
 
                 var propInfo = type.GetProperty(property.name);
-                if (propInfo != null && propInfo.CanWrite)
+                if (propInfo == null)
                 {
-                    if (targetType == null)
-                        return Error.InvalidComponentPropertyType(property, propInfo);
-
-                    var propValue = property.value; // JsonUtils.Deserialize(property.json, targetType);
-
-                    propInfo.SetValue(component, propValue);
-
-                    changedProperties.Add(property.name);
+                    if (McpPluginUnity.IsLogActive(LogLevel.Warning))
+                        Debug.LogWarning($"[Error] Property '{property.name}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                    continue;
+                }
+                if (propInfo.CanWrite)
+                {
+                    if (McpPluginUnity.IsLogActive(LogLevel.Warning))
+                        Debug.LogWarning($"[Warning] Property '{property.name}' is not writable. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
                     continue;
                 }
 
-                var fieldInfo = type.GetField(property.name);
-                if (fieldInfo != null)
-                {
-                    if (targetType == null)
-                        return Error.InvalidComponentFieldType(property, fieldInfo);
+                if (targetType == null)
+                    return Error.InvalidComponentPropertyType(property, propInfo);
 
-                    var fieldValue = property.value; // JsonUtils.Deserialize(property.json, targetType);
+                var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
+                propInfo.SetValue(component, propValue);
 
-                    fieldInfo.SetValue(component, fieldValue);
-
-                    changedProperties.Add(property.name);
-                    continue;
-                }
+                changedProperties.Add(property.name);
             }
 
+            var changedFieldsString = string.Join(", ", changedFields);
             var changedPropertiesString = string.Join(", ", changedProperties);
-            return $"[Success] Modify component '{data.instanceId}' with properties [{changedPropertiesString}] at GameObject.\n{go.Print()}";
+
+            return @$"[Success] Modify component '{data.instanceId}' with:
+Modified fields:
+[{changedFieldsString}]
+----------------------------
+Modified Properties:
+[{changedPropertiesString}]
+----------------------------
+at GameObject.\n{go.Print()}";
         });
     }
 }
