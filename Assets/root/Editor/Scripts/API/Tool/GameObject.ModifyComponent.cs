@@ -103,7 +103,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 }
             }
 
-            if ((data.properties?.Count ?? 0) == 0)
+            if ((data.properties?.Count ?? 0) > 0)
             {
                 // Validate properties
                 foreach (var property in data.properties)
@@ -131,7 +131,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                             Debug.LogWarning($"[Error] Property '{property.name}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
                         continue;
                     }
-                    if (propInfo.CanWrite)
+                    if (!propInfo.CanWrite)
                     {
                         if (McpPluginUnity.IsLogActive(LogLevel.Warning))
                             Debug.LogWarning($"[Warning] Property '{property.name}' is not writable. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
