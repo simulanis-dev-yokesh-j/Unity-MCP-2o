@@ -113,23 +113,32 @@ The target reference instance could be located in project assets, in the scene o
                         // Find the object by instanceId
                         var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
 
-                        // Cast the object to the target type
-                        var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
-                        if (error != null)
-                            return error;
+                        if (typeof(Sprite).IsAssignableFrom(targetType) && referenceObject is Texture2D texture)
+                        {
+                            // Try to find the first Sprite sub-asset in the Texture2D asset
+                            var assetPath = UnityEditor.AssetDatabase.GetAssetPath(texture);
+                            var sprite = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(assetPath)
+                                .OfType<Sprite>()
+                                .FirstOrDefault();
+                            referenceObject = sprite;
+                            fieldInfo.SetValue(component, referenceObject);
+                        }
+                        else
+                        {
+                            // Cast the object to the target type
+                            var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
+                            if (error != null)
+                                return error;
 
-                        fieldInfo.SetValue(component, referenceObject);
-
-                        changedFields.Add(field.name);
+                            fieldInfo.SetValue(component, referenceObject);
+                        }
                     }
                     else
                     {
                         var fieldValue = JsonUtility.FromJson(field.valueJsonElement.Value.GetRawText(), targetType);
-
                         fieldInfo.SetValue(component, fieldValue);
-
-                        changedFields.Add(field.name);
                     }
+                    changedFields.Add(field.name);
                 }
             }
 
@@ -181,22 +190,33 @@ The target reference instance could be located in project assets, in the scene o
                         // Find the object by instanceId
                         var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
 
-                        // Cast the object to the target type
-                        var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
-                        if (error != null)
-                            return error;
+                        if (typeof(Sprite).IsAssignableFrom(targetType) && referenceObject is Texture2D texture)
+                        {
+                            // Try to find the first Sprite sub-asset in the Texture2D asset
+                            var assetPath = UnityEditor.AssetDatabase.GetAssetPath(texture);
+                            var sprite = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(assetPath)
+                                .OfType<Sprite>()
+                                .FirstOrDefault();
+                            referenceObject = sprite;
+                            propInfo.SetValue(component, referenceObject);
+                        }
+                        else
+                        {
+                            // Cast the object to the target type
+                            var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
+                            if (error != null)
+                                return error;
 
-                        propInfo.SetValue(component, referenceObject);
-
-                        changedProperties.Add(property.name);
+                            propInfo.SetValue(component, referenceObject);
+                        }
                     }
                     else
                     {
                         var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
                         propInfo.SetValue(component, propValue);
 
-                        changedProperties.Add(property.name);
                     }
+                    changedProperties.Add(property.name);
                 }
             }
 
