@@ -171,10 +171,32 @@ The target reference instance could be located in project assets, in the scene o
                     if (targetType == null)
                         return Error.InvalidComponentPropertyType(property, propInfo);
 
-                    var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
-                    propInfo.SetValue(component, propValue);
+                    // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
+                    if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
+                    {
+                        var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(property.valueJsonElement.Value).instanceId;
+                        if (referenceInstanceId == 0)
+                            return Error.InvalidInstanceId(targetType, property.name);
 
-                    changedProperties.Add(property.name);
+                        // Find the object by instanceId
+                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
+
+                        // Cast the object to the target type
+                        var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
+                        if (error != null)
+                            return error;
+
+                        propInfo.SetValue(component, referenceObject);
+
+                        changedProperties.Add(property.name);
+                    }
+                    else
+                    {
+                        var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
+                        propInfo.SetValue(component, propValue);
+
+                        changedProperties.Add(property.name);
+                    }
                 }
             }
 
