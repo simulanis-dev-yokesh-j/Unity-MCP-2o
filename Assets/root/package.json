@@ -11,10 +11,12 @@
         "MCP",
         "Unity MCP"
     ],
-    "version": "0.2.1",
+    "version": "0.2.2",
     "unity": "2022.3",
     "description": "Unity MCP (Model Context Protocol) package. It includes server for seamless workflow with LLM",
     "dependencies": {
+        "com.unity.test-framework": "1.1.33",
+        "com.unity.modules.uielements": "1.0.0",
         "org.nuget.microsoft.bcl.memory": "9.0.4",
         "org.nuget.microsoft.aspnetcore.signalr.client": "9.0.4",
         "org.nuget.microsoft.aspnetcore.signalr.protocols.json": "9.0.4",
