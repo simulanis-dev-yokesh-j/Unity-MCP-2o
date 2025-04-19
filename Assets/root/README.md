@@ -25,16 +25,20 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Create
 - ✅ Destroy
+- ✅ Find
+- 🔲 Modify
+
+##### GameObject.Components
 - ✅ Add Component
-- ✅ Remove Component
-- ✅ Find by name (optional recursive)
-- ✅ Find by path (optional recursive)
+- ✅ Destroy Component
+- ✅ Modify Component
+- - ✅ `Field` set value
+- - ✅ `Property` set value
+- - ✅ `Reference` link set
 
 ### Component
 
-- ✅ Get All from the project (optional search by substring)
-- 🔲 Remove
-- 🔲 Modify
+- ✅ Get All
 
 ### Prefabs
 
@@ -52,6 +56,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 ### Assets
 
 - ✅ Search
+- ✅ Refresh
 - 🔲 Import
 - 🔲 Read
 
@@ -66,7 +71,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - 🔲 Create
 - 🔲 Update
-- 🔲 Assign to a Component on a GameObject
+- ✅ Assign to a Component on a GameObject
 
 ### Scripts
 
