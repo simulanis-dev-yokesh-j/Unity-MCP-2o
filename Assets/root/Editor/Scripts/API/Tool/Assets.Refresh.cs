@@ -1,0 +1,23 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System.ComponentModel;
+using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Utils;
+using UnityEditor;
+
+namespace com.IvanMurzak.Unity.MCP.Editor.API
+{
+    public partial class Tool_Assets
+    {
+        [McpPluginTool
+        (
+            "Assets_Refresh",
+            Title = "Assets Refresh"
+        )]
+        [Description("Refreshes the AssetDatabase. Use it if any new files were added or updated in the project. It would also trigger recompilation of the scripts.")]
+        public string Refresh() => MainThread.Run(() =>
+        {
+            AssetDatabase.Refresh();
+            return @$"[Success] AssetDatabase refreshed. {AssetDatabase.GetAllAssetPaths().Length} assets found.";
+        });
+    }
+}
