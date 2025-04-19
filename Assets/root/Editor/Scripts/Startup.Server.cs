@@ -13,8 +13,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 {
     static partial class Startup
     {
+        public const string PackageName = "com.IvanMurzak.Unity.MCP";
         public const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
-        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache"));
+        public static string PackageCache => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache"));
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
         public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
         public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");
@@ -108,23 +109,22 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 // ignore
             }
 
-            Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourcePath}</color>");
             try
             {
-                var directoryInfo = new DirectoryInfo(ServerSourcePath);
-                // Find the directory by substring
-                var sourceDir = directoryInfo.GetDirectories().FirstOrDefault(d => d.Name.ToLower().Contains(ServerProjectName.ToLower()));
+                var targetFolderName = PackageName.ToLower();
+                var directories = new DirectoryInfo(PackageCache).GetDirectories();
+                var sourceDir = directories.FirstOrDefault(d => d.Name.ToLower().Contains(targetFolderName));
                 if (sourceDir == null)
                 {
-                    Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{ServerSourcePath}</color>");
-                    throw new DirectoryNotFoundException($"Server source directory not found. Please check the path: {ServerSourcePath}");
+                    Debug.LogError($"{Consts.Log.Tag} Server source directory '{targetFolderName}' not found. Please check the path: <color=#8CFFD1>{PackageCache}</color>\nAvailable folders:\n{string.Join("\n", directories.Select(d => d.Name))}");
+                    throw new DirectoryNotFoundException($"Server source directory not found. Please check the path: {PackageCache}");
                 }
 
-                var sourcePath = Path.Combine(sourceDir.FullName, ServerProjectName, "Server");
-
+                var sourcePath = Path.GetFullPath(Path.Combine(sourceDir.FullName, "Server"));
+                Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{sourcePath}</color>");
                 DirectoryUtils.Copy(sourcePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
             }
-            catch (DirectoryNotFoundException)
+            catch
             {
                 Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourceAlternativePath}</color>");
                 try
@@ -133,7 +133,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 }
                 catch (DirectoryNotFoundException ex)
                 {
-                    Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{ServerSourcePath}</color> or <color=#8CFFD1>{ServerSourceAlternativePath}</color>");
+                    Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{PackageCache}</color> or <color=#8CFFD1>{ServerSourceAlternativePath}</color>");
                     Debug.LogError($"{Consts.Log.Tag} It may happen if the package was added into a project using local path reference. Please consider to use a package from the registry instead. Follow official installation instructions at https://github.com/IvanMurzak/Unity-MCP");
                     Debug.LogException(ex);
                     return;

@@ -9,8 +9,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     [InitializeOnLoad]
     static partial class Startup
     {
-
-
         static Startup()
         {
             McpPluginUnity.RegisterJsonConverters();
