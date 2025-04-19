@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Debug = UnityEngine.Debug;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
+using System.Linq;
 
 namespace com.IvanMurzak.Unity.MCP.Editor
 {
     static partial class Startup
     {
         public const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
-        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache", Consts.PackageName, "Server"));
+        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache"));
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
         public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
         public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");
@@ -59,7 +60,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         private static async Task HandleBuildResult(string output, string error, bool force)
         {
-            if (output.Contains("Build FAILED") || output.Contains("MSBUILD : error"))
+            var isError = !string.IsNullOrEmpty(error) ||
+                output.Contains("Build FAILED") ||
+                output.Contains("MSBUILD : error") ||
+                output.Contains("error MSB");
+
+            if (isError)
             {
                 Debug.LogError($"{Consts.Log.Tag} <color=red>Build failed</color>. Check the output for details:\n{output}");
                 if (force)
@@ -84,11 +90,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     }
                 }
             }
-
-            if (string.IsNullOrEmpty(error))
-                Debug.Log($"{Consts.Log.Tag} Build succeeded:\n{output}");
             else
-                Debug.LogError($"{Consts.Log.Tag} Build Errors:\n{error}");
+            {
+                Debug.Log($"{Consts.Log.Tag} <color=green>Build succeeded</color>. Check the output for details:\n{output}");
+            }
         }
 
         public static void CopyServerSources()
@@ -106,7 +111,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourcePath}</color>");
             try
             {
-                DirectoryUtils.Copy(ServerSourcePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
+                var directoryInfo = new DirectoryInfo(ServerSourcePath);
+                // Find the directory by substring
+                var sourceDir = directoryInfo.GetDirectories().FirstOrDefault(d => d.Name.ToLower().Contains(ServerProjectName.ToLower()));
+                if (sourceDir == null)
+                {
+                    Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{ServerSourcePath}</color>");
+                    throw new DirectoryNotFoundException($"Server source directory not found. Please check the path: {ServerSourcePath}");
+                }
+
+                var sourcePath = Path.Combine(sourceDir.FullName, ServerProjectName, "Server");
+
+                DirectoryUtils.Copy(sourcePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
             }
             catch (DirectoryNotFoundException)
             {
