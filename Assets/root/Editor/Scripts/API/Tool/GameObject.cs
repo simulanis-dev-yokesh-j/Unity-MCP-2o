@@ -1,4 +1,5 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -64,6 +65,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 => $"[Error] Component property name is empty. It should be a valid property name.";
             public static string ComponentPropertyTypeIsEmpty()
                 => $"[Error] Component property type is empty. It should be a valid property type.";
+
+            public static string InvalidInstanceId(Type holderType, string fieldName)
+                => $"[Error] Invalid instanceId '{fieldName}' for '{holderType.FullName}'. It should be a valid field name.";
         }
     }
 }

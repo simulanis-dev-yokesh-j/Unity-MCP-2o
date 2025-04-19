@@ -11,12 +11,18 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_ModifyComponent",
-            Title = "Add Component to a GameObject"
+            Title = "Modify Component at GameObject"
         )]
-        [Description("Add a component to a GameObject.")]
+        [Description("Modify existed component at GameObject.")]
         public Task<CallToolResponse> ModifyComponent
         (
-            [Description("Json Object with required readonly 'instanceId' and 'type' fields. Any other field would be used for changing value in the target component. only required to modify properties and fields and with 'Type' field at the root. It should respect the original structure of the component.")]
+
+            [Description(@"Json Object with required readonly 'instanceId' and 'type' fields.
+Any other field would be used for changing value in the target component.
+Only required to modify properties and fields and with 'Type' field at the root.
+It should respect the original structure of the component.
+Nested 'instanceId' fields and properties are references to UnityEngine.Object types.
+The target reference instance could be located in project assets, in the scene or in the prefabs.")]
             ComponentData data,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,

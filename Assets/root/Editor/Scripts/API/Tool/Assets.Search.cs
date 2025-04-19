@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor;
@@ -62,7 +63,20 @@ Searching is case insensitive.")]
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .ToList();
 
-            return string.Join("\n", assetPaths);
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("instanceId | assetGuid                            | assetPath");
+            stringBuilder.AppendLine("-----------+--------------------------------------+---------------------------------");
+            //                       " -12345    | 8e09c738-7b14-4d83-9740-2b396bd4cfc9 | Assets/Editor/Image.png");
+
+            for (var i = 0; i < assetPaths.Count; i++)
+            {
+                var assetPath = assetPaths[i];
+                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                var instanceId = asset.GetInstanceID();
+                stringBuilder.AppendLine($"{instanceId,-10} | {assetGuids[i],-36} | {assetPath}");
+            }
+
+            return $"[Success] Assets found: {assetGuids.Length}.\n{stringBuilder.ToString()}";
         });
     }
 }
