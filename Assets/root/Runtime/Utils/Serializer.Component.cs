@@ -123,7 +123,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
 
                         if (value == null)
                         {
-                            result.fields.Add(SerializedMember.FromJson(prop.Name, type, "null"));
+                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, "null"));
                             continue;
                         }
 
