@@ -44,13 +44,26 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 return new ComponentDataLight()
                 {
                     type = component.GetType().FullName,
-                    isEnabled = component is Behaviour mh
-                        ? mh.enabled
-                            ? ComponentData.Enabled.True
-                            : ComponentData.Enabled.False
-                        : ComponentData.Enabled.NA,
+                    isEnabled = BuildIsEnabled(component),
                     instanceId = component.GetInstanceID(),
                 };
+            }
+            public static ComponentData.Enabled BuildIsEnabled(UnityEngine.Component component)
+            {
+                if (component == null)
+                    return ComponentData.Enabled.NA;
+
+                if (component is Behaviour behaviour)
+                    return behaviour.enabled
+                        ? ComponentData.Enabled.True
+                        : ComponentData.Enabled.False;
+
+                if (component is Renderer renderer)
+                    return renderer.enabled
+                        ? ComponentData.Enabled.True
+                        : ComponentData.Enabled.False;
+
+                return ComponentData.Enabled.NA;
             }
             public static ComponentData BuildData(UnityEngine.Component component)
             {
@@ -60,39 +73,72 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 var result = new ComponentData()
                 {
                     type = component.GetType().FullName,
-                    isEnabled = component is Behaviour behaviour
-                        ? behaviour.enabled
-                            ? ComponentData.Enabled.True
-                            : ComponentData.Enabled.False
-                        : ComponentData.Enabled.NA,
+                    isEnabled = BuildIsEnabled(component),
                     instanceId = component.GetInstanceID()
                 };
-                var type = component.GetType();
+                var componentType = component.GetType();
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-                foreach (var field in type.GetFields(flags)
-                    .Where(field => field.GetCustomAttribute<ObsoleteAttribute>() == null))
+                // Process fields
+                foreach (var field in componentType.GetFields(flags)
+                    .Where(field => field.GetCustomAttribute<ObsoleteAttribute>() == null)
+                    .Where(field => field.IsPublic || field.IsPrivate && field.GetCustomAttribute<SerializeField>() != null))
                 {
                     var value = field.GetValue(component);
+                    var type = field.FieldType;
 
                     result.fields ??= new();
-                    result.fields.Add(SerializedMember.FromJson(field.Name, value.GetType(), value is UnityEngine.Object obj
-                        ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
-                        : JsonUtility.ToJson(value)));
+
+                    if (value == null)
+                    {
+                        result.fields.Add(SerializedMember.FromJson(field.Name, type, "null"));
+                        continue;
+                    }
+
+                    // The type is a UnityEngine.Object type, so it should be handled differently.
+                    var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
+                    if (isUnityObject)
+                    {
+                        var unityObject = value as UnityEngine.Object;
+                        var instanceIdJson = JsonUtility.ToJson(new InstanceId(unityObject.GetInstanceID()));
+                        result.fields.Add(SerializedMember.FromJson(field.Name, type, instanceIdJson));
+                    }
+                    else
+                    {
+                        result.fields.Add(SerializedMember.FromJson(field.Name, type, JsonUtility.ToJson(value)));
+                    }
                 }
 
-                foreach (var prop in type.GetProperties(flags)
+                // Process properties
+                foreach (var prop in componentType.GetProperties(flags)
                     .Where(prop => prop.GetCustomAttribute<ObsoleteAttribute>() == null)
                     .Where(prop => prop.CanRead))
                 {
                     try
                     {
                         var value = prop.GetValue(component);
+                        var type = prop.PropertyType;
 
                         result.properties ??= new();
-                        result.properties.Add(SerializedMember.FromJson(prop.Name, value.GetType(), value is UnityEngine.Object obj
-                            ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
-                            : JsonUtility.ToJson(value)));
+
+                        if (value == null)
+                        {
+                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, "null"));
+                            continue;
+                        }
+
+                        // The type is a UnityEngine.Object type, so it should be handled differently.
+                        var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
+                        if (isUnityObject)
+                        {
+                            var unityObject = value as UnityEngine.Object;
+                            var instanceIdJson = JsonUtility.ToJson(new InstanceId(unityObject.GetInstanceID()));
+                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, instanceIdJson));
+                        }
+                        else
+                        {
+                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, JsonUtility.ToJson(value)));
+                        }
                     }
                     catch { /* skip inaccessible properties */ }
                 }

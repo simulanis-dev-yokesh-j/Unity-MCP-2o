@@ -11,18 +11,14 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
         public override InstanceId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.Null)
-            {
                 return null;
-            }
 
             var instanceId = new InstanceId();
 
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndObject)
-                {
                     break;
-                }
 
                 if (reader.TokenType == JsonTokenType.PropertyName)
                 {
@@ -31,8 +27,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
 
                     switch (propertyName)
                     {
-                        case "id":
-                            instanceId.Id = reader.GetInt32();
+                        case "instanceId":
+                            instanceId.instanceId = reader.GetInt32();
                             break;
                         default:
                             // Skip unknown properties
@@ -56,8 +52,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
             writer.WriteStartObject();
 
             // Write the "id" property
-            writer.WritePropertyName("id");
-            writer.WriteNumberValue(value.Id);
+            writer.WritePropertyName("instanceId");
+            writer.WriteNumberValue(value.instanceId);
 
             writer.WriteEndObject();
         }

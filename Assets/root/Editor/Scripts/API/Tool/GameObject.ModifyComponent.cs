@@ -21,7 +21,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )]
         public string ModifyComponent
         (
-            [Description("Json Object with required readonly 'instanceId' and 'type' fields. Any other field would be used for changing value in the target component. only required to modify properties and fields and with 'Type' field at the root. It should respect the original structure of the component.")]
+            [Description(@"Json Object with required readonly 'instanceId' and 'type' fields.
+Any other field would be used for changing value in the target component.
+Only required to modify properties and fields and with 'Type' field at the root.
+It should respect the original structure of the component.
+Nested 'instanceId' fields and properties are references to UnityEngine.Object types.
+The target reference instance could be located in project assets, in the scene or in the prefabs.")]
             ComponentData data,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
@@ -98,10 +103,41 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                     if (targetType == null)
                         return Error.InvalidComponentFieldType(field, fieldInfo);
 
-                    var fieldValue = JsonUtility.FromJson(field.valueJsonElement.Value.GetRawText(), targetType);
+                    // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
+                    if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
+                    {
+                        var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(field.valueJsonElement.Value).instanceId;
+                        if (referenceInstanceId == 0)
+                            return Error.InvalidInstanceId(targetType, field.name);
 
-                    fieldInfo.SetValue(component, fieldValue);
+                        // Find the object by instanceId
+                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
 
+                        if (typeof(Sprite).IsAssignableFrom(targetType) && referenceObject is Texture2D texture)
+                        {
+                            // Try to find the first Sprite sub-asset in the Texture2D asset
+                            var assetPath = UnityEditor.AssetDatabase.GetAssetPath(texture);
+                            var sprite = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(assetPath)
+                                .OfType<Sprite>()
+                                .FirstOrDefault();
+                            referenceObject = sprite;
+                            fieldInfo.SetValue(component, referenceObject);
+                        }
+                        else
+                        {
+                            // Cast the object to the target type
+                            var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
+                            if (error != null)
+                                return error;
+
+                            fieldInfo.SetValue(component, castedObject);
+                        }
+                    }
+                    else
+                    {
+                        var fieldValue = JsonUtility.FromJson(field.valueJsonElement.Value.GetRawText(), targetType);
+                        fieldInfo.SetValue(component, fieldValue);
+                    }
                     changedFields.Add(field.name);
                 }
             }
@@ -144,9 +180,42 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                     if (targetType == null)
                         return Error.InvalidComponentPropertyType(property, propInfo);
 
-                    var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
-                    propInfo.SetValue(component, propValue);
+                    // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
+                    if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
+                    {
+                        var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(property.valueJsonElement.Value).instanceId;
+                        if (referenceInstanceId == 0)
+                            return Error.InvalidInstanceId(targetType, property.name);
 
+                        // Find the object by instanceId
+                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
+
+                        if (typeof(Sprite).IsAssignableFrom(targetType) && referenceObject is Texture2D texture)
+                        {
+                            // Try to find the first Sprite sub-asset in the Texture2D asset
+                            var assetPath = UnityEditor.AssetDatabase.GetAssetPath(texture);
+                            var sprite = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(assetPath)
+                                .OfType<Sprite>()
+                                .FirstOrDefault();
+                            referenceObject = sprite;
+                            propInfo.SetValue(component, referenceObject);
+                        }
+                        else
+                        {
+                            // Cast the object to the target type
+                            var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
+                            if (error != null)
+                                return error;
+
+                            propInfo.SetValue(component, castedObject);
+                        }
+                    }
+                    else
+                    {
+                        var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
+                        propInfo.SetValue(component, propValue);
+
+                    }
                     changedProperties.Add(property.name);
                 }
             }

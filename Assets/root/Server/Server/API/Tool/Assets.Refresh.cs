@@ -12,7 +12,8 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "Assets_Refresh",
             Title = "Assets Refresh"
         )]
-        [Description(@"Refreshes the AssetDatabase. Use it if any new files were added or updated in the project. It also triggers scripts recompilation if any changes in '.cs' files.")]
+        [Description(@"Refreshes the AssetDatabase. Use it if any new files were added or updated in the project.
+It also triggers scripts recompilation if any changes in '.cs' files.")]
         public Task<CallToolResponse> Refresh()
         {
             return ToolRouter.Call("Assets_Search");

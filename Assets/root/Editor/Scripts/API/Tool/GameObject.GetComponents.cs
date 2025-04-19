@@ -13,7 +13,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_GetComponents",
             Title = "Get GameObject components",
-            Description = "Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found."
+            Description = @"Get components of the target GameObject. Returns property values of each component.
+Returns list of all available components preview if no requested components found."
         )]
         public string GetComponents
         (
