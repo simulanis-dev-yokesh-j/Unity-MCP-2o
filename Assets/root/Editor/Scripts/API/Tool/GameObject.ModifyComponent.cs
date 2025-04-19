@@ -63,11 +63,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                     bh.enabled = setEnabled;
             }
 
-            // Validate - at least one field or property should be provided
-            // if (data.fields == null || data.fields.Count == 0 ||
-            //     data.properties == null || data.properties.Count == 0)
-            //     return $"[Error] Neither fields and properties provided to modify in component with 'instanceId'={data.instanceId} at GameObject with 'instanceId'={go.GetInstanceID()}.\n{go.Print()}";
-
             var changedFields = new List<string>(data.fields?.Count ?? 0);
             var changedProperties = new List<string>(data.properties?.Count ?? 0);
 
