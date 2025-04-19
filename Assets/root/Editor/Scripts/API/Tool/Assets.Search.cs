@@ -70,10 +70,9 @@ Searching is case insensitive.")]
 
             for (var i = 0; i < assetPaths.Count; i++)
             {
-                var assetPath = assetPaths[i];
-                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPaths[i]);
                 var instanceId = asset.GetInstanceID();
-                stringBuilder.AppendLine($"{instanceId,-10} | {assetGuids[i],-36} | {assetPath}");
+                stringBuilder.AppendLine($"{instanceId,-10} | {assetGuids[i],-36} | {assetPaths[i]}");
             }
 
             return $"[Success] Assets found: {assetGuids.Length}.\n{stringBuilder.ToString()}";
