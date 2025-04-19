@@ -60,10 +60,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         private static async Task HandleBuildResult(string output, string error, bool force)
         {
-            if (!string.IsNullOrEmpty(error) ||
+            var isError = !string.IsNullOrEmpty(error) ||
                 output.Contains("Build FAILED") ||
                 output.Contains("MSBUILD : error") ||
-                output.Contains("error MSB"))
+                output.Contains("error MSB");
+
+            if (isError)
             {
                 Debug.LogError($"{Consts.Log.Tag} <color=red>Build failed</color>. Check the output for details:\n{output}");
                 if (force)
@@ -120,7 +122,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
                 var sourcePath = Path.Combine(sourceDir.FullName, ServerProjectName, "Server");
 
-                DirectoryUtils.Copy(ServerSourcePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
+                DirectoryUtils.Copy(sourcePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
             }
             catch (DirectoryNotFoundException)
             {
