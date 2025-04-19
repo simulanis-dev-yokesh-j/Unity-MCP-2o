@@ -58,7 +58,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             return response.Value.ToCallToolRespose();
         }
 
-        public static Task<CallToolResponse> Call(string name, Action<Dictionary<string, object>> configureArguments)
+        public static Task<CallToolResponse> Call(string name, Action<Dictionary<string, object>>? configureArguments = null)
         {
             var arguments = new Dictionary<string, object>();
             configureArguments?.Invoke(arguments);
@@ -70,7 +70,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             });
         }
 
-        public static Task<CallToolResponse> CallWithJson(string name, Action<Dictionary<string, JsonElement>> configureArguments)
+        public static Task<CallToolResponse> CallWithJson(string name, Action<Dictionary<string, JsonElement>>? configureArguments = null)
         {
             var mcpServer = McpServerService.Instance?.McpServer;
             if (mcpServer == null)
