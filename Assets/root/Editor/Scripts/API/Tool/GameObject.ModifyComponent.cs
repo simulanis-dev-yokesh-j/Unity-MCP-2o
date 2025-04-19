@@ -55,6 +55,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (!type.IsAssignableFrom(component.GetType()))
                 return Error.TypeMismatch(data.type, component.GetType().FullName);
 
+            // Enable/Disable component if needed
+            if (castedComponent is UnityEngine.Behaviour bh)
+            {
+                var setEnabled = data.isEnabled.ToBool();
+                if (bh.enabled != setEnabled)
+                    bh.enabled = setEnabled;
+            }
+
             // Validate - at least one field or property should be provided
             // if (data.fields == null || data.fields.Count == 0 ||
             //     data.properties == null || data.properties.Count == 0)

@@ -17,4 +17,14 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Unity
             True = 1
         }
     }
+    public static class ComponentDataLightExtension
+    {
+        public static bool IsEnabled(this ComponentDataLight componentData)
+            => componentData.isEnabled == ComponentDataLight.Enabled.True;
+    }
+    public static class ComponentDataLightEnabledExtension
+    {
+        public static bool ToBool(this ComponentDataLight.Enabled enabled)
+            => enabled == ComponentDataLight.Enabled.True;
+    }
 }
