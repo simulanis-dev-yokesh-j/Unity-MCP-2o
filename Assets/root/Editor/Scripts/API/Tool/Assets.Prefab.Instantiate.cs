@@ -47,7 +47,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             var go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             go.name = name ?? prefab.name;
-            go.transform.SetParent(parentGo.transform, false);
+            if (parentGo != null)
+                go.transform.SetParent(parentGo.transform, false);
             go.SetTransform(position, rotation, scale, isLocalSpace);
 
             var bounds = go.CalculateBounds();
