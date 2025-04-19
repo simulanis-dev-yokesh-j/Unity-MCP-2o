@@ -231,6 +231,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 {
                     _logger.LogError("Error while stopping HubConnection: {0}\n{1}", task.Exception.Message, task.Exception.StackTrace);
                 }
+                _connectionState.Value = HubConnectionState.Disconnected;
             });
         }
 

@@ -3,6 +3,8 @@ using UnityEngine;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
+using System.Linq;
+using System;
 
 namespace com.IvanMurzak.Unity.MCP.Utils
 {
@@ -24,53 +26,75 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     return null;
 
                 var list = BuildData(component);
-                var json = JsonUtils.JsonSerialize(list);
-                // Debug.Log($"{component.name}.{component.GetType().Name} : {json}");
-                return json;
+                return JsonUtils.JsonSerialize(list);
             }
-            internal static ComponentData BuildData(UnityEngine.Component component)
+            public static string SerializeLight(UnityEngine.Component component)
+            {
+                if (component == null)
+                    return null;
+
+                var list = BuildDataLight(component);
+                return JsonUtils.JsonSerialize(list);
+            }
+            public static ComponentDataLight BuildDataLight(UnityEngine.Component component)
+            {
+                if (component == null)
+                    return null;
+
+                return new ComponentDataLight()
+                {
+                    type = component.GetType().FullName,
+                    isEnabled = component is Behaviour mh
+                        ? mh.enabled
+                            ? ComponentData.Enabled.True
+                            : ComponentData.Enabled.False
+                        : ComponentData.Enabled.NA,
+                    instanceId = component.GetInstanceID(),
+                };
+            }
+            public static ComponentData BuildData(UnityEngine.Component component)
             {
                 if (component == null)
                     return null;
 
                 var result = new ComponentData()
                 {
-                    Class = component.GetType().FullName,
-                    IsEnabled = ComponentData.Enabled.NA,
-                    InstanceId = component.GetInstanceID(),
-                    Properties = new()
+                    type = component.GetType().FullName,
+                    isEnabled = component is Behaviour behaviour
+                        ? behaviour.enabled
+                            ? ComponentData.Enabled.True
+                            : ComponentData.Enabled.False
+                        : ComponentData.Enabled.NA,
+                    instanceId = component.GetInstanceID()
                 };
-                if (component is MonoBehaviour mh)
-                {
-                    result.IsEnabled = mh.enabled
-                        ? ComponentData.Enabled.True
-                        : ComponentData.Enabled.False;
-                }
                 var type = component.GetType();
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-                foreach (var field in type.GetFields(flags))
+                foreach (var field in type.GetFields(flags)
+                    .Where(field => field.GetCustomAttribute<ObsoleteAttribute>() == null))
                 {
                     var value = field.GetValue(component);
-                    result.Properties.Add(new(field.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
+
+                    result.fields ??= new();
+                    result.fields.Add(SerializedMember.FromJson(field.Name, value.GetType(), value is UnityEngine.Object obj
+                        ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
+                        : JsonUtility.ToJson(value)));
                 }
 
-                foreach (var prop in type.GetProperties(flags))
+                foreach (var prop in type.GetProperties(flags)
+                    .Where(prop => prop.GetCustomAttribute<ObsoleteAttribute>() == null)
+                    .Where(prop => prop.CanRead))
                 {
-                    if (prop.CanRead)
+                    try
                     {
-                        try
-                        {
-                            var value = prop.GetValue(component);
-                            if (value is UnityEngine.Object obj)
-                            {
-                                result.Properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))));
-                                continue;
-                            }
-                            result.Properties.Add(new(prop.Name, value.GetType().FullName, JsonUtility.ToJson(value)));
-                        }
-                        catch { /* skip inaccessible properties */ }
+                        var value = prop.GetValue(component);
+
+                        result.properties ??= new();
+                        result.properties.Add(SerializedMember.FromJson(prop.Name, value.GetType(), value is UnityEngine.Object obj
+                            ? JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))
+                            : JsonUtility.ToJson(value)));
                     }
+                    catch { /* skip inaccessible properties */ }
                 }
 
                 return result;

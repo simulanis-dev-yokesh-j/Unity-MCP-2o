@@ -1,6 +1,8 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
@@ -11,13 +13,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "GameObject_GetComponents",
-            Title = "Get GameObject components",
-            Description = "Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found."
+            "GameObject_DestroyComponents",
+            Title = "Destroy Components from a GameObject",
+            Description = "Destroy one or many components from target GameObject."
         )]
-        public string GetComponents
+        public string DestroyComponents
         (
-            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
+            [Description("The 'instanceId' array of the target components.")]
             int[] componentInstanceIds,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
@@ -32,22 +34,26 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (error != null)
                 return error;
 
-            var allComponents = go.GetComponents<UnityEngine.Component>();
-            var components = allComponents
-                .Where(c => componentInstanceIds.Length == 0 || componentInstanceIds.Contains(c.GetInstanceID()))
-                .Select(c => Serializer.Component.BuildData(c))
-                .ToList();
+            var destroyCounter = 0;
+            var stringBuilder = new StringBuilder();
 
-            if (components.Count == 0)
+            var allComponents = go.GetComponents<UnityEngine.Component>();
+            foreach (var component in allComponents)
+            {
+                var componentFullName = component.GetType().FullName;
+                var componentInstanceId = component.GetInstanceID();
+                if (componentInstanceIds.Contains(componentInstanceId))
+                {
+                    UnityEngine.Object.DestroyImmediate(component);
+                    destroyCounter++;
+                    stringBuilder.AppendLine($"[Success] Destroyed component instanceId='{componentInstanceId}', type='{componentFullName}'.");
+                }
+            }
+
+            if (destroyCounter == 0)
                 return Error.NotFoundComponents(componentInstanceIds, allComponents);
 
-            var componentsJson = JsonUtils.Serialize(components);
-
-            return @$"[Success] Found {components.Count} components in GameObject with 'instanceId'={go.GetInstanceID()}.
-{go.Print()}
-
-# Components:
-{componentsJson}";
+            return $"[Success] Destroyed {destroyCounter} components from GameObject.\n{stringBuilder.ToString()}";
         });
     }
 }

@@ -94,31 +94,43 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
                     connectionStatusCircle.AddToClassList(connectionState switch
                     {
-                        HubConnectionState.Connected => USS_IndicatorClass_Connected,
+                        HubConnectionState.Connected => keepConnected
+                            ? USS_IndicatorClass_Connected
+                            : USS_IndicatorClass_Disconnected,
                         HubConnectionState.Disconnected => keepConnected
                             ? USS_IndicatorClass_Connecting
                             : USS_IndicatorClass_Disconnected,
-                        HubConnectionState.Reconnecting => USS_IndicatorClass_Connecting,
+                        HubConnectionState.Reconnecting => keepConnected
+                            ? USS_IndicatorClass_Connecting
+                            : USS_IndicatorClass_Disconnected,
                         _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, null)
                     });
 
                     connectionStatusText.text = connectionState switch
                     {
-                        HubConnectionState.Connected => "Connected",
+                        HubConnectionState.Connected => keepConnected
+                            ? "Connected"
+                            : "Disconnected",
                         HubConnectionState.Disconnected => keepConnected
                             ? "Connecting..."
                             : "Disconnected",
-                        HubConnectionState.Reconnecting => "Reconnecting...",
+                        HubConnectionState.Reconnecting => keepConnected
+                            ? "Connecting..."
+                            : "Disconnected",
                         _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
 
                     btnConnectOrDisconnect.text = connectionState switch
                     {
-                        HubConnectionState.Connected => ServerButtonText_Disconnect,
+                        HubConnectionState.Connected => keepConnected
+                            ? ServerButtonText_Disconnect
+                            : ServerButtonText_Connect,
                         HubConnectionState.Disconnected => keepConnected
                             ? ServerButtonText_Stop
                             : ServerButtonText_Connect,
-                        HubConnectionState.Reconnecting => ServerButtonText_Stop,
+                        HubConnectionState.Reconnecting => keepConnected
+                            ? ServerButtonText_Stop
+                            : ServerButtonText_Connect,
                         _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
                 })

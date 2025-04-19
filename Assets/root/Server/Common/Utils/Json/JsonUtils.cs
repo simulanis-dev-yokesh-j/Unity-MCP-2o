@@ -22,10 +22,13 @@ namespace com.IvanMurzak.Unity.MCP.Common
             Converters =
             {
                 new JsonStringEnumConverter(),
+                new InstanceIdConverter(),
                 new SerializedMemberConverter(),
-                new InstanceIdConverter()
+                // new SerializedMemberConverterFactory()
             }
         };
+
+        public static JsonSerializerOptions JsonSerializerOptions => jsonSerializerOptions;
 
         public static void AddConverter(JsonConverter converter)
         {
@@ -34,14 +37,23 @@ namespace com.IvanMurzak.Unity.MCP.Common
             jsonSerializerOptions.Converters.Add(converter);
         }
 
-        public static object? Deserialize(string json, Type type)
-            => JsonSerializer.Deserialize(json, type, jsonSerializerOptions);
+        public static T? Deserialize<T>(string json, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize<T>(json, options ?? jsonSerializerOptions);
 
-        public static JsonElement SerializeToElement(object data)
-            => JsonSerializer.SerializeToElement(data, jsonSerializerOptions);
+        public static object? Deserialize(string json, Type type, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize(json, type, options ?? jsonSerializerOptions);
 
-        public static string Serialize(object data)
-            => JsonSerializer.Serialize(data, jsonSerializerOptions);
+        public static object? Deserialize(ref Utf8JsonReader reader, Type returnType, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize(ref reader, returnType, options ?? jsonSerializerOptions);
+
+        public static TValue? Deserialize<TValue>(ref Utf8JsonReader reader, JsonSerializerOptions? options = null)
+            => JsonSerializer.Deserialize<TValue>(ref reader, options ?? jsonSerializerOptions);
+
+        public static JsonElement SerializeToElement(object data, JsonSerializerOptions? options = null)
+            => JsonSerializer.SerializeToElement(data, options ?? jsonSerializerOptions);
+
+        public static string Serialize(object data, JsonSerializerOptions? options = null)
+            => JsonSerializer.Serialize(data, options ?? jsonSerializerOptions);
 
         public static string ToJson(this IRequestCallTool? data, JsonSerializerOptions? options = null)
         {

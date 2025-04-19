@@ -1,41 +1,34 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace com.IvanMurzak.Unity.MCP.Common.Data.Utils
 {
     [System.Serializable]
     public class SerializedMember
     {
-        public string name = string.Empty;
-        public string type = string.Empty;
-        public string json = string.Empty;
+        [JsonInclude] public string name = string.Empty; // needed for Unity's JsonUtility serialziation
+        [JsonInclude] public string type = string.Empty; // needed for Unity's JsonUtility serialziation
+        [JsonInclude] public List<SerializedMember>? fields; // needed for Unity's JsonUtility serialziation
+        [JsonInclude] public List<SerializedMember>? properties; // needed for Unity's JsonUtility serialziation
 
-        public SerializedMember[]? properties;
+        [JsonInclude, JsonPropertyName("value")]
+        public JsonElement? valueJsonElement = null; // System.Text.Json serialization
 
-        public string Name
-        {
-            get => name;
-            set => name = value;
-        }
-        public string Type
-        {
-            get => type;
-            set => type = value;
-        }
-        public string Json
-        {
-            get => json;
-            set => json = value;
-        }
-        public SerializedMember[]? Properties
-        {
-            get => properties;
-            set => properties = value;
-        }
         public SerializedMember() { }
-        public SerializedMember(string name, string type, string json)
+
+        protected SerializedMember(string name, Type type, string json)
         {
             this.name = name;
-            this.type = type;
-            this.json = json;
+            this.type = type.FullName ?? throw new ArgumentNullException(nameof(type));
+
+            using var doc = JsonDocument.Parse(json);
+            valueJsonElement = doc.RootElement.Clone();
         }
+
+        public static SerializedMember FromJson(string name, Type type, string json)
+            => new SerializedMember(name, type, json);
     }
 }

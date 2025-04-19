@@ -1,3 +1,4 @@
+using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
@@ -9,14 +10,14 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "GameObject_GetComponents",
-            Title = "Get GameObject components"
+            Name = "GameObject_ModifyComponent",
+            Title = "Add Component to a GameObject"
         )]
-        [Description("Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found.")]
-        public Task<CallToolResponse> GetComponents
+        [Description("Add a component to a GameObject.")]
+        public Task<CallToolResponse> ModifyComponent
         (
-            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
-            int[] componentInstanceIds,
+            [Description("Json Object with required readonly 'instanceId' and 'type' fields. Any other field would be used for changing value in the target component. only required to modify properties and fields and with 'Type' field at the root. It should respect the original structure of the component.")]
+            ComponentData data,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
@@ -25,9 +26,9 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             string? name = null
         )
         {
-            return ToolRouter.Call("GameObject_GetComponents", arguments =>
+            return ToolRouter.Call("GameObject_ModifyComponent", arguments =>
             {
-                arguments[nameof(componentInstanceIds)] = componentInstanceIds;
+                arguments[nameof(data)] = data;
 
                 if (instanceId != null)
                     arguments[nameof(instanceId)] = instanceId;

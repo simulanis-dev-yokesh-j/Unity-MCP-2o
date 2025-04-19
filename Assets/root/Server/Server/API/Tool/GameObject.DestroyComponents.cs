@@ -9,13 +9,13 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "GameObject_GetComponents",
-            Title = "Get GameObject components"
+            Name = "GameObject_DestroyComponents",
+            Title = "Destroy Components from a GameObject"
         )]
-        [Description("Get components of the target GameObject. Returns property values of each component. Returns list of all available components preview if no requested components found.")]
-        public Task<CallToolResponse> GetComponents
+        [Description("Destroy one or many components from target GameObject.")]
+        public Task<CallToolResponse> DestroyComponents
         (
-            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
+            [Description("The 'instanceId' array of the target components.")]
             int[] componentInstanceIds,
             [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
             int? instanceId = null,
@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             string? name = null
         )
         {
-            return ToolRouter.Call("GameObject_GetComponents", arguments =>
+            return ToolRouter.Call("GameObject_DestroyComponents", arguments =>
             {
                 arguments[nameof(componentInstanceIds)] = componentInstanceIds;
 
