@@ -74,8 +74,6 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     .Where(field => field.GetCustomAttribute<ObsoleteAttribute>() == null))
                 {
                     var value = field.GetValue(component);
-                    // result.properties.Add(new(field.Name, value));
-                    // result.properties.Add(new(field.Name, JsonUtility.ToJson(value)));
 
                     result.fields ??= new();
                     result.fields.Add(SerializedMember.FromJson(field.Name, value.GetType(), value is UnityEngine.Object obj
@@ -90,10 +88,6 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     try
                     {
                         var value = prop.GetValue(component);
-                        // result.properties.Add(new(prop.Name, obj));
-                        // result.properties.Add(new(prop.Name, JsonUtility.ToJson(new InstanceId(obj.GetInstanceID()))));
-                        // result.properties.Add(new(prop.Name, value));
-                        // result.properties.Add(new(prop.Name, JsonUtility.ToJson(value)));
 
                         result.properties ??= new();
                         result.properties.Add(SerializedMember.FromJson(prop.Name, value.GetType(), value is UnityEngine.Object obj
