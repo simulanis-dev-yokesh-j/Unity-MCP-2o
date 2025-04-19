@@ -12,9 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
         public override SerializedMember? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.Null)
-            {
                 return null;
-            }
 
             var member = new SerializedMember();
 
@@ -31,10 +29,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
                     switch (propertyName)
                     {
                         case "name":
-                            member.name = reader.GetString();
+                            member.name = reader.GetString() ?? "[FAILED TO READ]";
                             break;
                         case "type":
-                            member.type = reader.GetString();
+                            member.type = reader.GetString() ?? "[FAILED TO READ]";
                             break;
                         case "value":
                             member.valueJsonElement = JsonElement.ParseValue(ref reader);
