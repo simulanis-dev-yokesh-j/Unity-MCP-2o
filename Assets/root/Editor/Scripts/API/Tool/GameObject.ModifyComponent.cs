@@ -130,7 +130,7 @@ The target reference instance could be located in project assets, in the scene o
                             if (error != null)
                                 return error;
 
-                            fieldInfo.SetValue(component, referenceObject);
+                            fieldInfo.SetValue(component, castedObject);
                         }
                     }
                     else
@@ -207,7 +207,7 @@ The target reference instance could be located in project assets, in the scene o
                             if (error != null)
                                 return error;
 
-                            propInfo.SetValue(component, referenceObject);
+                            propInfo.SetValue(component, castedObject);
                         }
                     }
                     else
