@@ -13,11 +13,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             "Assets_Refresh",
             Title = "Assets Refresh"
         )]
-        [Description("Refreshes the AssetDatabase. Use it if any new files were added or updated in the project. It would also trigger recompilation of the scripts.")]
+        [Description("Refreshes the AssetDatabase. Use it if any new files were added or updated in the project. It also triggers scripts recompilation if any changes in '.cs' files.")]
         public string Refresh() => MainThread.Run(() =>
         {
             AssetDatabase.Refresh();
-            return @$"[Success] AssetDatabase refreshed. {AssetDatabase.GetAllAssetPaths().Length} assets found.";
+            return @$"[Success] AssetDatabase refreshed. {AssetDatabase.GetAllAssetPaths().Length} assets found. Use 'Assets_Search' for more details.";
         });
     }
 }
