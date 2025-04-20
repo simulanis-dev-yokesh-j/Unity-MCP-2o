@@ -80,6 +80,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - 🔲 Read
 - 🔲 Modify
 - 🔲 Rename
+- 🔲 Remove
 - 🔲 Create folder
 
 ### Scene
