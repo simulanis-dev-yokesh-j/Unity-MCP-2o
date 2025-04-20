@@ -61,6 +61,13 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - 🔲 Execute `MenuItem`
 - 🔲 Run Tests
 
+### Scriptable Object
+
+- 🔲 Create
+- 🔲 Read
+- 🔲 Modify
+- 🔲 Remove
+
 </td>
 <td valign="top">
 
