@@ -37,17 +37,32 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     _logger.LogInformation(message);
                 }
 
-                var client = GetActiveClient();
-                if (client == null)
-                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
-                        .Log(_logger);
+                while (true)
+                {
 
-                var result = await client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, data, cancellationToken);
-                if (result == null)
-                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
-                        .Log(_logger);
+                    var client = GetActiveClient();
+                    if (client == null)
+                        return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                            .Log(_logger);
 
-                return result;
+                    var invokeTask = client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, data, cancellationToken);
+                    var completedTask = await Task.WhenAny(invokeTask, Task.Delay(TimeSpan.FromSeconds(Consts.Hub.TimeoutSeconds), cancellationToken));
+                    if (completedTask == invokeTask)
+                    {
+                        var result = await invokeTask;
+                        if (result == null)
+                            return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
+                                .Log(_logger);
+
+                        return result;
+                    }
+                    else
+                    {
+                        // Timeout occurred
+                        _logger.LogWarning($"Timeout: Client {Context.ConnectionId} did not respond in 10 seconds. Removing from ConnectedClients.");
+                        RemoveCurrentClient();
+                    }
+                }
             }
             catch (Exception ex)
             {
