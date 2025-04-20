@@ -80,6 +80,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - 🔲 Create scene
 - 🔲 Save scene
 - 🔲 Open scene
+- 🔲 Raycast (understand volume)
 
 ### Materials
 
