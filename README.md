@@ -42,9 +42,9 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Editor
 
-- 🔲 State (Playmode)
-  - 🔲 Get
-  - 🔲 Set
+- ✅ State (Playmode)
+  - ✅ Get
+  - ✅ Set
 - 🔲 Get Windows
 - 🔲 Selection
   - 🔲 Get Selected
