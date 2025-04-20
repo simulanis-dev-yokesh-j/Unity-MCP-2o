@@ -39,6 +39,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - - ✅ `Field` set value
 - - ✅ `Property` set value
 - - ✅ `Reference` link set
+- 🔲 Remove missing components
 
 ### Editor
 
