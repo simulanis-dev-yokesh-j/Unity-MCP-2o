@@ -23,10 +23,10 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         {
             return ToolRouter.Call("Assets_Load", arguments =>
             {
-                if (assetPath != null)
+                if (assetPath != null && assetPath.Length > 0)
                     arguments[nameof(assetPath)] = assetPath;
 
-                if (assetGuid != null)
+                if (assetGuid != null && assetGuid.Length > 0)
                     arguments[nameof(assetGuid)] = assetGuid;
             });
         }

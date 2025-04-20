@@ -39,10 +39,10 @@ The target reference instance could be located in project assets, in the scene o
                 if (instanceId != null)
                     arguments[nameof(instanceId)] = instanceId;
 
-                if (path != null)
+                if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;
 
-                if (name != null)
+                if (name != null && name.Length > 0)
                     arguments[nameof(name)] = name;
             });
         }

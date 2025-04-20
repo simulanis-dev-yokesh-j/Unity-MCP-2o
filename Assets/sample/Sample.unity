@@ -834,6 +834,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 451449926}
+  - component: {fileID: 451449927}
   m_Layer: 0
   m_Name: BananaCircle
   m_TagString: Untagged
@@ -864,6 +865,18 @@ Transform:
   - {fileID: 756241875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &451449927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451449925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cc347b0d3bdb2429ef21f6b0856a7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &614155847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1661,6 +1674,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 993401274}
+  - component: {fileID: 993401275}
   m_Layer: 0
   m_Name: AppleGrid3x3
   m_TagString: Untagged
@@ -1693,6 +1707,18 @@ Transform:
   - {fileID: 1849959859}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &993401275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993401273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cc347b0d3bdb2429ef21f6b0856a7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1011953764
 PrefabInstance:
   m_ObjectHideFlags: 0
