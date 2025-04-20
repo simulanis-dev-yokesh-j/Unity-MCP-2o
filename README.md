@@ -11,7 +11,11 @@
 | 2023.2.20f1   | ![2023.2.20f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2023.2.20f1_editmode.yml?label=2023.2.20f1-editmode) | ![2023.2.20f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2023.2.20f1_playmode.yml?label=2023.2.20f1-playmode) | ![2023.2.20f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2023.2.20f1_standalone.yml?label=2023.2.20f1-standalone) |
 | 6000.0.46f1   | ![6000.0.46f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/6000.0.46f1_editmode.yml?label=6000.0.46f1-editmode) | ![6000.0.46f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/6000.0.46f1_playmode.yml?label=6000.0.46f1-playmode) | ![6000.0.46f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/6000.0.46f1_standalone.yml?label=6000.0.46f1-standalone) |
 
-Unity-MCP acts as an AI-powered gateway between your Unity Editor and LLM, enabling seamless automation and intelligent control over your Unity projects. By integrating with the MCP server and client, it allows AI agents or external tools to interact with your Unity environment—creating, modifying, and managing GameObjects, Components, Assets, Scenes, and more.
+**[Unity-MCP](https://github.com/IvanMurzak/Unity-MCP)** is a bridge between LLM and Unity. It exposes and explains to LLM Unity's tools. LLM understand the interface and utilize the tools in the way a human asks.
+
+Connect **[Unity-MCP](https://github.com/IvanMurzak/Unity-MCP)** to LLM client such as [Claude](https://claude.ai/download) or [Cursor](https://www.cursor.com/) using integrated `AI Connector` window. Custom clients are supported as well.
+
+The project is designed to let developers to add custom tools soon. After that the next goal is to enable the same features in player's build. For not it works only in Unity Editor.
 
 The system is extensible: you can define custom `tool`s directly in your Unity project codebase, exposing new capabilities to the AI or automation clients. This makes Unity-MCP a flexible foundation for building advanced workflows, rapid prototyping, or integrating AI-driven features into your development process.
 
@@ -26,7 +30,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - ✅ Create
 - ✅ Destroy
 - ✅ Find
-- 🔲 Modify
+- 🔲 Modify (tag, layer, name, static)
 
 ##### GameObject.Components
 - ✅ Add Component
@@ -36,19 +40,26 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - - ✅ `Property` set value
 - - ✅ `Reference` link set
 
-### Component
-
-- ✅ Get All
-
-### Prefabs
-
-- ✅ Instantiate
-- 🔲 Create from scene
-
 ### Editor
 
+- 🔲 State (Playmode)
+  - 🔲 Get
+  - 🔲 Set
+- 🔲 Get Windows
+- 🔲 Selection
+  - 🔲 Get Selected
+  - 🔲 Copy
+  - 🔲 Paste
+- 🔲 Layer
+  - 🔲 Get All
+  - 🔲 Add
+  - 🔲 Remove
+- 🔲 Tag
+  - 🔲 Get All
+  - 🔲 Add
+  - 🔲 Remove
+- 🔲 Execute `MenuItem`
 - 🔲 Run Tests
-- 🔲 Start/stop Playmode in Editor
 
 </td>
 <td valign="top">
@@ -59,6 +70,9 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - ✅ Refresh
 - 🔲 Import
 - 🔲 Read
+- 🔲 Modify
+- 🔲 Rename
+- 🔲 Create folder
 
 ### Scene
 
@@ -75,7 +89,18 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Scripts
 
-- 🔲 Create
+- 🔲 Read
+- 🔲 Update or Create
+- 🔲 Delete
+
+### Component
+
+- ✅ Get All
+
+### Prefabs
+
+- ✅ Instantiate
+- 🔲 Create from scene
 
 </td>
 </tr>
