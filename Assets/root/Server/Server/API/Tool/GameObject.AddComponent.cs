@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Full name of the Component. It should include full namespace path and the class name.")]
             string componentName,
-            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,

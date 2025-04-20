@@ -33,7 +33,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (!ScriptUtils.IsValidCSharpSyntax(content, out var errors))
                 return $"[Error] Invalid C# syntax:\n{string.Join("\n", errors)}";
 
-            Directory.CreateDirectory(filePath);
+            var dirPath = Path.GetDirectoryName(filePath)!;
+            if (Directory.Exists(dirPath) == false)
+                Directory.CreateDirectory(dirPath);
+
             File.WriteAllText(filePath, content);
 
             return MainThread.Run(() =>

@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]
             int includeChildrenDepth = 0,
-            [Description("Find by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("Find by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("Find by 'path'. Priority: 2.")]
             string? path = null,

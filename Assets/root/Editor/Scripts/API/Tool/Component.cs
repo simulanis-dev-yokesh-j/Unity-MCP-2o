@@ -21,6 +21,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 => "[Error] Component type is empty. Available components:\n" + ComponentsPrinted;
             public static string NotFoundComponentType(string typeName)
                 => $"[Error] Component type '{typeName}' not found. Available components:\n" + ComponentsPrinted;
+
+            public static string TypeMustBeComponent(string typeName)
+                => $"[Error] Type '{typeName}' is not a component. Available components:\n" + ComponentsPrinted;
         }
     }
 }

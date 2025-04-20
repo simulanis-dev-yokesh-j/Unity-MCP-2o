@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
@@ -29,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (!clients.TryAdd(Context.ConnectionId, true))
                 _logger.LogWarning($"Client {Context.ConnectionId} is already connected to {GetType().Name}.");
 
-            _logger.LogInformation($"Client connected: {Context.ConnectionId}, Total connected clients for {GetType().Name}: {clients.Count}");
+            _logger.LogInformation($"Client connected: '{Context.ConnectionId}', Total connected clients for {GetType().Name}: {clients.Count}");
             return base.OnConnectedAsync();
         }
 
@@ -42,11 +43,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
             }
             if (clients.TryRemove(Context.ConnectionId, out _))
             {
-                _logger.LogInformation($"Client disconnected: {Context.ConnectionId}, Total connected clients for {GetType().Name}: {clients.Count}");
+                _logger.LogInformation($"Client disconnected: '{Context.ConnectionId}', Total connected clients for {GetType().Name}: {clients.Count}");
             }
             else
             {
-                _logger.LogWarning($"Client {Context.ConnectionId} was not found in connected clients for {GetType().Name}.");
+                _logger.LogWarning($"Client '{Context.ConnectionId}' was not found in connected clients for {GetType().Name}.");
             }
 
             return base.OnDisconnectedAsync(exception);
@@ -54,13 +55,23 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
         public void RemoveCurrentClient()
         {
-            if (ConnectedClients.TryGetValue(GetType(), out var clients) && clients.TryRemove(Context.ConnectionId, out _))
+            if (!ConnectedClients.TryGetValue(GetType(), out var clients) || clients.IsEmpty)
             {
-                _logger.LogInformation($"Client {Context.ConnectionId} removed from connected clients for {GetType().Name}.");
+                _logger.LogWarning($"No connected clients found for {GetType().Name}.");
+                return;
+            }
+
+            var connectionId = Context?.ConnectionId;
+            if (connectionId == null)
+                connectionId = clients.Last().Key;
+
+            if (clients.TryRemove(connectionId, out _))
+            {
+                _logger.LogInformation($"Client '{connectionId}' removed from connected clients for {GetType().Name}.");
             }
             else
             {
-                _logger.LogWarning($"Client {Context.ConnectionId} was not found in connected clients for {GetType().Name}.");
+                _logger.LogWarning($"Client '{connectionId}' was not found in connected clients for {GetType().Name}.");
             }
         }
 
@@ -72,7 +83,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 return null;
             }
 
-            var connectionId = clients.Keys.FirstOrDefault();
+            var connectionId = clients.Keys.LastOrDefault();
             if (connectionId == null)
                 return null;
 
