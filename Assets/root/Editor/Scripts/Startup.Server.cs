@@ -1,3 +1,4 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using com.IvanMurzak.Unity.MCP.Common;
 using System.Diagnostics;
 using System.IO;
@@ -18,8 +19,21 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         // Server source path
         public static string PackageCache => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache"));
-        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(PackageCache, PackageName));
-        public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
+        public static string? ServerSourcePath
+        {
+            get
+            {
+                var sourceDir = new DirectoryInfo(PackageCache)
+                    .GetDirectories()
+                    .FirstOrDefault(d => d.Name.ToLower().Contains(PackageName.ToLower()))
+                    ?.FullName;
+
+                if (string.IsNullOrEmpty(sourceDir))
+                    return Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
+
+                return Path.GetFullPath(Path.Combine(sourceDir, "Server"));
+            }
+        }
 
         // Server executable path
         public static string ServerExecutableRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
@@ -32,6 +46,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         // Verification
         public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
+        public static bool ServerVersionMatched =>
+            FileUtils.ReadFileContent(Path.GetFullPath(Path.Combine(ServerExecutableFolder, "version")))?.Trim() ==
+            FileUtils.ReadFileContent(Path.GetFullPath(Path.Combine(ServerExecutableFolder, "version")))?.Trim();
 
         // -------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -42,7 +59,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         public static Task BuildServerIfNeeded(bool force = true)
         {
-            if (IsServerCompiled)
+            if (IsServerCompiled && ServerVersionMatched)
                 return Task.CompletedTask;
             return BuildServer(force);
         }
@@ -117,35 +134,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             }
             catch (UnauthorizedAccessException) { /* ignore */ }
 
+            var sourceDir = ServerSourcePath;
+            Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{sourceDir}</color>");
             try
             {
-                var targetFolderName = PackageName.ToLower();
-                var directories = new DirectoryInfo(PackageCache).GetDirectories();
-                var sourceDir = directories.FirstOrDefault(d => d.Name.ToLower().Contains(targetFolderName));
-                if (sourceDir == null)
-                {
-                    Debug.LogError($"{Consts.Log.Tag} Server source directory '{targetFolderName}' not found. Please check the path: <color=#8CFFD1>{PackageCache}</color>\nAvailable folders:\n{string.Join("\n", directories.Select(d => d.Name))}");
-                    throw new DirectoryNotFoundException($"Server source directory not found. Please check the path: {PackageCache}");
-                }
-
-                var sourcePath = Path.GetFullPath(Path.Combine(sourceDir.FullName, "Server"));
-                Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{sourcePath}</color>");
-                DirectoryUtils.Copy(sourcePath, ServerExecutableRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
+                DirectoryUtils.Copy(sourceDir, ServerExecutableRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
             }
-            catch
+            catch (DirectoryNotFoundException ex)
             {
-                Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourceAlternativePath}</color>");
-                try
-                {
-                    DirectoryUtils.Copy(ServerSourceAlternativePath, ServerExecutableRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
-                }
-                catch (DirectoryNotFoundException ex)
-                {
-                    Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{PackageCache}</color> or <color=#8CFFD1>{ServerSourceAlternativePath}</color>");
-                    Debug.LogError($"{Consts.Log.Tag} It may happen if the package was added into a project using local path reference. Please consider to use a package from the registry instead. Follow official installation instructions at https://github.com/IvanMurzak/Unity-MCP");
-                    Debug.LogException(ex);
-                    return;
-                }
+                Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{PackageCache}</color>");
+                Debug.LogError($"{Consts.Log.Tag} It may happen if the package was added into a project using local path reference. Please consider to use a package from the registry instead. Follow official installation instructions at https://github.com/IvanMurzak/Unity-MCP");
+                Debug.LogException(ex);
+                return;
             }
         }
     }

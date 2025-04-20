@@ -13,5 +13,18 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             return Directory.GetFiles(directoryPath, $"{fileNameWithoutExtension}*").Any();
         }
+        public static string? ReadFileContent(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return null;
+            try
+            {
+                return File.ReadAllText(filePath);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
