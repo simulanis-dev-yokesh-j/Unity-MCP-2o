@@ -123,7 +123,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         });
                         Debug.Log($"{Consts.Log.Tag} Trying to rebuild server one more time");
                         await BuildServer(force: false);
-                        return;
+                    }
+                    else
+                    {
+                        await BuildServer(force: false);
                     }
                 }
             }
