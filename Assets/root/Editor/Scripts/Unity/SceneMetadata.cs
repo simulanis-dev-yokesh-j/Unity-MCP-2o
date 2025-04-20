@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using UnityEngine.SceneManagement;
 
@@ -15,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public bool isLoaded;
         public List<GameObjectMetadata> rootGameObjects = new();
 
-        public string Print()
+        public string Print(int limit = Consts.MCP.LinesLimit)
         {
             var sb = new StringBuilder();
 
@@ -32,7 +33,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
             // Add the current GameObject's metadata
             foreach (var rootGameObject in rootGameObjects)
-                GameObjectMetadata.AppendMetadata(sb, rootGameObject, 0);
+            {
+                if (limit <= 0)
+                {
+                    sb.AppendLine("... [Limit reached] ...");
+                    return sb.ToString();
+                }
+                limit--;
+                GameObjectMetadata.AppendMetadata(sb, rootGameObject, depth: 0, ref limit);
+            }
 
             return sb.ToString();
         }

@@ -37,17 +37,37 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     _logger.LogInformation(message);
                 }
 
-                var client = GetActiveClient();
-                if (client == null)
-                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
-                        .Log(_logger);
+                const int maxRetries = 5; // Maximum number of retries
+                var retryCount = 0;       // Retry counter
 
-                var result = await client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, data, cancellationToken);
-                if (result == null)
-                    return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
-                        .Log(_logger);
+                while (retryCount < maxRetries)
+                {
+                    var client = GetActiveClient();
+                    if (client == null)
+                        return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                            .Log(_logger);
 
-                return result;
+                    var invokeTask = client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, data, cancellationToken);
+                    var completedTask = await Task.WhenAny(invokeTask, Task.Delay(TimeSpan.FromSeconds(Consts.Hub.TimeoutSeconds), cancellationToken));
+                    if (completedTask == invokeTask)
+                    {
+                        var result = await invokeTask;
+                        if (result == null)
+                            return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
+                                .Log(_logger);
+
+                        return result;
+                    }
+                    else
+                    {
+                        // Timeout occurred
+                        _logger.LogWarning($"Timeout: Client {Context.ConnectionId} did not respond in {Consts.Hub.TimeoutSeconds} seconds. Removing from ConnectedClients.");
+                        RemoveCurrentClient();
+                        // Restart the loop to try again with a new client
+                    }
+                }
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}' after {maxRetries} retries.")
+                    .Log(_logger);
             }
             catch (Exception ex)
             {

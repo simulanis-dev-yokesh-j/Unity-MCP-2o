@@ -14,6 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             public const string DefaultEndpoint = "http://localhost:60606";
             public const string LocalServer = "/mcp/local-server";
             public const string RemoteApp = "/mcp/remote-app";
+            public const float TimeoutSeconds = 10f;
         }
         public static partial class RPC
         {

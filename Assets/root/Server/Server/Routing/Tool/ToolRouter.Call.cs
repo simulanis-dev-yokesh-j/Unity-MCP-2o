@@ -40,7 +40,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
 
             var requestData = new RequestCallTool(request.Params.Name, request.Params.Arguments);
             if (logger.IsTraceEnabled)
-                logger.Trace("Call tool:\n{0}", JsonUtils.Serialize(requestData));
+                logger.Trace("Call remote tool '{0}':\n{1}", request.Params.Name, JsonUtils.Serialize(requestData));
 
             var response = await toolRunner.RunCallTool(requestData, cancellationToken);
             if (response == null)

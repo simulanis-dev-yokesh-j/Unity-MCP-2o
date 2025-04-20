@@ -52,6 +52,18 @@ namespace com.IvanMurzak.Unity.MCP.Server
             return base.OnDisconnectedAsync(exception);
         }
 
+        public void RemoveCurrentClient()
+        {
+            if (ConnectedClients.TryGetValue(GetType(), out var clients) && clients.TryRemove(Context.ConnectionId, out _))
+            {
+                _logger.LogInformation($"Client {Context.ConnectionId} removed from connected clients for {GetType().Name}.");
+            }
+            else
+            {
+                _logger.LogWarning($"Client {Context.ConnectionId} was not found in connected clients for {GetType().Name}.");
+            }
+        }
+
         protected ISingleClientProxy? GetActiveClient()
         {
             if (!ConnectedClients.TryGetValue(GetType(), out var clients) || clients.IsEmpty)
