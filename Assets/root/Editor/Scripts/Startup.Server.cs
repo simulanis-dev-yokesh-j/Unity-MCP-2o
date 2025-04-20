@@ -15,14 +15,25 @@ namespace com.IvanMurzak.Unity.MCP.Editor
     {
         public const string PackageName = "com.IvanMurzak.Unity.MCP";
         public const string ServerProjectName = "com.IvanMurzak.Unity.MCP.Server";
+
+        // Server source path
         public static string PackageCache => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", "PackageCache"));
+        public static string ServerSourcePath => Path.GetFullPath(Path.Combine(PackageCache, PackageName));
         public static string ServerSourceAlternativePath => Path.GetFullPath(Path.Combine(Application.dataPath, "root", "Server"));
-        public static string ServerRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
-        public static string ServerExecutableFolder => Path.Combine(ServerRootPath, "bin~", "Release", "net9.0");
+
+        // Server executable path
+        public static string ServerExecutableRootPath => Path.GetFullPath(Path.Combine(Application.dataPath, "../Library", ServerProjectName.ToLower()));
+        public static string ServerExecutableFolder => Path.Combine(ServerExecutableRootPath, "bin~", "Release", "net9.0");
         public static string ServerExecutableFile => Path.Combine(ServerExecutableFolder, $"{ServerProjectName}");
+
+        // Log files
         public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log.txt");
         public static string ServerErrorLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log-error.txt");
+
+        // Verification
         public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
+
+        // -------------------------------------------------------------------------------------------------------------------------------------------------
 
         public static string RawJsonConfiguration(int port) => Consts.MCP_Client.ClaudeDesktop.Config(
             ServerExecutableFile.Replace('\\', '/'),
@@ -43,13 +54,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
             CopyServerSources();
 
-            Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerRootPath}</color>");
+            Debug.Log($"{Consts.Log.Tag} Building server at <color=#8CFFD1>{ServerExecutableRootPath}</color>");
 
             (string output, string error) = await ProcessUtils.Run(new ProcessStartInfo
             {
                 FileName = "dotnet",
                 Arguments = "build -c Release",
-                WorkingDirectory = ServerRootPath,
+                WorkingDirectory = ServerExecutableRootPath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -79,7 +90,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         {
                             FileName = "taskkill",
                             Arguments = $"/PID {processId} /F",
-                            WorkingDirectory = ServerRootPath,
+                            WorkingDirectory = ServerExecutableRootPath,
                             RedirectStandardOutput = true,
                             RedirectStandardError = true,
                             UseShellExecute = false,
@@ -99,15 +110,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
         public static void CopyServerSources()
         {
-            Debug.Log($"{Consts.Log.Tag} Delete sources at: <color=#8CFFD1>{ServerRootPath}</color>");
+            Debug.Log($"{Consts.Log.Tag} Delete sources at: <color=#8CFFD1>{ServerExecutableRootPath}</color>");
             try
             {
-                DirectoryUtils.Delete(ServerRootPath, recursive: true);
+                DirectoryUtils.Delete(ServerExecutableRootPath, recursive: true);
             }
-            catch (UnauthorizedAccessException)
-            {
-                // ignore
-            }
+            catch (UnauthorizedAccessException) { /* ignore */ }
 
             try
             {
@@ -122,14 +130,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
                 var sourcePath = Path.GetFullPath(Path.Combine(sourceDir.FullName, "Server"));
                 Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{sourcePath}</color>");
-                DirectoryUtils.Copy(sourcePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
+                DirectoryUtils.Copy(sourcePath, ServerExecutableRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
             }
             catch
             {
                 Debug.Log($"{Consts.Log.Tag} Copy sources from: <color=#8CFFD1>{ServerSourceAlternativePath}</color>");
                 try
                 {
-                    DirectoryUtils.Copy(ServerSourceAlternativePath, ServerRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
+                    DirectoryUtils.Copy(ServerSourceAlternativePath, ServerExecutableRootPath, "*/bin~", "*/obj~", "*\\bin~", "*\\obj~", "*.meta");
                 }
                 catch (DirectoryNotFoundException ex)
                 {
