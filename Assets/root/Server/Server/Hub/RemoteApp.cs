@@ -61,6 +61,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         // Timeout occurred
                         _logger.LogWarning($"Timeout: Client {Context.ConnectionId} did not respond in 10 seconds. Removing from ConnectedClients.");
                         RemoveCurrentClient();
+                        // Restart the loop to try again with a new client
                     }
                 }
             }
