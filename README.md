@@ -137,7 +137,7 @@ Explain my scene hierarchy
 # Add custom `tool`
 
 > ⚠️ Not yet supported. There is a blocker issue in `csharp-sdk` for MCP server. Waiting for solution.
-> Please vote up for [this issue](https://github.com/modelcontextprotocol/csharp-sdk/discussions/301) to bring more attention to it. The custom tool is dependent on it.
+> Please vote up for [this issue](https://github.com/modelcontextprotocol/csharp-sdk/discussions/301) and [this](https://github.com/modelcontextprotocol/csharp-sdk/issues/335) to bring more attention to it. The custom tool is dependent on it.
 
 Unity-MCP is designed to support custom `tool` development by project owner. MCP server takes data from Unity plugin and exposes it to a Client. So anyone in the MCP communication chain would receive the information about a new `tool`. Which LLM may decide to call at some point.
 
@@ -191,8 +191,7 @@ public class Tool_GameObject
 # Add custom in-game `tool`
 
 > ⚠️ Not yet supported. There is a blocker issue in `csharp-sdk` for MCP server. Waiting for solution.
-> Please vote up for [this issue](https://github.com/modelcontextprotocol/csharp-sdk/discussions/301) to bring more attention to it. The custom tool is dependent on it.
-
+> Please vote up for [this issue](https://github.com/modelcontextprotocol/csharp-sdk/discussions/301) and [this](https://github.com/modelcontextprotocol/csharp-sdk/issues/335) to bring more attention to it. The custom tool is dependent on it.
 
 
 # Contribution
