@@ -38,7 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 }
 
                 const int maxRetries = 5; // Maximum number of retries
-                int retryCount = 0;       // Retry counter
+                var retryCount = 0;       // Retry counter
 
                 while (retryCount < maxRetries)
                 {
@@ -66,6 +66,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         // Restart the loop to try again with a new client
                     }
                 }
+                return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}' after {maxRetries} retries.")
+                    .Log(_logger);
             }
             catch (Exception ex)
             {
