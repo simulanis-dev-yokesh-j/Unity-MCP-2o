@@ -91,9 +91,9 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Scripts
 
-- 🔲 Read
-- 🔲 Update or Create
-- 🔲 Delete
+- ✅ Read
+- ✅ Update or Create
+- ✅ Delete
 
 ### Component
 
