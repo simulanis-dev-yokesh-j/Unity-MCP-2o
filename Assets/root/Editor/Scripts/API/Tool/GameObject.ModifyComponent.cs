@@ -158,7 +158,7 @@ The target reference instance could be located in project assets, in the scene o
                     {
                         try
                         {
-                            var fieldValue = JsonUtility.FromJson(field.valueJsonElement.Value.GetRawText(), targetType);
+                            var fieldValue = JsonUtils.Deserialize(field.valueJsonElement.Value.GetRawText(), targetType);
                             fieldInfo.SetValue(component, fieldValue);
                             changedFieldResults[i] = $"[Success] Field '{field.name}' modified to '{fieldValue}'.";
                         }
@@ -262,7 +262,7 @@ The target reference instance could be located in project assets, in the scene o
                     {
                         try
                         {
-                            var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
+                            var propValue = JsonUtils.Deserialize(property.valueJsonElement.Value.GetRawText(), targetType);
                             propInfo.SetValue(component, propValue);
                             changedPropertyResults[i] = $"[Success] Property '{property.name}' modified to '{propValue}'.";
                         }
