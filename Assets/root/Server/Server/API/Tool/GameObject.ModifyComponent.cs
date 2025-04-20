@@ -24,7 +24,7 @@ It should respect the original structure of the component.
 Nested 'instanceId' fields and properties are references to UnityEngine.Object types.
 The target reference instance could be located in project assets, in the scene or in the prefabs.")]
             ComponentData data,
-            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
@@ -39,10 +39,10 @@ The target reference instance could be located in project assets, in the scene o
                 if (instanceId != null)
                     arguments[nameof(instanceId)] = instanceId;
 
-                if (path != null)
+                if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;
 
-                if (name != null)
+                if (name != null && name.Length > 0)
                     arguments[nameof(name)] = name;
             });
         }

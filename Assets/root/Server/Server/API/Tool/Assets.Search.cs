@@ -53,8 +53,11 @@ Searching is case insensitive.")]
         {
             return ToolRouter.Call("Assets_Search", arguments =>
             {
-                arguments[nameof(filter)] = filter ?? string.Empty;
-                arguments[nameof(searchInFolders)] = searchInFolders ?? new string[0];
+                if (filter != null && filter.Length > 0)
+                    arguments[nameof(filter)] = filter;
+
+                if (searchInFolders != null && searchInFolders.Length > 0)
+                    arguments[nameof(searchInFolders)] = searchInFolders;
             });
         }
     }

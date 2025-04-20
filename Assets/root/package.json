@@ -20,6 +20,7 @@
         "org.nuget.microsoft.bcl.memory": "9.0.4",
         "org.nuget.microsoft.aspnetcore.signalr.client": "9.0.4",
         "org.nuget.microsoft.aspnetcore.signalr.protocols.json": "9.0.4",
+        "org.nuget.microsoft.codeanalysis.csharp": "4.13.0",
         "org.nuget.microsoft.extensions.caching.abstractions": "9.0.4",
         "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "9.0.4",
         "org.nuget.microsoft.extensions.hosting": "9.0.4",

@@ -18,7 +18,7 @@ Use 'instanceId' whenever possible, because it finds the exact GameObject, when 
         )]
         public string Destroy
         (
-            [Description("Delete by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("Delete by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("Delete by 'path'. Priority: 2.")]
             string? path = null,

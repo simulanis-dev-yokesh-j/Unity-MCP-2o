@@ -28,7 +28,7 @@ It should respect the original structure of the component.
 Nested 'instanceId' fields and properties are references to UnityEngine.Object types.
 The target reference instance could be located in project assets, in the scene or in the prefabs.")]
             ComponentData data,
-            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
@@ -61,54 +61,70 @@ The target reference instance could be located in project assets, in the scene o
                 return Error.TypeMismatch(data.type, component.GetType().FullName);
 
             // Enable/Disable component if needed
-            if (castedComponent is UnityEngine.Behaviour bh)
+            if (castedComponent is UnityEngine.Behaviour behaviour)
             {
                 var setEnabled = data.isEnabled.ToBool();
-                if (bh.enabled != setEnabled)
-                    bh.enabled = setEnabled;
+                if (behaviour.enabled != setEnabled)
+                    behaviour.enabled = setEnabled;
+            }
+            if (castedComponent is UnityEngine.Renderer renderer)
+            {
+                var setEnabled = data.isEnabled.ToBool();
+                if (renderer.enabled != setEnabled)
+                    renderer.enabled = setEnabled;
             }
 
-            var changedFields = new List<string>(data.fields?.Count ?? 0);
-            var changedProperties = new List<string>(data.properties?.Count ?? 0);
+            var changedFieldResults = new string[data.fields?.Count ?? 0];
+            var changedPropertyResults = new string[data.properties?.Count ?? 0];
 
             if ((data.fields?.Count ?? 0) > 0)
             {
-                // Validate fields
-                foreach (var field in data.fields)
-                {
-                    if (string.IsNullOrEmpty(field.name))
-                        return Error.ComponentFieldNameIsEmpty();
-
-                    if (string.IsNullOrEmpty(field.type))
-                        return Error.ComponentFieldTypeIsEmpty();
-                }
-
                 // Modify fields
-                foreach (var field in data.fields)
+                for (var i = 0; i < data.fields.Count; i++)
                 {
+                    var field = data.fields[i];
+
+                    if (string.IsNullOrEmpty(field.name))
+                    {
+                        changedFieldResults[i] = Error.ComponentFieldNameIsEmpty();
+                        continue;
+                    }
+                    if (string.IsNullOrEmpty(field.type))
+                    {
+                        changedFieldResults[i] = Error.ComponentFieldTypeIsEmpty();
+                        continue;
+                    }
+
                     var targetType = TypeUtils.GetType(field.type);
                     if (targetType == null)
                     {
                         if (McpPluginUnity.IsLogActive(LogLevel.Error))
-                            Debug.LogError($"[Error] Type '{field.type}' not found. Can't modify field '{field.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                            Debug.LogError($"[Error] Type '{field.type}' not found. Can't modify field '{field.name}'.", go);
                     }
 
                     var fieldInfo = type.GetField(field.name);
                     if (fieldInfo == null)
                     {
+                        changedFieldResults[i] = $"[Error] Field '{field.name}' not found. Can't modify field '{field.name}'.";
                         if (McpPluginUnity.IsLogActive(LogLevel.Warning))
-                            Debug.LogWarning($"[Error] Field '{field.name}' not found. Can't modify field '{field.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                            Debug.LogWarning(changedFieldResults[i], go);
                         continue;
                     }
                     if (targetType == null)
-                        return Error.InvalidComponentFieldType(field, fieldInfo);
+                    {
+                        changedFieldResults[i] = Error.InvalidComponentFieldType(field, fieldInfo);
+                        continue;
+                    }
 
                     // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
                     if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
                     {
                         var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(field.valueJsonElement.Value).instanceId;
                         if (referenceInstanceId == 0)
-                            return Error.InvalidInstanceId(targetType, field.name);
+                        {
+                            changedFieldResults[i] = Error.InvalidInstanceId(targetType, field.name);
+                            continue;
+                        }
 
                         // Find the object by instanceId
                         var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
@@ -122,70 +138,97 @@ The target reference instance could be located in project assets, in the scene o
                                 .FirstOrDefault();
                             referenceObject = sprite;
                             fieldInfo.SetValue(component, referenceObject);
+                            changedFieldResults[i] = $"[Success] Field '{field.name}' modified to '{referenceObject}'.";
                         }
                         else
                         {
                             // Cast the object to the target type
                             var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
                             if (error != null)
-                                return error;
+                            {
+                                changedFieldResults[i] = error;
+                                continue;
+                            }
 
                             fieldInfo.SetValue(component, castedObject);
+                            changedFieldResults[i] = $"[Success] Field '{field.name}' modified to '{castedObject}'.";
                         }
                     }
                     else
                     {
-                        var fieldValue = JsonUtility.FromJson(field.valueJsonElement.Value.GetRawText(), targetType);
-                        fieldInfo.SetValue(component, fieldValue);
+                        try
+                        {
+                            var fieldValue = JsonUtils.Deserialize(field.valueJsonElement.Value.GetRawText(), targetType);
+                            fieldInfo.SetValue(component, fieldValue);
+                            changedFieldResults[i] = $"[Success] Field '{field.name}' modified to '{fieldValue}'.";
+                        }
+                        catch (System.Exception ex)
+                        {
+                            changedFieldResults[i] = $"[Error] Field '{field.name}' modification failed: {ex.Message}";
+                            if (McpPluginUnity.IsLogActive(LogLevel.Error))
+                                Debug.LogError(changedFieldResults[i], go);
+                            continue;
+                        }
                     }
-                    changedFields.Add(field.name);
                 }
             }
 
             if ((data.properties?.Count ?? 0) > 0)
             {
-                // Validate properties
-                foreach (var property in data.properties)
-                {
-                    if (string.IsNullOrEmpty(property.name))
-                        return Error.ComponentPropertyNameIsEmpty();
-
-                    if (string.IsNullOrEmpty(property.type))
-                        return Error.ComponentPropertyTypeIsEmpty();
-                }
                 // Modify properties
-                foreach (var property in data.properties)
+                for (var i = 0; i < data.properties.Count; i++)
                 {
+                    var property = data.properties[i];
+
+                    if (string.IsNullOrEmpty(property.name))
+                    {
+                        changedPropertyResults[i] = Error.ComponentPropertyNameIsEmpty();
+                        continue;
+                    }
+                    if (string.IsNullOrEmpty(property.type))
+                    {
+                        changedPropertyResults[i] = Error.ComponentPropertyTypeIsEmpty();
+                        continue;
+                    }
+
                     var targetType = TypeUtils.GetType(property.type);
                     if (targetType == null)
                     {
                         if (McpPluginUnity.IsLogActive(LogLevel.Warning))
-                            Debug.LogWarning($"[Error] Type '{property.type}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                            Debug.LogWarning($"[Error] Type '{property.type}' not found. Can't modify property '{property.name}'.", go);
                     }
 
                     var propInfo = type.GetProperty(property.name);
                     if (propInfo == null)
                     {
+                        changedPropertyResults[i] = $"[Error] Property '{property.name}' not found. Can't modify property '{property.name}'.";
                         if (McpPluginUnity.IsLogActive(LogLevel.Warning))
-                            Debug.LogWarning($"[Error] Property '{property.name}' not found. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                            Debug.LogWarning(changedPropertyResults[i], go);
                         continue;
                     }
                     if (!propInfo.CanWrite)
                     {
+                        changedPropertyResults[i] = $"[Error] Property '{property.name}' is not writable. Can't modify property '{property.name}'.";
                         if (McpPluginUnity.IsLogActive(LogLevel.Warning))
-                            Debug.LogWarning($"[Warning] Property '{property.name}' is not writable. Can't modify property '{property.name}' in component '{data.instanceId}' at GameObject with 'instanceId'={go.GetInstanceID()}.", go);
+                            Debug.LogWarning(changedPropertyResults[i], go);
                         continue;
                     }
 
                     if (targetType == null)
-                        return Error.InvalidComponentPropertyType(property, propInfo);
+                    {
+                        changedPropertyResults[i] = Error.InvalidComponentPropertyType(property, propInfo);
+                        continue;
+                    }
 
                     // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
                     if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
                     {
                         var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(property.valueJsonElement.Value).instanceId;
                         if (referenceInstanceId == 0)
-                            return Error.InvalidInstanceId(targetType, property.name);
+                        {
+                            changedPropertyResults[i] = Error.InvalidInstanceId(targetType, property.name);
+                            continue;
+                        }
 
                         // Find the object by instanceId
                         var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
@@ -199,39 +242,54 @@ The target reference instance could be located in project assets, in the scene o
                                 .FirstOrDefault();
                             referenceObject = sprite;
                             propInfo.SetValue(component, referenceObject);
+                            changedPropertyResults[i] = $"[Success] Property '{property.name}' modified to '{referenceObject}'.";
                         }
                         else
                         {
                             // Cast the object to the target type
                             var castedObject = TypeUtils.CastTo(referenceObject, targetType, out error);
                             if (error != null)
-                                return error;
+                            {
+                                changedPropertyResults[i] = error;
+                                continue;
+                            }
 
                             propInfo.SetValue(component, castedObject);
+                            changedPropertyResults[i] = $"[Success] Property '{property.name}' modified to '{castedObject}'.";
                         }
                     }
                     else
                     {
-                        var propValue = JsonUtility.FromJson(property.valueJsonElement.Value.GetRawText(), targetType);
-                        propInfo.SetValue(component, propValue);
-
+                        try
+                        {
+                            var propValue = JsonUtils.Deserialize(property.valueJsonElement.Value.GetRawText(), targetType);
+                            propInfo.SetValue(component, propValue);
+                            changedPropertyResults[i] = $"[Success] Property '{property.name}' modified to '{propValue}'.";
+                        }
+                        catch (System.Exception ex)
+                        {
+                            changedPropertyResults[i] = $"[Error] Property '{property.name}' modification failed: {ex.Message}";
+                            if (McpPluginUnity.IsLogActive(LogLevel.Error))
+                                Debug.LogError(changedPropertyResults[i], go);
+                            continue;
+                        }
                     }
-                    changedProperties.Add(property.name);
                 }
             }
 
-            var changedFieldsString = string.Join(", ", changedFields);
-            var changedPropertiesString = string.Join(", ", changedProperties);
+            return @$"Component modification result in component '{data.instanceId}':
 
-            return @$"[Success] Modify fields:{changedFields.Count}, properties:{changedProperties.Count} at component '{data.instanceId}' with:
-Modified fields:
-[{changedFieldsString}]
+Field modification results:
+{string.Join("\n", changedFieldResults)}
 ----------------------------
-Modified Properties:
-[{changedPropertiesString}]
+
+Property modification results:
+{string.Join("\n", changedPropertyResults)}
 ----------------------------
+
 at GameObject.
 {go.Print()}";
+
         });
     }
 }

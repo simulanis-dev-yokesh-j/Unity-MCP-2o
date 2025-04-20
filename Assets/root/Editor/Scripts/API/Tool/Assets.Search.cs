@@ -59,20 +59,22 @@ Searching is case insensitive.")]
                 ? AssetDatabase.FindAssets(filter ?? string.Empty)
                 : AssetDatabase.FindAssets(filter ?? string.Empty, searchInFolders);
 
-            var assetPaths = assetGuids
-                    .Select(AssetDatabase.GUIDToAssetPath)
-                    .ToList();
-
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("instanceId | assetGuid                            | assetPath");
             stringBuilder.AppendLine("-----------+--------------------------------------+---------------------------------");
             //                       " -12345    | 8e09c738-7b14-4d83-9740-2b396bd4cfc9 | Assets/Editor/Image.png");
 
-            for (var i = 0; i < assetPaths.Count; i++)
+            for (var i = 0; i < assetGuids.Length; i++)
             {
-                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPaths[i]);
-                var instanceId = asset.GetInstanceID();
-                stringBuilder.AppendLine($"{instanceId,-10} | {assetGuids[i],-36} | {assetPaths[i]}");
+                if (i >= Consts.MCP.LinesLimit)
+                {
+                    stringBuilder.AppendLine($"... and {assetGuids.Length - i} more assets. Use {nameof(searchInFolders)} parameter to specify request.");
+                    break;
+                }
+                var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[i]);
+                var assetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                var instanceId = assetObject.GetInstanceID();
+                stringBuilder.AppendLine($"{instanceId,-10} | {assetGuids[i],-36} | {assetPath}");
             }
 
             return $"[Success] Assets found: {assetGuids.Length}.\n{stringBuilder.ToString()}";

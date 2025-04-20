@@ -18,7 +18,7 @@ Returns list of all available components preview if no requested components foun
         (
             [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
             int[] componentInstanceIds,
-            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
@@ -33,10 +33,10 @@ Returns list of all available components preview if no requested components foun
                 if (instanceId != null)
                     arguments[nameof(instanceId)] = instanceId;
 
-                if (path != null)
+                if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;
 
-                if (name != null)
+                if (name != null && name.Length > 0)
                     arguments[nameof(name)] = name;
             });
         }

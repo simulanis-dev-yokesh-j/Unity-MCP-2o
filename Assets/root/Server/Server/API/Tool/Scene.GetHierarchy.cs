@@ -25,7 +25,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             {
                 arguments[nameof(includeChildrenDepth)] = includeChildrenDepth;
 
-                if (loadedSceneName != null)
+                if (loadedSceneName != null && loadedSceneName.Length > 0)
                     arguments[nameof(loadedSceneName)] = loadedSceneName;
             });
         }

@@ -31,7 +31,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             path = StringUtils.TrimPath(path);
             var go = default(GameObject);
 
-            // Find by 'instanceId'. Priority: 1. (Recommended)
+            // Find by 'instanceId' (int). Priority: 1. (Recommended)
             if (instanceId.HasValue && instanceId.Value != 0)
             {
                 go = FindByInstanceId(instanceId.Value);

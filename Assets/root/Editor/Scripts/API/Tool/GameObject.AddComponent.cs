@@ -1,7 +1,5 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-using System;
 using System.ComponentModel;
-using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using com.IvanMurzak.Unity.MCP.Editor.Utils;
@@ -21,7 +19,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Full name of the Component. It should include full namespace path and the class name.")]
             string componentName,
-            [Description("GameObject by 'instanceId'. Priority: 1. (Recommended)")]
+            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
             int? instanceId = null,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
@@ -37,6 +35,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             var type = TypeUtils.GetType(componentName);
             if (type == null)
                 return Tool_Component.Error.NotFoundComponentType(componentName);
+
+            // Check if type is a subclass of UnityEngine.Component
+            if (!typeof(UnityEngine.Component).IsAssignableFrom(type))
+                return Tool_Component.Error.TypeMustBeComponent(componentName);
 
             go.AddComponent(type);
 
