@@ -42,9 +42,9 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Editor
 
-- 🔲 State (Playmode)
-  - 🔲 Get
-  - 🔲 Set
+- ✅ State (Playmode)
+  - ✅ Get
+  - ✅ Set
 - 🔲 Get Windows
 - 🔲 Selection
   - 🔲 Get Selected
@@ -60,6 +60,13 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
   - 🔲 Remove
 - 🔲 Execute `MenuItem`
 - 🔲 Run Tests
+
+### Scriptable Object
+
+- 🔲 Create
+- 🔲 Read
+- 🔲 Modify
+- 🔲 Remove
 
 </td>
 <td valign="top">
@@ -130,7 +137,7 @@ openupm add com.ivanmurzak.unity.mcp
 2. Click configure on your MCP client.
 3. Restart your MCP client.
 4. Make sure `AI Connector` is "Connected" after restart.
-5. Test AI connection in your Client (Cursor, Claude Desktop). Type any question or task into the chat. Somethign like:
+5. Test AI connection in your Client (Cursor, Claude Desktop). Type any question or task into the chat. Something like:
 ```
 Explain my scene hierarchy
 ```
