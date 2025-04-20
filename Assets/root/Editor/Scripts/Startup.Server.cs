@@ -44,11 +44,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         public static string ServerLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log.txt");
         public static string ServerErrorLogsPath => Path.Combine(ServerExecutableFolder, "logs", "server-log-error.txt");
 
+        // Version files
+        public static string ServerSourceVersionPath => Path.GetFullPath(Path.Combine(ServerSourcePath, "version"));
+        public static string ServerExecutableVersionPath => Path.GetFullPath(Path.Combine(ServerExecutableFolder, "version"));
+
+        // Versions
+        public static string ServerSourceVersion => FileUtils.ReadFileContent(ServerSourceVersionPath)?.Trim() ?? "unknown";
+        public static string ServerExecutableVersion => FileUtils.ReadFileContent(ServerExecutableVersionPath)?.Trim() ?? "unknown";
+
         // Verification
         public static bool IsServerCompiled => FileUtils.FileExistsWithoutExtension(ServerExecutableFolder, ServerProjectName);
-        public static bool ServerVersionMatched =>
-            FileUtils.ReadFileContent(Path.GetFullPath(Path.Combine(ServerExecutableFolder, "version")))?.Trim() ==
-            FileUtils.ReadFileContent(Path.GetFullPath(Path.Combine(ServerExecutableFolder, "version")))?.Trim();
+        public static bool ServerVersionMatched => ServerSourceVersion == ServerExecutableVersion;
 
         // -------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -61,6 +67,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         {
             if (IsServerCompiled && ServerVersionMatched)
                 return Task.CompletedTask;
+
             return BuildServer(force);
         }
 
@@ -68,6 +75,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         {
             var message = "<b><color=yellow>Server Build</color></b>";
             Debug.Log($"{Consts.Log.Tag} {message} <color=orange>⊂(◉‿◉)つ</color>");
+            Debug.Log($"{Consts.Log.Tag} Current Server version: <color=#8CFFD1>{ServerExecutableVersion}</color>. New Server version: <color=#8CFFD1>{ServerSourceVersion}</color>");
 
             CopyServerSources();
 
