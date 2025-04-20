@@ -37,9 +37,11 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     _logger.LogInformation(message);
                 }
 
-                while (true)
-                {
+                const int maxRetries = 5; // Maximum number of retries
+                int retryCount = 0;       // Retry counter
 
+                while (retryCount < maxRetries)
+                {
                     var client = GetActiveClient();
                     if (client == null)
                         return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
