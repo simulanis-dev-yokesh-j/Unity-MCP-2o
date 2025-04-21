@@ -31,6 +31,8 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - ✅ Destroy
 - ✅ Find
 - 🔲 Modify (tag, layer, name, static)
+- 🔲 Set parent
+- 🔲 Duplicate
 
 ##### GameObject.Components
 - ✅ Add Component
