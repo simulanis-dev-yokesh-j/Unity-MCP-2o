@@ -112,6 +112,9 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Instantiate
 - 🔲 Create from scene
+- 🔲 Open
+- 🔲 Save
+- 🔲 Close
 
 </td>
 </tr>
