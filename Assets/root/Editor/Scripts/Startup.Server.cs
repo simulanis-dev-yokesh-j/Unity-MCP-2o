@@ -156,7 +156,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 Debug.LogError($"{Consts.Log.Tag} Server source directory not found. Please check the path: <color=#8CFFD1>{PackageCache}</color>");
                 Debug.LogError($"{Consts.Log.Tag} It may happen if the package was added into a project using local path reference. Please consider to use a package from the registry instead. Follow official installation instructions at https://github.com/IvanMurzak/Unity-MCP");
                 Debug.LogException(ex);
-                return;
             }
         }
     }
