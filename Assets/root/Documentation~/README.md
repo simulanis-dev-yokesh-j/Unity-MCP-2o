@@ -4,7 +4,6 @@
 
 ![image](https://github.com/user-attachments/assets/8f595879-a578-421a-a06d-8c194af874f7)
 
-
 | Unity Version | Editmode | Playmode | Standalone |
 |---------------|----------|----------|------------|
 | 2022.3.61f1   | ![2022.3.61f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2022.3.61f1_editmode.yml?label=2022.3.61f1-editmode) | ![2022.3.61f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2022.3.61f1_playmode.yml?label=2022.3.61f1-playmode) | ![2022.3.61f1](https://img.shields.io/github/actions/workflow/status/IvanMurzak/Unity-MCP/2022.3.61f1_standalone.yml?label=2022.3.61f1-standalone) |
@@ -31,14 +30,19 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - ✅ Destroy
 - ✅ Find
 - 🔲 Modify (tag, layer, name, static)
+- ✅ Set parent
+- ✅ Duplicate
 
 ##### GameObject.Components
+
 - ✅ Add Component
-- ✅ Destroy Component
+- ✅ Get Components
 - ✅ Modify Component
 - - ✅ `Field` set value
 - - ✅ `Property` set value
 - - ✅ `Reference` link set
+- ✅ Destroy Component
+- 🔲 Remove missing components
 
 ### Editor
 
@@ -46,10 +50,6 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
   - ✅ Get
   - ✅ Set
 - 🔲 Get Windows
-- 🔲 Selection
-  - 🔲 Get Selected
-  - 🔲 Copy
-  - 🔲 Paste
 - 🔲 Layer
   - 🔲 Get All
   - 🔲 Add
@@ -61,12 +61,10 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - 🔲 Execute `MenuItem`
 - 🔲 Run Tests
 
-### Scriptable Object
+#### Editor.Selection
 
-- 🔲 Create
-- 🔲 Read
-- 🔲 Modify
-- 🔲 Remove
+- ✅ Get selection
+- ✅ Set selection
 
 </td>
 <td valign="top">
@@ -75,11 +73,13 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Search
 - ✅ Refresh
-- 🔲 Import
+- 🔲 Import (is it needed?)
 - 🔲 Read
 - 🔲 Modify
-- 🔲 Rename
-- 🔲 Create folder
+- ✅ Rename
+- ✅ Delete
+- ✅ Move
+- ✅ Create folder
 
 ### Scene
 
@@ -87,7 +87,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - 🔲 Create scene
 - 🔲 Save scene
 - 🔲 Open scene
-- 🔲 Search (Editor)
+- 🔲 Search (editor)
 - 🔲 Raycast (understand volume)
 
 ### Materials
@@ -102,6 +102,17 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - ✅ Update or Create
 - ✅ Delete
 
+### Scriptable Object
+
+- 🔲 Create
+- 🔲 Read
+- 🔲 Modify
+- 🔲 Remove
+
+### Debug
+
+- 🔲 Read logs (console)
+
 ### Component
 
 - ✅ Get All
@@ -110,14 +121,16 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Instantiate
 - 🔲 Create from scene
+- 🔲 Open
+- 🔲 Save
+- 🔲 Close
 
 </td>
 </tr>
 </table>
 
 > **Legend:**
-> ✅ = Implemented & available
-> 🔲 = Planned / Not yet implemented
+> ✅ = Implemented & available, 🔲 = Planned / Not yet implemented
 
 # Installation
 
