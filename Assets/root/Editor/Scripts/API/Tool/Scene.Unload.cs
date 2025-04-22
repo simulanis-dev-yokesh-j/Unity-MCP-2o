@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "Scene_Unload",
             Title = "Unload scene",
-            Description = "Unload loaded scene."
+            Description = "Destroys all GameObjects associated with the given Scene and removes the Scene from the SceneManager."
         )]
         public Task<string> Unload
         (
@@ -36,9 +36,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             while (!asyncOperation.isDone)
                 await Task.Yield();
-
-            if (asyncOperation.isDone == false)
-                return $"[Error] Failed to unload scene '{name}'.\n{LoadedScenes}";
 
             return $"[Success] Scene '{name}' unloaded.\n{LoadedScenes}";
         });
