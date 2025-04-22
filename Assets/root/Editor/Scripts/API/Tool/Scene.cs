@@ -8,14 +8,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     [McpPluginToolType]
     public partial class Tool_Scene
     {
+        public static string LoadedScenes
+            => $"Loaded Scenes:\n{string.Join("\n", SceneUtils.GetAllLoadedScenes().Select(scene => scene.name))}";
+
         public static class Error
         {
             static string ScenesPrinted => string.Join("\n", SceneUtils.GetAllLoadedScenes().Select(scene => scene.name));
 
             public static string SceneNameIsEmpty()
                 => $"[Error] Scene name is empty. Available scenes:\n{ScenesPrinted}";
-            public static string NotFoundSceneWithName(string path)
-                => $"[Error] Scene '{path}' not found. Available scenes:\n{ScenesPrinted}";
+            public static string NotFoundSceneWithName(string name)
+                => $"[Error] Scene '{name}' not found. Available scenes:\n{ScenesPrinted}";
             public static string ScenePathIsEmpty()
                 => "[Error] Scene path is empty. Please provide a valid path. Sample: \"Assets/Scenes/MyScene.unity\".";
             public static string FilePathMustEndsWithUnity()

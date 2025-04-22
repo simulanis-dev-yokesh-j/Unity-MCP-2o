@@ -6,6 +6,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
 {
     public static partial class SceneUtils
     {
+        public static Scene GetActiveScene()
+            => SceneManager.GetActiveScene();
         public static IEnumerable<Scene> GetAllLoadedScenes()
         {
             var sceneCount = SceneManager.sceneCount;
