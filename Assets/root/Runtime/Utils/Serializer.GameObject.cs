@@ -43,15 +43,25 @@ namespace com.IvanMurzak.Unity.MCP.Utils
             }
             public static string Serialize(UnityEngine.GameObject go)
             {
-                var jsonResult = JsonUtils.JsonSerialize(BuildData(go));
-                // Debug.Log($"{go.name}.{go.GetType().Name} : {jsonResult}");
-                return jsonResult;
+                if (go == null)
+                    return null;
+
+                var data = BuildData(go);
+                if (data == null)
+                    return null;
+
+                return JsonUtils.JsonSerialize(data);
             }
             public static string SerializeLight(UnityEngine.GameObject go)
             {
-                var jsonResult = JsonUtils.JsonSerialize(BuildDataLight(go));
-                // Debug.Log($"{go.name}.{go.GetType().Name} : {jsonResult}");
-                return jsonResult;
+                if (go == null)
+                    return null;
+
+                var data = BuildDataLight(go);
+                if (data == null)
+                    return null;
+
+                return JsonUtils.JsonSerialize(data);
             }
         }
     }
