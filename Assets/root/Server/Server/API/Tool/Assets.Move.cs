@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("The paths of the assets to move.")]
             string[] sourcePaths,
-            [Description("The paths of moved assetes.")]
+            [Description("The paths of moved assets.")]
             string[] destinationPaths
         )
         {

@@ -22,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             int[] targetInstanceIds,
             [Description("The 'instanceId' of the parent GameObject.")]
             int parentInstanceId,
-            [Description("The 'instanceId' of the parent GameObject.")]
+            [Description("A boolean flag indicating whether the GameObject's world position should remain unchanged when setting its parent.")]
             bool worldPositionStays = true
         )
         {
