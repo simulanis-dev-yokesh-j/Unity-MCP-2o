@@ -69,7 +69,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 ### Prefabs
 
 - ✅ Instantiate
-- 🔲 Create from scene
+- ✅ Create
 - 🔲 Open
 - 🔲 Save
 - 🔲 Close
