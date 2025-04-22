@@ -91,10 +91,12 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Scene
 
+- ✅ Create
+- ✅ Save
+- ✅ Load
+- ✅ Unload
+- ✅ Get Loaded
 - ✅ Get hierarchy
-- 🔲 Create scene
-- 🔲 Save scene
-- 🔲 Open scene
 - 🔲 Search (editor)
 - 🔲 Raycast (understand volume)
 
