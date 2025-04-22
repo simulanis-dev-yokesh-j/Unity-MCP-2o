@@ -11,9 +11,9 @@
         "MCP",
         "Unity MCP"
     ],
-    "version": "0.3.0",
+    "version": "0.4.0",
     "unity": "2022.3",
-    "description": "Unity MCP (Model Context Protocol) package. It includes server for seamless workflow with LLM",
+    "description": "Bridge between LLM and Unity. It expose Unity API to LLM and allows LLM to control Unity. It is based on Model Context Protocol (MCP) and uses SignalR for communication.",
     "dependencies": {
         "com.unity.test-framework": "1.1.33",
         "com.unity.modules.uielements": "1.0.0",

@@ -28,11 +28,40 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                         .ToList()
                 };
             }
+            public static GameObjectDataLight BuildDataLight(UnityEngine.GameObject go)
+            {
+                if (go == null)
+                    return null;
+
+                return new GameObjectDataLight()
+                {
+                    name = go.name,
+                    tag = go.tag,
+                    layer = go.layer,
+                    instanceId = go.GetInstanceID()
+                };
+            }
             public static string Serialize(UnityEngine.GameObject go)
             {
-                var jsonResult = JsonUtils.JsonSerialize(BuildData(go));
-                // Debug.Log($"{go.name}.{go.GetType().Name} : {jsonResult}");
-                return jsonResult;
+                if (go == null)
+                    return null;
+
+                var data = BuildData(go);
+                if (data == null)
+                    return null;
+
+                return JsonUtils.JsonSerialize(data);
+            }
+            public static string SerializeLight(UnityEngine.GameObject go)
+            {
+                if (go == null)
+                    return null;
+
+                var data = BuildDataLight(go);
+                if (data == null)
+                    return null;
+
+                return JsonUtils.JsonSerialize(data);
             }
         }
     }

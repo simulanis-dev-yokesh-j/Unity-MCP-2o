@@ -69,7 +69,7 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 ### Prefabs
 
 - ✅ Instantiate
-- 🔲 Create from scene
+- ✅ Create
 - 🔲 Open
 - 🔲 Save
 - 🔲 Close
@@ -153,9 +153,10 @@ openupm add com.ivanmurzak.unity.mcp
 3. Restart your MCP client.
 4. Make sure `AI Connector` is "Connected" after restart.
 5. Test AI connection in your Client (Cursor, Claude Desktop). Type any question or task into the chat. Something like:
-```
-Explain my scene hierarchy
-```
+
+  ```text
+  Explain my scene hierarchy
+  ```
 
 # Add custom `tool`
 
