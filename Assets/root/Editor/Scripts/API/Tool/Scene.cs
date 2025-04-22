@@ -16,6 +16,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 => $"[Error] Scene name is empty. Available scenes:\n{ScenesPrinted}";
             public static string NotFoundSceneWithName(string path)
                 => $"[Error] Scene '{path}' not found. Available scenes:\n{ScenesPrinted}";
+            public static string ScenePathIsEmpty()
+                => "[Error] Scene path is empty. Please provide a valid path. Sample: \"Assets/Scenes/MyScene.unity\".";
+            public static string FilePathMustEndsWithUnity()
+                => "[Error] File path must end with '.unity'. Please provide a valid path. Sample: \"Assets/Scenes/MyScene.unity\".";
         }
     }
 }
