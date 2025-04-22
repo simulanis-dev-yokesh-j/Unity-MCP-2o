@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "Script_CreateOrUpdate",
             Title = "Create or Update Script",
-            Description = "Creates or updates a script file with the provided content."
+            Description = "Creates or updates a script file with the provided content. Does AssetDatabase.Refresh() at the end."
         )]
         public string UpdateOrCreate
         (

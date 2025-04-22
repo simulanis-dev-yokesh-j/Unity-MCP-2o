@@ -11,9 +11,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "Assets_Load",
-            Title = "Assets Load"
+            Title = "Assets Load",
+            Description = @"Load specific asset to get the 'instanceId' which could be used later for linking asset."
         )]
-        [Description(@"Load specific asset to get the 'instanceId' which could be used later for linking asset.")]
         public string Load
         (
             [Description("Path to the asset. See 'Assets_Search' for more details. Starts with 'Assets/' or 'Packages/'. Priority: 1. (Recommended)")]
