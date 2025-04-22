@@ -9,22 +9,22 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "Scene_Open",
-            Title = "Open scene"
+            Name = "Scene_Load",
+            Title = "Load scene"
         )]
-        [Description("Open scene from the project assets.")]
-        public Task<CallToolResponse> Open
+        [Description("Load scene from the project assets.")]
+        public Task<CallToolResponse> Load
         (
             [Description("Path to the scene file.")]
             string path,
-            [Description("Open scene mode. 0 - Single, 1 - Additive.")]
-            int openSceneMode = 0
+            [Description("Load scene mode. 0 - Single, 1 - Additive.")]
+            int loadSceneMode = 0
         )
         {
-            return ToolRouter.Call("Scene_Open", arguments =>
+            return ToolRouter.Call("Scene_Load", arguments =>
             {
                 arguments[nameof(path)] = path;
-                arguments[nameof(openSceneMode)] = openSceneMode;
+                arguments[nameof(loadSceneMode)] = loadSceneMode;
             });
         }
     }

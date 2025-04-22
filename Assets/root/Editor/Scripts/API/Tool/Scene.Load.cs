@@ -9,16 +9,16 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Scene_Open",
-            Title = "Open scene",
-            Description = "Open scene from the project assets."
+            "Scene_Load",
+            Title = "Load scene",
+            Description = "Load scene from the project assets."
         )]
-        public string Open
+        public string Load
         (
             [Description("Path to the scene file.")]
             string path,
-            [Description("Open scene mode. 0 - Single, 1 - Additive.")]
-            int openSceneMode = 0
+            [Description("Load scene mode. 0 - Single, 1 - Additive.")]
+            int loadSceneMode = 0
         )
         => MainThread.Run(() =>
         {
@@ -30,11 +30,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(
                 path,
-                openSceneMode switch
+                loadSceneMode switch
                 {
                     0 => UnityEditor.SceneManagement.OpenSceneMode.Single,
                     1 => UnityEditor.SceneManagement.OpenSceneMode.Additive,
-                    _ => throw new System.ArgumentOutOfRangeException(nameof(openSceneMode), "Invalid open scene mode.")
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(loadSceneMode), "Invalid open scene mode.")
                 });
 
             if (!scene.IsValid())
