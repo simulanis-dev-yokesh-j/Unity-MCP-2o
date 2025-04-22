@@ -14,6 +14,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             public static string NotFoundAsset(string assetPath, string assetGuid)
                 => $"[Error] Asset not found. Path: '{assetPath}'. GUID: '{assetGuid}'.\n" +
                    $"Please check if the asset is in the project and the path is correct.";
+
+            public static string SourceOrDestinationPathIsEmpty()
+                => "[Error] Source or destination path is empty. Please provide a valid path. Sample: \"Assets/Scripts/MyScript.cs\".";
+
+            public static string SourcePathsArrayIsEmpty()
+                => "[Error] Source paths array is empty. Please provide a valid path. Sample: \"Assets/Scripts/MyScript.cs\".";
+
+            public static string SourcePathIsEmpty()
+                => "[Error] Source path is empty. Please provide a valid path. Sample: \"Assets/Scripts/MyScript.cs\".";
+
+            public static string SourceAndDestinationPathsArrayMustBeOfTheSameLength()
+                => "[Error] Source and destination paths arrays must be of the same length.";
         }
     }
 }

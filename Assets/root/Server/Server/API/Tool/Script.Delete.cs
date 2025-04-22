@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "Script_Delete",
             Title = "Delete Script content"
         )]
-        [Description("Delete the script file.")]
+        [Description("Delete the script file. Does AssetDatabase.Refresh() at the end.")]
         public Task<CallToolResponse> Delete
         (
             [Description("The path to the file. Sample: \"Assets/Scripts/MyScript.cs\".")]

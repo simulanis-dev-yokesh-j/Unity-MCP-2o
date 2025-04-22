@@ -13,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "Script_Delete",
             Title = "Delete Script content",
-            Description = "Delete the script file."
+            Description = "Delete the script file. Does AssetDatabase.Refresh() at the end."
         )]
         public string Delete
         (
