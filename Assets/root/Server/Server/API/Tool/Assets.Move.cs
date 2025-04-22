@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "Assets_Move",
             Title = "Assets Move"
         )]
-        [Description(@"Move the assets at paths in the project. Does AssetDatabase.Refresh() at the end.")]
+        [Description(@"Move the assets at paths in the project. Should be used for asset rename. Does AssetDatabase.Refresh() at the end.")]
         public Task<CallToolResponse> Move
         (
             [Description("The paths of the assets to move.")]

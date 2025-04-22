@@ -14,7 +14,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "Assets_Move",
             Title = "Assets Move",
-            Description = @"Move the assets at paths in the project. Does AssetDatabase.Refresh() at the end."
+            Description = @"Move the assets at paths in the project. Should be used for asset rename. Does AssetDatabase.Refresh() at the end."
         )]
         public string Move
         (
