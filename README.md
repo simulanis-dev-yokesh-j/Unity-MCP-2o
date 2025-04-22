@@ -66,6 +66,14 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 - ✅ Get selection
 - ✅ Set selection
 
+### Prefabs
+
+- ✅ Instantiate
+- 🔲 Create from scene
+- 🔲 Open
+- 🔲 Save
+- 🔲 Close
+
 </td>
 <td valign="top">
 
@@ -116,14 +124,6 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 ### Component
 
 - ✅ Get All
-
-### Prefabs
-
-- ✅ Instantiate
-- 🔲 Create from scene
-- 🔲 Open
-- 🔲 Save
-- 🔲 Close
 
 </td>
 </tr>
