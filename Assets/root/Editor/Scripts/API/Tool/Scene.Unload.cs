@@ -24,7 +24,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         => MainThread.Run(async () =>
         {
             if (string.IsNullOrEmpty(name))
-                return Error.ScenePathIsEmpty();
+                return Error.SceneNameIsEmpty();
 
             var scene = SceneUtils.GetAllLoadedScenes()
                 .FirstOrDefault(scene => scene.name == name);
