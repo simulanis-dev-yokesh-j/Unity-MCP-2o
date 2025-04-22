@@ -28,6 +28,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (path.EndsWith(".unity") == false)
                 return Error.FilePathMustEndsWithUnity();
 
+            if (loadSceneMode < 0 || loadSceneMode > 1)
+                return Error.InvalidLoadSceneMode(loadSceneMode);
+
             var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(
                 path,
                 loadSceneMode switch

@@ -23,6 +23,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 => "[Error] Scene path is empty. Please provide a valid path. Sample: \"Assets/Scenes/MyScene.unity\".";
             public static string FilePathMustEndsWithUnity()
                 => "[Error] File path must end with '.unity'. Please provide a valid path. Sample: \"Assets/Scenes/MyScene.unity\".";
+            public static string InvalidLoadSceneMode(int loadSceneMode)
+                => $"[Error] Invalid load scene mode '{loadSceneMode}'. Valid values are 0 (Single) and 1 (Additive).";
         }
     }
 }
