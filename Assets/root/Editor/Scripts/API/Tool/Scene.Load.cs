@@ -38,9 +38,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 });
 
             if (!scene.IsValid())
-                return $"[Error] Failed to open scene at '{path}'.";
+                return $"[Error] Failed to load scene at '{path}'.\n{LoadedScenes}";
 
-            return $"[Success] Scene opened at '{path}'.";
+            return $"[Success] Scene loaded at '{path}'.\n{LoadedScenes}";
         });
     }
 }

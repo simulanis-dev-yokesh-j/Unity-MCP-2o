@@ -40,9 +40,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             bool saved = UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, path);
             if (!saved)
-                return $"[Error] Failed to save scene at '{path}'.";
+                return $"[Error] Failed to save scene at '{path}'.\n{LoadedScenes}";
 
-            return $"[Success] Scene saved at '{path}'.";
+            return $"[Success] Scene saved at '{path}'.\n{LoadedScenes}";
         });
     }
 }

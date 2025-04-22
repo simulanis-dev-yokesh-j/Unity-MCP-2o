@@ -38,7 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 await Task.Yield();
 
             if (asyncOperation.isDone == false)
-                return $"[Error] Failed to unload scene '{name}'.";
+                return $"[Error] Failed to unload scene '{name}'.\n{LoadedScenes}";
 
             return $"[Success] Scene '{name}' unloaded.\n{LoadedScenes}";
         });
