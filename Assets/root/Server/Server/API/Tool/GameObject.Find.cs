@@ -29,7 +29,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             {
                 arguments[nameof(includeChildrenDepth)] = includeChildrenDepth;
 
-                if (instanceId != null)
+                if (instanceId != null && instanceId != 0)
                     arguments[nameof(instanceId)] = instanceId;
 
                 if (path != null && path.Length > 0)

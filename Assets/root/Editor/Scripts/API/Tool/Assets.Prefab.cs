@@ -16,6 +16,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             public static string NotFoundPrefabAtPath(string path)
                 => $"[Error] Prefab '{path}' not found. Available prefabs:\n" + PrefabsPrinted;
+
+            public static string PrefabPathIsInvalid(string path)
+                => $"[Error] Prefab path '{path}' is invalid.";
         }
     }
 }
