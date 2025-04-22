@@ -34,7 +34,10 @@ Use it to organize scripts and assets in the project. Does AssetDatabase.Refresh
             for (var i = 0; i < paths.Length; i++)
             {
                 if (string.IsNullOrEmpty(paths[i]))
-                    return Error.SourcePathIsEmpty();
+                {
+                    stringBuilder.AppendLine(Error.SourcePathIsEmpty());
+                    continue;
+                }
                 try
                 {
                     Directory.CreateDirectory(paths[i]);
