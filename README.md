@@ -127,6 +127,13 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Get All
 
+### Package
+
+- 🔲 Get installed
+- 🔲 Install
+- 🔲 Remove
+- 🔲 Update
+
 </td>
 </tr>
 </table>
