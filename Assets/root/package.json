@@ -1,19 +1,20 @@
 {
-    "name": "com.ivanmurzak.unity.mcp",
-    "displayName": "Unity MCP (Model Context Protocol)",
+    "name": "com.simulanis.unity.mcp",
+    "displayName": "Simulanis Unity MCP (Model Context Protocol)",
     "author": {
-        "name": "IvanMurzak",
-        "url": "https://github.com/IvanMurzak"
+        "name": "Yokesh",
+        "url": "https://github.com/yokesh-ks"
     },
     "keywords": [
         "AI",
         "AI Integration",
         "MCP",
-        "Unity MCP"
+        "Unity MCP",
+        "Simulanis"
     ],
-    "version": "0.4.0",
+    "version": "1.0.0",
     "unity": "2022.3",
-    "description": "Bridge between LLM and Unity. It expose Unity API to LLM and allows LLM to control Unity. It is based on Model Context Protocol (MCP) and uses SignalR for communication.",
+    "description": "Simulanis modified version of Unity MCP. Bridge between LLM and Unity. It expose Unity API to LLM and allows LLM to control Unity. It is based on Model Context Protocol (MCP) and uses SignalR for communication.",
     "dependencies": {
         "com.unity.test-framework": "1.1.33",
         "com.unity.modules.uielements": "1.0.0",

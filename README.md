@@ -1,4 +1,6 @@
-# Unity MCP (Server + Plugin)
+# Simulanis Unity MCP (Server + Plugin)
+
+A modified version of Unity MCP by Simulanis, based on the original work by IvanMurzak. This version is customized for Simulanis' internal use and requirements.
 
 [![openupm](https://img.shields.io/npm/v/com.ivanmurzak.unity.mcp?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.ivanmurzak.unity.mcp/) ![License](https://img.shields.io/github/license/IvanMurzak/Unity-MCP) [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 
@@ -143,15 +145,27 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 # Installation
 
+Since this is a modified version for Simulanis internal use, you can install it in two ways:
+
+1. Via Git URL:
+   Add this to your `manifest.json`:
+   ```json
+   {
+     "dependencies": {
+       "com.simulanis.unity.mcp": "https://github.com/your-repo-url.git#v1.0.0"
+     }
+   }
+   ```
+
+2. Local Package:
+   - Clone this repository
+   - In Unity, go to Package Manager
+   - Click "+" button
+   - Choose "Add package from disk"
+   - Select the package.json file from the cloned repository
+
+Requirements:
 1. [Install .NET 9.0](https://dotnet.microsoft.com/en-us/download)
-2. [Install OpenUPM-CLI](https://github.com/openupm/openupm-cli#installation)
-
-- Open command line in Unity project folder
-- Run the command
-
-```bash
-openupm add com.ivanmurzak.unity.mcp
-```
 
 # Usage
 
