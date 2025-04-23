@@ -21,7 +21,7 @@ Returns list of all available components preview if no requested components foun
             [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
             int[] componentInstanceIds,
             [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int? instanceId = null,
+            int instanceId = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]

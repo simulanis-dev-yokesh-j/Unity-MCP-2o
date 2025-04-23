@@ -22,13 +22,13 @@ Selection.activeInstanceID -  The 'instanceId' of the actual object selection. I
             [Description("The 'instanceId' array of the target GameObjects.")]
             int[]? instanceIds = null,
             [Description("The 'instanceId' of the target Object.")]
-            int? activeInstanceID = null
+            int activeInstanceID = 0
         )
         {
             return MainThread.Run(() =>
             {
                 Selection.instanceIDs = instanceIds ?? new int[0];
-                Selection.activeInstanceID = activeInstanceID ?? 0;
+                Selection.activeInstanceID = activeInstanceID;
 
                 // Selection.activeGameObject = EditorUtility.InstanceIDToObject(t);
                 // Selection.activeObject = Selection.activeGameObject;

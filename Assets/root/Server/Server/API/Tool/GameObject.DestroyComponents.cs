@@ -18,7 +18,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             [Description("The 'instanceId' array of the target components.")]
             int[] componentInstanceIds,
             [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int? instanceId = null,
+            int instanceId = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -28,9 +28,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             return ToolRouter.Call("GameObject_DestroyComponents", arguments =>
             {
                 arguments[nameof(componentInstanceIds)] = componentInstanceIds;
-
-                if (instanceId != null)
-                    arguments[nameof(instanceId)] = instanceId;
+                arguments[nameof(instanceId)] = instanceId;
 
                 if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;
