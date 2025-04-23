@@ -12,20 +12,21 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Assets_Prefab_Open",
-            Title = "Open prefab",
-            Description = "Open a prefab. There are two options to open prefab:\n" +
-                          "1. Open prefab from asset using 'prefabAssetPath'.\n" +
-                          "2. Open prefab from GameObject in loaded scene using 'instanceId' of the GameObject.\n" +
-                          "   The GameObject should be connected to a prefab.\n\n" +
-                          "Note: Please 'Close' the prefab later to exit prefab editing mode."
+            "Assets_Prefab_Read",
+            Title = "Read prefab content",
+            Description = "Read a prefab content. Use it for get started with prefab editing. There are two options to open prefab:\n" +
+                          "1. Read prefab from asset using 'prefabAssetPath'.\n" +
+                          "2. Read prefab from GameObject in loaded scene using 'instanceId' of the GameObject.\n" +
+                          "   The GameObject should be connected to a prefab."
         )]
-        public string Open
+        public string Read
         (
             [Description("'instanceId' of GameObject in a scene.")]
             int instanceId = 0,
             [Description("Prefab asset path. Should be in the format 'Assets/Path/To/Prefab.prefab'.")]
-            string? prefabAssetPath = null
+            string? prefabAssetPath = null,
+            [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]
+            int includeChildrenDepth = 3
         )
         => MainThread.Run(() =>
         {
@@ -46,13 +47,20 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (prefab == null)
                 return Error.NotFoundPrefabAtPath(prefabAssetPath);
 
-            var success = AssetDatabase.OpenAsset(prefab);
-            if (!success)
-                return Error.NotFoundPrefabAtPath(prefabAssetPath);
+            var components = prefab.GetComponents<UnityEngine.Component>();
+            var componentsPreview = components
+                .Select(c => MCP.Utils.Serializer.Component.BuildDataLight(c))
+                .ToList();
 
-            return @$"[Success] Prefab '{prefabAssetPath}' opened. Use 'Assets_Prefab_Close' to close it.
-# Prefab information:
-{prefab.ToMetadata().Print()}";
+            return @$"[Success] Found Prefab at '{prefabAssetPath}'.
+# Components preview:
+{JsonUtils.Serialize(componentsPreview)}
+
+# GameObject bounds:
+{JsonUtils.Serialize(prefab.CalculateBounds())}
+
+# GameObject information:
+{prefab.ToMetadata(includeChildrenDepth).Print()}";
         });
     }
 }
