@@ -36,7 +36,7 @@ t:VisualEffectSubgraph")]
         public Task<CallToolResponse> Search
         (
             [Description("The folders where the search will start. If null, the search will be performed in all folders.")]
-            string[] searchInFolders,
+            string[]? searchInFolders = null,
 // <ref>https://docs.unity3d.com/ScriptReference/AssetDatabase.FindAssets.html</ref>
 [Description(@"Searching filter. Could be empty.
 Name: Filter assets by their filename (without extension). Words separated by whitespace are treated as separate name searches. For example, 'test asset' is a name of an Asset which will be searched for. Note that the name can be used to identify an asset. Further, the name used in the filter string can be specified as a subsection. For example, the 'test asset' example above can be matched using 'test'.

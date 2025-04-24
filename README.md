@@ -70,9 +70,10 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Instantiate
 - ✅ Create
-- 🔲 Open
-- 🔲 Save
-- 🔲 Close
+- ✅ Open
+- 🔲 Modify
+- ✅ Save
+- ✅ Close
 
 </td>
 <td valign="top">
