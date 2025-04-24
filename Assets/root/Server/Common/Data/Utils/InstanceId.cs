@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 namespace com.IvanMurzak.Unity.MCP.Common.Data.Utils
 {
     [System.Serializable]
-    public class InstanceId
+    public class InstanceID
     {
         [JsonInclude]
-        [JsonPropertyName("instanceId")]
-        public int instanceId;
-        public InstanceId() { }
-        public InstanceId(int id) => instanceId = id;
+        [JsonPropertyName("instanceID")]
+        public int instanceID;
+        public InstanceID() { }
+        public InstanceID(int id) => instanceID = id;
     }
 }

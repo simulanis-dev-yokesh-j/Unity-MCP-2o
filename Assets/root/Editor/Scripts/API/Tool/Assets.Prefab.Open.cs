@@ -16,14 +16,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             Title = "Open prefab",
             Description = "Open a prefab. There are two options to open prefab:\n" +
                           "1. Open prefab from asset using 'prefabAssetPath'.\n" +
-                          "2. Open prefab from GameObject in loaded scene using 'instanceId' of the GameObject.\n" +
+                          "2. Open prefab from GameObject in loaded scene using 'instanceID' of the GameObject.\n" +
                           "   The GameObject should be connected to a prefab.\n\n" +
                           "Note: Please 'Close' the prefab later to exit prefab editing mode."
         )]
         public string Open
         (
-            [Description("'instanceId' of GameObject in a scene.")]
-            int instanceId = 0,
+            [Description("'instanceID' of GameObject in a scene.")]
+            int instanceID = 0,
             [Description("Prefab asset path. Should be in the format 'Assets/Path/To/Prefab.prefab'.")]
             string? prefabAssetPath = null
         )
@@ -33,12 +33,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             // if (prefabStage != null)
             //     return Error.PrefabStageIsAlreadyOpened();
 
-            if (string.IsNullOrEmpty(prefabAssetPath) && instanceId != 0)
+            if (string.IsNullOrEmpty(prefabAssetPath) && instanceID != 0)
             {
                 // Find prefab from GameObject in loaded scene
-                var go = GameObjectUtils.FindByInstanceId(instanceId);
+                var go = GameObjectUtils.FindByInstanceID(instanceID);
                 if (go == null)
-                    return Tool_GameObject.Error.NotFoundGameObjectWithInstanceId(instanceId);
+                    return Tool_GameObject.Error.NotFoundGameObjectWithInstanceID(instanceID);
 
                 prefabAssetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(go);
             }
@@ -46,8 +46,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (string.IsNullOrEmpty(prefabAssetPath))
                 return Error.PrefabPathIsEmpty();
 
-            var goInstance = instanceId != 0
-                ? GameObjectUtils.FindByInstanceId(instanceId)
+            var goInstance = instanceID != 0
+                ? GameObjectUtils.FindByInstanceID(instanceID)
                 : null;
 
             prefabStage = goInstance != null

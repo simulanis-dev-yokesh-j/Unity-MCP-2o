@@ -21,7 +21,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     name = go.name,
                     tag = go.tag,
                     layer = go.layer,
-                    instanceId = go.GetInstanceID(),
+                    instanceID = go.GetInstanceID(),
                     components = go.GetComponents<UnityEngine.Component>()
                         .Select(c => Component.BuildData(c))
                         .Where(c => c != null)
@@ -38,7 +38,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     name = go.name,
                     tag = go.tag,
                     layer = go.layer,
-                    instanceId = go.GetInstanceID()
+                    instanceID = go.GetInstanceID()
                 };
             }
             public static string Serialize(UnityEngine.GameObject go)

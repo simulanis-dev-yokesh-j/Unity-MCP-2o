@@ -19,8 +19,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Prefab asset path. Should be in the format 'Assets/Path/To/Prefab.prefab'.")]
             string prefabAssetPath,
-            [Description("'instanceId' of GameObject in a scene.")]
-            int instanceId,
+            [Description("'instanceID' of GameObject in a scene.")]
+            int instanceID,
             [Description("If true, the prefab will replace the GameObject in the scene.")]
             bool replaceGameObjectWithPrefab = true
         )
@@ -32,9 +32,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (!prefabAssetPath.EndsWith(".prefab"))
                 return Error.PrefabPathIsInvalid(prefabAssetPath);
 
-            var go = GameObjectUtils.FindByInstanceId(instanceId);
+            var go = GameObjectUtils.FindByInstanceID(instanceID);
             if (go == null)
-                return Tool_GameObject.Error.NotFoundGameObjectWithInstanceId(instanceId);
+                return Tool_GameObject.Error.NotFoundGameObjectWithInstanceID(instanceID);
 
             var prefabGo = replaceGameObjectWithPrefab
                 ? PrefabUtility.SaveAsPrefabAsset(go, prefabAssetPath)
@@ -46,7 +46,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             EditorUtility.SetDirty(go);
             EditorApplication.RepaintHierarchyWindow();
 
-            return $"[Success] Prefab '{prefabAssetPath}' created from GameObject '{go.name}' (InstanceId: {instanceId}).\n" +
+            return $"[Success] Prefab '{prefabAssetPath}' created from GameObject '{go.name}' (InstanceID: {instanceID}).\n" +
                    $"Prefab GameObject:\n{MCP.Utils.Serializer.GameObject.SerializeLight(prefabGo)}";
         });
     }

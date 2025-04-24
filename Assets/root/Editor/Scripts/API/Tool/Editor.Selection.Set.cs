@@ -14,21 +14,21 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             Title = "Set Selection in Unity Editor",
             Description = @"'UnityEditor.Selection'. Access to the selection in the editor.
 Use it to select Assets or GameObjects in a scene. Set empty array to clear selection.
-Selection.instanceIds - The actual unfiltered selection from the Scene returned as instance ids.
-Selection.activeInstanceId -  The 'instanceId' of the actual object selection. Includes Prefabs, non-modifiable objects."
+Selection.instanceIDs - The actual unfiltered selection from the Scene returned as instance ids.
+Selection.activeInstanceID -  The 'instanceID' of the actual object selection. Includes Prefabs, non-modifiable objects."
         )]
         public string Set
         (
-            [Description("The 'instanceId' array of the target GameObjects.")]
-            int[]? instanceIds = null,
-            [Description("The 'instanceId' of the target Object.")]
-            int activeInstanceId = 0
+            [Description("The 'instanceID' array of the target GameObjects.")]
+            int[]? instanceIDs = null,
+            [Description("The 'instanceID' of the target Object.")]
+            int activeInstanceID = 0
         )
         {
             return MainThread.Run(() =>
             {
-                Selection.instanceIDs = instanceIds ?? new int[0];
-                Selection.activeInstanceID = activeInstanceId;
+                Selection.instanceIDs = instanceIDs ?? new int[0];
+                Selection.activeInstanceID = activeInstanceID;
 
                 return "[Success] " + SelectionPrint;
             });

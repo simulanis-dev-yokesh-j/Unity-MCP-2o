@@ -7,7 +7,7 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Unity
         public string name { get; set; } = string.Empty;
         public string tag { get; set; } = "Untagged";
         public int layer { get; set; }
-        public int instanceId { get; set; }
+        public int instanceID { get; set; }
 
         public GameObjectDataLight() { }
     }

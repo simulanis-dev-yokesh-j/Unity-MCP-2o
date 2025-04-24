@@ -17,8 +17,8 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Prefab asset path. Should be in the format 'Assets/Path/To/Prefab.prefab'.")]
             string prefabAssetPath,
-            [Description("'instanceId' of GameObject in a scene.")]
-            int instanceId,
+            [Description("'instanceID' of GameObject in a scene.")]
+            int instanceID,
             [Description("If true, the prefab will replace the GameObject in the scene.")]
             bool replaceGameObjectWithPrefab = true
         )
@@ -26,7 +26,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             return ToolRouter.Call("Assets_Prefab_Create", arguments =>
             {
                 arguments[nameof(prefabAssetPath)] = prefabAssetPath ?? string.Empty;
-                arguments[nameof(instanceId)] = instanceId;
+                arguments[nameof(instanceID)] = instanceID;
                 arguments[nameof(replaceGameObjectWithPrefab)] = replaceGameObjectWithPrefab;
             });
         }

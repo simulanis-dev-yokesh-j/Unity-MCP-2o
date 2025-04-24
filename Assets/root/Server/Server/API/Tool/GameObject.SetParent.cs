@@ -12,21 +12,21 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "GameObject_SetParent",
             Title = "Set parent GameObject in opened scene"
         )]
-        [Description(@"Duplicate GameObjects in opened scene by 'instanceId' (int) array.")]
+        [Description(@"Duplicate GameObjects in opened scene by 'instanceID' (int) array.")]
         public Task<CallToolResponse> SetParent
         (
-            [Description("The 'instanceId' array of the target GameObjects.")]
-            int[] targetInstanceIds,
-            [Description("The 'instanceId' of the parent GameObject.")]
-            int parentInstanceId,
+            [Description("The 'instanceID' array of the target GameObjects.")]
+            int[] targetInstanceIDs,
+            [Description("The 'instanceID' of the parent GameObject.")]
+            int parentInstanceID,
             [Description("A boolean flag indicating whether the GameObject's world position should remain unchanged when setting its parent.")]
             bool worldPositionStays = true
         )
         {
             return ToolRouter.Call("GameObject_SetParent", arguments =>
             {
-                arguments[nameof(targetInstanceIds)] = targetInstanceIds ?? new int[0];
-                arguments[nameof(parentInstanceId)] = parentInstanceId;
+                arguments[nameof(targetInstanceIDs)] = targetInstanceIDs ?? new int[0];
+                arguments[nameof(parentInstanceID)] = parentInstanceID;
                 arguments[nameof(worldPositionStays)] = worldPositionStays;
             });
         }

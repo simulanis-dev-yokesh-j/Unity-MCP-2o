@@ -21,15 +21,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )]
         public string ModifyComponent
         (
-            [Description(@"Json Object with required readonly 'instanceId' and 'type' fields.
+            [Description(@"Json Object with required readonly 'instanceID' and 'type' fields.
 Any other field would be used for changing value in the target component.
 Only required to modify properties and fields and with 'Type' field at the root.
 It should respect the original structure of the component.
-Nested 'instanceId' fields and properties are references to UnityEngine.Object types.
+Nested 'instanceID' fields and properties are references to UnityEngine.Object types.
 The target reference instance could be located in project assets, in the scene or in the prefabs.")]
             ComponentData data,
-            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int instanceId = 0,
+            [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -44,14 +44,14 @@ The target reference instance could be located in project assets, in the scene o
             if (type == null)
                 return Error.InvalidComponentType(data.type);
 
-            var go = GameObjectUtils.FindBy(instanceId, path, name, out var error);
+            var go = GameObjectUtils.FindBy(instanceID, path, name, out var error);
             if (error != null)
                 return error;
 
             var allComponents = go.GetComponents<UnityEngine.Component>();
-            var component = allComponents.FirstOrDefault(c => c.GetInstanceID() == data.instanceId);
+            var component = allComponents.FirstOrDefault(c => c.GetInstanceID() == data.instanceID);
             if (component == null)
-                return Error.NotFoundComponent(data.instanceId, allComponents);
+                return Error.NotFoundComponent(data.instanceID, allComponents);
 
             var castedComponent = TypeUtils.CastTo(component, data.type, out error);
             if (error != null)
@@ -119,15 +119,15 @@ The target reference instance could be located in project assets, in the scene o
                     // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
                     if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
                     {
-                        var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(field.valueJsonElement.Value).instanceId;
-                        if (referenceInstanceId == 0)
+                        var referenceInstanceID = JsonUtils.Deserialize<InstanceID>(field.valueJsonElement.Value).instanceID;
+                        if (referenceInstanceID == 0)
                         {
-                            changedFieldResults[i] = Error.InvalidInstanceId(targetType, field.name);
+                            changedFieldResults[i] = Error.InvalidInstanceID(targetType, field.name);
                             continue;
                         }
 
-                        // Find the object by instanceId
-                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
+                        // Find the object by instanceID
+                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceID);
 
                         if (typeof(Sprite).IsAssignableFrom(targetType) && referenceObject is Texture2D texture)
                         {
@@ -223,15 +223,15 @@ The target reference instance could be located in project assets, in the scene o
                     // The `targetType` is a UnityEngine.Object type, so it should be handled differently.
                     if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
                     {
-                        var referenceInstanceId = JsonUtils.Deserialize<InstanceId>(property.valueJsonElement.Value).instanceId;
-                        if (referenceInstanceId == 0)
+                        var referenceInstanceID = JsonUtils.Deserialize<InstanceID>(property.valueJsonElement.Value).instanceID;
+                        if (referenceInstanceID == 0)
                         {
-                            changedPropertyResults[i] = Error.InvalidInstanceId(targetType, property.name);
+                            changedPropertyResults[i] = Error.InvalidInstanceID(targetType, property.name);
                             continue;
                         }
 
-                        // Find the object by instanceId
-                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceId);
+                        // Find the object by instanceID
+                        var referenceObject = UnityEditor.EditorUtility.InstanceIDToObject(referenceInstanceID);
 
                         if (typeof(Sprite).IsAssignableFrom(targetType) && referenceObject is Texture2D texture)
                         {
@@ -277,7 +277,7 @@ The target reference instance could be located in project assets, in the scene o
                 }
             }
 
-            return @$"Component modification result in component '{data.instanceId}':
+            return @$"Component modification result in component '{data.instanceID}':
 
 Field modification results:
 {string.Join("\n", changedFieldResults)}

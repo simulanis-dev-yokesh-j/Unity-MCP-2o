@@ -14,14 +14,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_SetParent",
             Title = "Set parent GameObject in opened scene",
-            Description = @"Set GameObjects in opened scene by 'instanceId' (int) array."
+            Description = @"Set GameObjects in opened scene by 'instanceID' (int) array."
         )]
         public string SetParent
         (
-            [Description("The 'instanceId' array of the target GameObjects.")]
-            int[] targetInstanceIds,
-            [Description("The 'instanceId' of the parent GameObject.")]
-            int parentInstanceId,
+            [Description("The 'instanceID' array of the target GameObjects.")]
+            int[] targetInstanceIDs,
+            [Description("The 'instanceID' of the parent GameObject.")]
+            int parentInstanceID,
             [Description("A boolean flag indicating whether the GameObject's world position should remain unchanged when setting its parent.")]
             bool worldPositionStays = true
         )
@@ -31,28 +31,28 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
                 var stringBuilder = new StringBuilder();
                 int changedCount = 0;
 
-                for (var i = 0; i < targetInstanceIds.Length; i++)
+                for (var i = 0; i < targetInstanceIDs.Length; i++)
                 {
-                    var targetInstanceId = targetInstanceIds[i];
+                    var targetInstanceID = targetInstanceIDs[i];
 
-                    var targetGo = GameObjectUtils.FindByInstanceId(targetInstanceId);
+                    var targetGo = GameObjectUtils.FindByInstanceID(targetInstanceID);
                     if (targetGo == null)
                     {
-                        stringBuilder.AppendLine($"[Error] Target GameObject with instanceId {targetInstanceId} not found.");
+                        stringBuilder.AppendLine($"[Error] Target GameObject with instanceID {targetInstanceID} not found.");
                         continue;
                     }
 
-                    var parentGo = GameObjectUtils.FindByInstanceId(parentInstanceId);
+                    var parentGo = GameObjectUtils.FindByInstanceID(parentInstanceID);
                     if (parentGo == null)
                     {
-                        stringBuilder.AppendLine($"[Error] Parent GameObject with instanceId {parentInstanceId} not found.");
+                        stringBuilder.AppendLine($"[Error] Parent GameObject with instanceID {parentInstanceID} not found.");
                         continue;
                     }
 
                     targetGo.transform.SetParent(parentGo.transform, worldPositionStays: worldPositionStays);
                     changedCount++;
 
-                    stringBuilder.AppendLine(@$"[Success] Set parent of GameObject with instanceId {targetInstanceId} to GameObject with instanceId {parentInstanceId}.");
+                    stringBuilder.AppendLine(@$"[Success] Set parent of GameObject with instanceID {targetInstanceID} to GameObject with instanceID {parentInstanceID}.");
                 }
 
                 if (changedCount > 0)

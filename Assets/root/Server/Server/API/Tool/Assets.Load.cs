@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "Assets_Load",
             Title = "Assets Load"
         )]
-        [Description(@"Load specific asset to get the 'instanceId' which could be used later for linking asset.")]
+        [Description(@"Load specific asset to get the 'instanceID' which could be used later for linking asset.")]
         public Task<CallToolResponse> Load
         (
             [Description("Path to the asset. See 'Assets_Search' for more details. Starts with 'Assets/' or 'Packages/'. Priority: 1. (Recommended)")]

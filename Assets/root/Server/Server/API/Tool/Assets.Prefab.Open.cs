@@ -14,20 +14,20 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         )]
         [Description("Open a prefab. Use it for get started with prefab editing. There are two options to open prefab:\n" +
                     "1. Open prefab from asset using 'prefabAssetPath'.\n" +
-                    "2. Open prefab from GameObject in loaded scene using 'instanceId' of the GameObject.\n" +
+                    "2. Open prefab from GameObject in loaded scene using 'instanceID' of the GameObject.\n" +
                     "   The GameObject should be connected to a prefab.\n\n" +
                     "Note: Please 'Close' the prefab after editing.")]
         public Task<CallToolResponse> Open
         (
-            [Description("'instanceId' of GameObject in a scene.")]
-            int instanceId = 0,
+            [Description("'instanceID' of GameObject in a scene.")]
+            int instanceID = 0,
             [Description("Prefab asset path. Should be in the format 'Assets/Path/To/Prefab.prefab'.")]
             string? prefabAssetPath = null
         )
         {
             return ToolRouter.Call("Assets_Prefab_Open", arguments =>
             {
-                arguments[nameof(instanceId)] = instanceId;
+                arguments[nameof(instanceID)] = instanceID;
                 arguments[nameof(prefabAssetPath)] = prefabAssetPath ?? string.Empty;
             });
         }

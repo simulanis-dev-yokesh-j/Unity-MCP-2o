@@ -16,10 +16,10 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
 Returns list of all available components preview if no requested components found.")]
         public Task<CallToolResponse> GetComponents
         (
-            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
-            int[] componentInstanceIds,
-            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int instanceId = 0,
+            [Description("The 'instanceID' array of the target components. Leave it empty if all components needed.")]
+            int[] componentInstanceIDs,
+            [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -28,8 +28,8 @@ Returns list of all available components preview if no requested components foun
         {
             return ToolRouter.Call("GameObject_GetComponents", arguments =>
             {
-                arguments[nameof(componentInstanceIds)] = componentInstanceIds;
-                arguments[nameof(instanceId)] = instanceId;
+                arguments[nameof(componentInstanceIDs)] = componentInstanceIDs;
+                arguments[nameof(instanceID)] = instanceID;
 
                 if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;

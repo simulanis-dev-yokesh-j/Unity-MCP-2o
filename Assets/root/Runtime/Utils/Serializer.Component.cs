@@ -45,7 +45,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 {
                     type = component.GetType().FullName,
                     isEnabled = BuildIsEnabled(component),
-                    instanceId = component.GetInstanceID(),
+                    instanceID = component.GetInstanceID(),
                 };
             }
             public static ComponentData.Enabled BuildIsEnabled(UnityEngine.Component component)
@@ -74,7 +74,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 {
                     type = component.GetType().FullName,
                     isEnabled = BuildIsEnabled(component),
-                    instanceId = component.GetInstanceID()
+                    instanceID = component.GetInstanceID()
                 };
                 var componentType = component.GetType();
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -100,8 +100,8 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     if (isUnityObject)
                     {
                         var unityObject = value as UnityEngine.Object;
-                        var instanceIdJson = JsonUtility.ToJson(new InstanceId(unityObject.GetInstanceID()));
-                        result.fields.Add(SerializedMember.FromJson(field.Name, type, instanceIdJson));
+                        var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
+                        result.fields.Add(SerializedMember.FromJson(field.Name, type, instanceIDJson));
                     }
                     else
                     {
@@ -132,8 +132,8 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                         if (isUnityObject)
                         {
                             var unityObject = value as UnityEngine.Object;
-                            var instanceIdJson = JsonUtility.ToJson(new InstanceId(unityObject.GetInstanceID()));
-                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, instanceIdJson));
+                            var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
+                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, instanceIDJson));
                         }
                         else
                         {

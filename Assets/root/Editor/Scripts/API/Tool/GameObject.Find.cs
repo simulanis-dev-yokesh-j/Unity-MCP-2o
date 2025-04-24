@@ -19,8 +19,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]
             int includeChildrenDepth = 0,
-            [Description("Find by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int instanceId = 0,
+            [Description("Find by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("Find by 'path'. Priority: 2.")]
             string? path = null,
             [Description("Find by 'name'. Priority: 3.")]
@@ -29,8 +29,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         {
             return MainThread.Run(() =>
             {
-                // Find by 'instanceId' first, then by 'path', then by 'name'
-                var go = GameObjectUtils.FindBy(instanceId, path, name, out var error);
+                // Find by 'instanceID' first, then by 'path', then by 'name'
+                var go = GameObjectUtils.FindBy(instanceID, path, name, out var error);
                 if (error != null)
                     return error;
 

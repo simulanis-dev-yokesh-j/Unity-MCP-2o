@@ -13,23 +13,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "GameObject_Duplicate",
             Title = "Duplicate GameObjects in opened scene",
-            Description = @"Duplicate GameObjects in opened scene by 'instanceId' (int) array."
+            Description = @"Duplicate GameObjects in opened scene by 'instanceID' (int) array."
         )]
         public string Duplicate
         (
-            [Description("The 'instanceId' array of the target GameObjects.")]
-            int [] instanceIds
+            [Description("The 'instanceID' array of the target GameObjects.")]
+            int [] instanceIDs
         )
         {
             return MainThread.Run(() =>
             {
-                Selection.instanceIDs = instanceIds;
+                Selection.instanceIDs = instanceIDs;
 
                 Unsupported.DuplicateGameObjectsUsingPasteboard();
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
 
-                return @$"[Success] Duplicated {instanceIds.Length} GameObjects in opened scene by 'instanceId' (int) array.
-Duplicated instanceIds:
+                return @$"[Success] Duplicated {instanceIDs.Length} GameObjects in opened scene by 'instanceID' (int) array.
+Duplicated instanceIDs:
 {string.Join(", ", Selection.instanceIDs)}";
             });
         }

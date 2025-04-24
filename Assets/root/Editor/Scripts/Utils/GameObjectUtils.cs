@@ -26,18 +26,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                 return scene.Value.GetRootGameObjects();
             }
         }
-        public static GameObject FindBy(int? instanceId, string? path, string? name, out string error)
+        public static GameObject FindBy(int? instanceID, string? path, string? name, out string error)
         {
             path = StringUtils.TrimPath(path);
             var go = default(GameObject);
 
-            // Find by 'instanceId' (int). Priority: 1. (Recommended)
-            if (instanceId.HasValue && instanceId.Value != 0)
+            // Find by 'instanceID' (int). Priority: 1. (Recommended)
+            if (instanceID.HasValue && instanceID.Value != 0)
             {
-                go = FindByInstanceId(instanceId.Value);
+                go = FindByInstanceID(instanceID.Value);
                 if (go == null)
                 {
-                    error = Tool_GameObject.Error.NotFoundGameObjectWithInstanceId(instanceId.Value);
+                    error = Tool_GameObject.Error.NotFoundGameObjectWithInstanceID(instanceID.Value);
                     return null;
                 }
             }
@@ -70,12 +70,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             error = null;
             return go;
         }
-        public static GameObject FindByInstanceId(int instanceId)
+        public static GameObject FindByInstanceID(int instanceID)
         {
-            if (instanceId == 0)
+            if (instanceID == 0)
                 return null;
 
-            var obj = UnityEditor.EditorUtility.InstanceIDToObject(instanceId);
+            var obj = UnityEditor.EditorUtility.InstanceIDToObject(instanceID);
             if (obj is not GameObject go)
                 return null;
 

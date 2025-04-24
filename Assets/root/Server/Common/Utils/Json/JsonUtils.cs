@@ -22,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             Converters =
             {
                 new JsonStringEnumConverter(),
-                new InstanceIdConverter(),
+                new InstanceIDConverter(),
                 new SerializedMemberConverter(),
                 // new SerializedMemberConverterFactory()
             }

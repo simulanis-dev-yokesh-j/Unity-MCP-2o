@@ -13,11 +13,11 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Title = "Destroy GameObject"
         )]
         [Description(@"Destroy a GameObject and all nested GameObjects recursively.
-Use 'instanceId' whenever possible, because it finds the exact GameObject, when 'path' may find a wrong one.")]
+Use 'instanceID' whenever possible, because it finds the exact GameObject, when 'path' may find a wrong one.")]
         public Task<CallToolResponse> Destroy
         (
-            [Description("Delete by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int instanceId = 0,
+            [Description("Delete by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("Delete by 'path'. Priority: 2.")]
             string? path = null,
             [Description("Delete by 'name'. Priority: 3.")]
@@ -26,7 +26,7 @@ Use 'instanceId' whenever possible, because it finds the exact GameObject, when 
         {
             return ToolRouter.Call("GameObject_Destroy", arguments =>
             {
-                arguments[nameof(instanceId)] = instanceId;
+                arguments[nameof(instanceID)] = instanceID;
 
                 if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;

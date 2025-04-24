@@ -18,10 +18,10 @@ Returns list of all available components preview if no requested components foun
         )]
         public string GetComponents
         (
-            [Description("The 'instanceId' array of the target components. Leave it empty if all components needed.")]
-            int[] componentInstanceIds,
-            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int instanceId = 0,
+            [Description("The 'instanceID' array of the target components. Leave it empty if all components needed.")]
+            int[] componentInstanceIDs,
+            [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -29,22 +29,22 @@ Returns list of all available components preview if no requested components foun
         )
         => MainThread.Run(() =>
         {
-            var go = GameObjectUtils.FindBy(instanceId, path, name, out var error);
+            var go = GameObjectUtils.FindBy(instanceID, path, name, out var error);
             if (error != null)
                 return error;
 
             var allComponents = go.GetComponents<UnityEngine.Component>();
             var components = allComponents
-                .Where(c => componentInstanceIds.Length == 0 || componentInstanceIds.Contains(c.GetInstanceID()))
+                .Where(c => componentInstanceIDs.Length == 0 || componentInstanceIDs.Contains(c.GetInstanceID()))
                 .Select(c => Serializer.Component.BuildData(c))
                 .ToList();
 
             if (components.Count == 0)
-                return Error.NotFoundComponents(componentInstanceIds, allComponents);
+                return Error.NotFoundComponents(componentInstanceIDs, allComponents);
 
             var componentsJson = JsonUtils.Serialize(components);
 
-            return @$"[Success] Found {components.Count} components in GameObject with 'instanceId'={go.GetInstanceID()}.
+            return @$"[Success] Found {components.Count} components in GameObject with 'instanceID'={go.GetInstanceID()}.
 {go.Print()}
 
 # Components:

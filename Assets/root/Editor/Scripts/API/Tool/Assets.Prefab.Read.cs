@@ -16,13 +16,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             Title = "Read prefab content",
             Description = "Read a prefab content. Use it for get started with prefab editing. There are two options to open prefab:\n" +
                           "1. Read prefab from asset using 'prefabAssetPath'.\n" +
-                          "2. Read prefab from GameObject in loaded scene using 'instanceId' of the GameObject.\n" +
+                          "2. Read prefab from GameObject in loaded scene using 'instanceID' of the GameObject.\n" +
                           "   The GameObject should be connected to a prefab."
         )]
         public string Read
         (
-            [Description("'instanceId' of GameObject in a scene.")]
-            int instanceId = 0,
+            [Description("'instanceID' of GameObject in a scene.")]
+            int instanceID = 0,
             [Description("Prefab asset path. Should be in the format 'Assets/Path/To/Prefab.prefab'.")]
             string? prefabAssetPath = null,
             [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]
@@ -30,12 +30,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
-            if (string.IsNullOrEmpty(prefabAssetPath) && instanceId != 0)
+            if (string.IsNullOrEmpty(prefabAssetPath) && instanceID != 0)
             {
                 // Find prefab from GameObject in loaded scene
-                var go = GameObjectUtils.FindByInstanceId(instanceId);
+                var go = GameObjectUtils.FindByInstanceID(instanceID);
                 if (go == null)
-                    return Tool_GameObject.Error.NotFoundGameObjectWithInstanceId(instanceId);
+                    return Tool_GameObject.Error.NotFoundGameObjectWithInstanceID(instanceID);
 
                 prefabAssetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(go);
             }

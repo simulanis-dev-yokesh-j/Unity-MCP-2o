@@ -12,16 +12,16 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "GameObject_Duplicate",
             Title = "Duplicate GameObjects in opened scene"
         )]
-        [Description(@"Duplicate GameObjects in opened scene by 'instanceId' (int) array.")]
+        [Description(@"Duplicate GameObjects in opened scene by 'instanceID' (int) array.")]
         public Task<CallToolResponse> Duplicate
         (
-            [Description("The 'instanceId' array of the target GameObjects.")]
-            int [] instanceIds
+            [Description("The 'instanceID' array of the target GameObjects.")]
+            int [] instanceIDs
         )
         {
             return ToolRouter.Call("GameObject_Duplicate", arguments =>
             {
-                arguments[nameof(instanceIds)] = instanceIds;
+                arguments[nameof(instanceIDs)] = instanceIDs;
             });
         }
     }
