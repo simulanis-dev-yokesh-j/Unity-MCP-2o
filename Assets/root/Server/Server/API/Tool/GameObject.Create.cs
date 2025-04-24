@@ -25,7 +25,9 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             [Description("Transform scale of the GameObject.")]
             Vector3? scale = default,
             [Description("World or Local space of transform.")]
-            bool isLocalSpace = false
+            bool isLocalSpace = false,
+            [Description("-1 - No primitive type; 0 - Cube; 1 - Sphere; 2 - Capsule; 3 - Cylinder; 4 - Plane; 5 - Quad.")]
+            int primitiveType = -1
         )
         {
             return ToolRouter.Call("GameObject_Create", arguments =>
@@ -42,6 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
                     arguments[nameof(scale)] = scale;
 
                 arguments[nameof(isLocalSpace)] = isLocalSpace;
+                arguments[nameof(primitiveType)] = primitiveType;
             });
         }
     }

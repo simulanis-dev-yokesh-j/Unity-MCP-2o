@@ -28,7 +28,9 @@ if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount o
             [Description("Transform scale of the GameObject.")]
             Vector3? scale = default,
             [Description("World or Local space of transform.")]
-            bool isLocalSpace = false
+            bool isLocalSpace = false,
+            [Description("-1 - No primitive type; 0 - Cube; 1 - Sphere; 2 - Capsule; 3 - Cylinder; 4 - Plane; 5 - Quad.")]
+            int primitiveType = -1
         )
         => MainThread.Run(() =>
         {
@@ -43,7 +45,17 @@ if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount o
             if (string.IsNullOrEmpty(name))
                 return Error.GameObjectNameIsEmpty();
 
-            var go = new GameObject(name);
+            var go = primitiveType switch
+            {
+                0 => GameObject.CreatePrimitive(PrimitiveType.Cube),
+                1 => GameObject.CreatePrimitive(PrimitiveType.Sphere),
+                2 => GameObject.CreatePrimitive(PrimitiveType.Capsule),
+                3 => GameObject.CreatePrimitive(PrimitiveType.Cylinder),
+                4 => GameObject.CreatePrimitive(PrimitiveType.Plane),
+                5 => GameObject.CreatePrimitive(PrimitiveType.Quad),
+                _ => new GameObject(name)
+            };
+            go.name = name;
             go.SetTransform(position, rotation, scale, isLocalSpace);
 
             if (parentGo != null)
