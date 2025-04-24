@@ -60,7 +60,7 @@ Searching is case insensitive.")]
                 : AssetDatabase.FindAssets(filter ?? string.Empty, searchInFolders);
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("instanceId | assetGuid                            | assetPath");
+            stringBuilder.AppendLine("instanceID | assetGuid                            | assetPath");
             stringBuilder.AppendLine("-----------+--------------------------------------+---------------------------------");
             //                       " -12345    | 8e09c738-7b14-4d83-9740-2b396bd4cfc9 | Assets/Editor/Image.png");
 
@@ -73,8 +73,8 @@ Searching is case insensitive.")]
                 }
                 var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[i]);
                 var assetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                var instanceId = assetObject.GetInstanceID();
-                stringBuilder.AppendLine($"{instanceId,-10} | {assetGuids[i],-36} | {assetPath}");
+                var instanceID = assetObject.GetInstanceID();
+                stringBuilder.AppendLine($"{instanceID,-10} | {assetGuids[i],-36} | {assetPath}");
             }
 
             return $"[Success] Assets found: {assetGuids.Length}.\n{stringBuilder.ToString()}";

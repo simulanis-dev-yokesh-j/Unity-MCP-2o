@@ -19,6 +19,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             public static string PrefabPathIsInvalid(string path)
                 => $"[Error] Prefab path '{path}' is invalid.";
+
+            public static string PrefabStageIsNotOpened()
+                => "[Error] Prefab stage is not opened. Use 'Assets_Prefab_Open' to open it.";
+
+            public static string PrefabStageIsAlreadyOpened()
+                => "[Error] Prefab stage is already opened. Use 'Assets_Prefab_Close' to close it.";
         }
     }
 }

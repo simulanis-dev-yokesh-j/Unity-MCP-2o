@@ -28,7 +28,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             sb.AppendLine();
             sb.AppendLine("# Scene Hierarchy of GameObjects");
             sb.AppendLine("-------------------------------------------------------------------------");
-            sb.AppendLine("instanceId | activeInHierarchy | activeSelf | tag       | name");
+            sb.AppendLine("instanceID | activeInHierarchy | activeSelf | tag       | name");
             sb.AppendLine("-----------|-------------------|------------|-----------|----------------");
 
             // Add the current GameObject's metadata

@@ -19,8 +19,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             [Description("Full name of the Component. It should include full namespace path and the class name.")]
             string componentName,
-            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int? instanceId = null,
+            [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -28,7 +28,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
-            var go = GameObjectUtils.FindBy(instanceId, path, name, out var error);
+            var go = GameObjectUtils.FindBy(instanceID, path, name, out var error);
             if (error != null)
                 return error;
 

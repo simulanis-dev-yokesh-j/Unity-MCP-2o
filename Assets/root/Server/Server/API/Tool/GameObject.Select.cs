@@ -12,16 +12,16 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             Name = "GameObject_Select",
             Title = "Select GameObjects in opened scene"
         )]
-        [Description(@"Select GameObjects in opened scene by 'instanceId' (int) array.")]
+        [Description(@"Select GameObjects in opened scene by 'instanceID' (int) array.")]
         public Task<CallToolResponse> Find
         (
-            [Description("The 'instanceId' array of the target GameObjects.")]
-            int [] instanceIds
+            [Description("The 'instanceID' array of the target GameObjects.")]
+            int [] instanceIDs
         )
         {
             return ToolRouter.Call("GameObject_Select", arguments =>
             {
-                arguments[nameof(instanceIds)] = instanceIds;
+                arguments[nameof(instanceIDs)] = instanceIDs;
             });
         }
     }

@@ -17,8 +17,8 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         (
             [Description("Full name of the Component. It should include full namespace path and the class name.")]
             string componentName,
-            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int? instanceId = null,
+            [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -28,9 +28,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
             return ToolRouter.Call("GameObject_AddComponent", arguments =>
             {
                 arguments[nameof(componentName)] = componentName;
-
-                if (instanceId != null)
-                    arguments[nameof(instanceId)] = instanceId;
+                arguments[nameof(instanceID)] = instanceID;
 
                 if (path != null && path.Length > 0)
                     arguments[nameof(path)] = path;

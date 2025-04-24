@@ -12,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         (
             "Assets_Load",
             Title = "Assets Load",
-            Description = @"Load specific asset to get the 'instanceId' which could be used later for linking asset."
+            Description = @"Load specific asset to get the 'instanceID' which could be used later for linking asset."
         )]
         public string Load
         (
@@ -36,12 +36,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (asset == null)
                 return Error.NotFoundAsset(assetPath, assetGuid);
 
-            var instanceId = asset.GetInstanceID();
+            var instanceID = asset.GetInstanceID();
 
             return @$"[Success] Loaded asset.
 # Asset path: {assetPath}
 # Asset GUID: {assetGuid}
-# Asset instanceId: {instanceId}";
+# Asset instanceID: {instanceID}";
         });
     }
 }

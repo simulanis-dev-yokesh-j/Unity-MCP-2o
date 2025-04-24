@@ -6,14 +6,14 @@ using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Common.Json
 {
-    public class InstanceIdConverter : JsonConverter<InstanceId>
+    public class InstanceIDConverter : JsonConverter<InstanceID>
     {
-        public override InstanceId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override InstanceID? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.Null)
                 return null;
 
-            var instanceId = new InstanceId();
+            var instanceID = new InstanceID();
 
             while (reader.Read())
             {
@@ -27,8 +27,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
 
                     switch (propertyName)
                     {
-                        case "instanceId":
-                            instanceId.instanceId = reader.GetInt32();
+                        case "instanceID":
+                            instanceID.instanceID = reader.GetInt32();
                             break;
                         default:
                             // Skip unknown properties
@@ -38,10 +38,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
                 }
             }
 
-            return instanceId;
+            return instanceID;
         }
 
-        public override void Write(Utf8JsonWriter writer, InstanceId value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, InstanceID value, JsonSerializerOptions options)
         {
             if (value == null)
             {
@@ -52,8 +52,8 @@ namespace com.IvanMurzak.Unity.MCP.Common.Json
             writer.WriteStartObject();
 
             // Write the "id" property
-            writer.WritePropertyName("instanceId");
-            writer.WriteNumberValue(value.instanceId);
+            writer.WritePropertyName("instanceID");
+            writer.WriteNumberValue(value.instanceID);
 
             writer.WriteEndObject();
         }

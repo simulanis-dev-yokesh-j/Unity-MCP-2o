@@ -19,10 +19,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )]
         public string DestroyComponents
         (
-            [Description("The 'instanceId' array of the target components.")]
-            int[] componentInstanceIds,
-            [Description("GameObject by 'instanceId' (int). Priority: 1. (Recommended)")]
-            int? instanceId = null,
+            [Description("The 'instanceID' array of the target components.")]
+            int[] componentInstanceIDs,
+            [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
+            int instanceID = 0,
             [Description("GameObject by 'path'. Priority: 2.")]
             string? path = null,
             [Description("GameObject by 'name'. Priority: 3.")]
@@ -30,7 +30,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
-            var go = GameObjectUtils.FindBy(instanceId, path, name, out var error);
+            var go = GameObjectUtils.FindBy(instanceID, path, name, out var error);
             if (error != null)
                 return error;
 
@@ -41,17 +41,17 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             foreach (var component in allComponents)
             {
                 var componentFullName = component.GetType().FullName;
-                var componentInstanceId = component.GetInstanceID();
-                if (componentInstanceIds.Contains(componentInstanceId))
+                var componentInstanceID = component.GetInstanceID();
+                if (componentInstanceIDs.Contains(componentInstanceID))
                 {
                     UnityEngine.Object.DestroyImmediate(component);
                     destroyCounter++;
-                    stringBuilder.AppendLine($"[Success] Destroyed component instanceId='{componentInstanceId}', type='{componentFullName}'.");
+                    stringBuilder.AppendLine($"[Success] Destroyed component instanceID='{componentInstanceID}', type='{componentFullName}'.");
                 }
             }
 
             if (destroyCounter == 0)
-                return Error.NotFoundComponents(componentInstanceIds, allComponents);
+                return Error.NotFoundComponents(componentInstanceIDs, allComponents);
 
             return $"[Success] Destroyed {destroyCounter} components from GameObject.\n{stringBuilder.ToString()}";
         });
