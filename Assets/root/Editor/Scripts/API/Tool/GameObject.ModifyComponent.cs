@@ -76,6 +76,7 @@ The target reference instance could be located in project assets, in the scene o
 
             var changedFieldResults = new string[data.fields?.Count ?? 0];
             var changedPropertyResults = new string[data.properties?.Count ?? 0];
+            var bindingFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
 
             if ((data.fields?.Count ?? 0) > 0)
             {
@@ -102,7 +103,7 @@ The target reference instance could be located in project assets, in the scene o
                             Debug.LogError($"[Error] Type '{field.type}' not found. Can't modify field '{field.name}'.", go);
                     }
 
-                    var fieldInfo = type.GetField(field.name);
+                    var fieldInfo = type.GetField(field.name, bindingFlags);
                     if (fieldInfo == null)
                     {
                         changedFieldResults[i] = $"[Error] Field '{field.name}' not found. Can't modify field '{field.name}'.";
@@ -198,7 +199,7 @@ The target reference instance could be located in project assets, in the scene o
                             Debug.LogWarning($"[Error] Type '{property.type}' not found. Can't modify property '{property.name}'.", go);
                     }
 
-                    var propInfo = type.GetProperty(property.name);
+                    var propInfo = type.GetProperty(property.name, bindingFlags);
                     if (propInfo == null)
                     {
                         changedPropertyResults[i] = $"[Error] Property '{property.name}' not found. Can't modify property '{property.name}'.";
