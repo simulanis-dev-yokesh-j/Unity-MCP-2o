@@ -1,0 +1,43 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+using System.ComponentModel;
+using System.Linq;
+using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Utils;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+
+namespace com.IvanMurzak.Unity.MCP.Editor.API
+{
+    public partial class Tool_Assets_Prefab
+    {
+        [McpPluginTool
+        (
+            "Assets_Prefab_Close",
+            Title = "Close prefab",
+            Description = "Close a prefab. Use it when you are in prefab editing mode in Unity Editor."
+        )]
+        public string Close
+        (
+            [Description("True to save prefab. False to discard changes.")]
+            bool save = true
+        )
+        => MainThread.Run(() =>
+        {
+            var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage == null)
+                return Error.PrefabStageIsNotOpened();
+
+            var prefabGo = prefabStage.prefabContentsRoot;
+            if (prefabGo == null)
+                return Error.PrefabStageIsNotOpened();
+
+            if (save)
+                PrefabUtility.SavePrefabAsset(prefabGo);
+
+            StageUtility.GoBackToPreviousStage();
+
+            return @$"[Success] Prefab at asset path '{prefabStage.assetPath}' closed. " +
+                   $"Prefab with GameObject.name '{prefabStage.prefabContentsRoot.name}' saved: {save}.";
+        });
+    }
+}

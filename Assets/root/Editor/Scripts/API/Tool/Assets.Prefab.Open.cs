@@ -29,6 +29,10 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )
         => MainThread.Run(() =>
         {
+            var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+            // if (prefabStage != null)
+            //     return Error.PrefabStageIsAlreadyOpened();
+
             if (string.IsNullOrEmpty(prefabAssetPath) && instanceId != 0)
             {
                 // Find prefab from GameObject in loaded scene
@@ -42,17 +46,21 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (string.IsNullOrEmpty(prefabAssetPath))
                 return Error.PrefabPathIsEmpty();
 
-            var prefab = AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(prefabAssetPath);
-            if (prefab == null)
-                return Error.NotFoundPrefabAtPath(prefabAssetPath);
 
-            var success = AssetDatabase.OpenAsset(prefab);
-            if (!success)
-                return Error.NotFoundPrefabAtPath(prefabAssetPath);
+            var goInstance = instanceId != 0
+                ? GameObjectUtils.FindByInstanceId(instanceId)
+                : null;
 
-            return @$"[Success] Prefab '{prefabAssetPath}' opened. Use 'Assets_Prefab_Close' to close it.
+            prefabStage = goInstance != null
+                ? UnityEditor.SceneManagement.PrefabStageUtility.OpenPrefab(prefabAssetPath, goInstance)
+                : UnityEditor.SceneManagement.PrefabStageUtility.OpenPrefab(prefabAssetPath);
+
+            if (prefabStage == null)
+                return Error.PrefabStageIsNotOpened();
+
+            return @$"[Success] Prefab '{prefabStage.assetPath}' opened. Use 'Assets_Prefab_Close' to close it.
 # Prefab information:
-{prefab.ToMetadata().Print()}";
+{prefabStage.prefabContentsRoot.ToMetadata().Print()}";
         });
     }
 }
