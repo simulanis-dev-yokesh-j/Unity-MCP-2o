@@ -127,6 +127,13 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 - ✅ Get All
 
+### Package
+
+- 🔲 Get installed
+- 🔲 Install
+- 🔲 Remove
+- 🔲 Update
+
 </td>
 </tr>
 </table>
@@ -148,11 +155,26 @@ openupm add com.ivanmurzak.unity.mcp
 
 # Usage
 
-1. Go 👉 `Window/AI Connector (Unity-MCP)`.
-2. Click configure on your MCP client.
-3. Restart your MCP client.
-4. Make sure `AI Connector` is "Connected" after restart.
-5. Test AI connection in your Client (Cursor, Claude Desktop). Type any question or task into the chat. Something like:
+1. Make sure your project path doesn't have a space symbol " ".
+> - ✅ `C:/MyProjects/Project`
+> - ❌ `C:/My Projects/Project`
+
+2. Open Unity project, go 👉 `Window/AI Connector (Unity-MCP)`.
+
+![Unity_WaSRb5FIAR](https://github.com/user-attachments/assets/e8049620-6614-45f1-92d7-cc5d00a6b074)
+
+3. Install MCP client
+> - [Install Cursor](https://www.cursor.com/) (recommended)
+> - [Install Claude](https://claude.ai/download)
+
+4. Sign-in into MCP client
+5. Click `Configure` at your MCP client.
+
+![image](https://github.com/user-attachments/assets/19f80179-c5b3-4e9c-bdf6-07edfb773018)
+
+6. Restart your MCP client.
+7. Make sure `AI Connector` is "Connected" or "Connecting..." after restart.
+8. Test AI connection in your Client (Cursor, Claude Desktop). Type any question or task into the chat. Something like:
 
   ```text
   Explain my scene hierarchy
