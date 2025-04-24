@@ -46,7 +46,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (string.IsNullOrEmpty(prefabAssetPath))
                 return Error.PrefabPathIsEmpty();
 
-
             var goInstance = instanceId != 0
                 ? GameObjectUtils.FindByInstanceId(instanceId)
                 : null;
