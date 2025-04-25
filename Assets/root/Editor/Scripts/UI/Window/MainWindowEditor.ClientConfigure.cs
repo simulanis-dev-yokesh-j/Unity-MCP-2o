@@ -141,11 +141,18 @@ namespace com.IvanMurzak.Unity.MCP.Editor
         }
         bool ConfigureMcpClient(string configPath)
         {
-            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+            if (string.IsNullOrEmpty(configPath))
                 return false;
 
             try
             {
+                if (!File.Exists(configPath))
+                {
+                    // Create the file if it doesn't exist
+                    File.WriteAllText(configPath, Startup.RawJsonConfiguration(McpPluginUnity.Port));
+                    return true;
+                }
+
                 var json = File.ReadAllText(configPath);
 
                 // Parse the existing config as JsonObject
