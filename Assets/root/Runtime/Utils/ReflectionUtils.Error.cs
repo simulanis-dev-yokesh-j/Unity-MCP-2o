@@ -43,6 +43,9 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 => $"[Error] Invalid component property type '{serializedProperty.type}' for '{propertyInfo.Name}'. Expected '{propertyInfo.PropertyType.FullName}'.";
             public static string InvalidComponentFieldType(SerializedMember serializedProperty, FieldInfo propertyInfo)
                 => $"[Error] Invalid component property type '{serializedProperty.type}' for '{propertyInfo.Name}'. Expected '{propertyInfo.FieldType.FullName}'.";
+
+            public static string NotSupportedInRuntime(Type type)
+                => $"[Error] Type '{type.FullName}' is not supported in runtime for now.";
         }
     }
 }

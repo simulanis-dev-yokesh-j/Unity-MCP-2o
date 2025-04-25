@@ -16,44 +16,31 @@ namespace com.IvanMurzak.Unity.MCP.Utils
             stringBuilder ??= new StringBuilder();
 
             if (string.IsNullOrEmpty(data?.type))
-                return stringBuilder.Append(Error.DataTypeIsEmpty());
+                return stringBuilder.AppendLine(new string(' ', depth) + Error.DataTypeIsEmpty());
 
             var type = TypeUtils.GetType(data.type);
             if (type == null)
-                return stringBuilder.Append(Error.NotFoundType(data.type));
+                return stringBuilder.AppendLine(new string(' ', depth) + Error.NotFoundType(data.type));
 
             if (obj == null)
-                return stringBuilder.Append(Error.TargetObjectIsNull());
+                return stringBuilder.AppendLine(new string(' ', depth) + Error.TargetObjectIsNull());
 
-            var castedComponent = TypeUtils.CastTo(obj, data.type, out var error);
+            var castedObj = TypeUtils.CastTo(obj, data.type, out var error);
             if (error != null)
-                return stringBuilder.Append(error);
+                return stringBuilder.AppendLine(new string(' ', depth) + error);
 
-            if (!type.IsAssignableFrom(obj.GetType()))
-                return stringBuilder.Append(Error.TypeMismatch(data.type, obj.GetType().FullName));
-
-            var changedFieldResults = new string[data.fields?.Count ?? 0];
-            var changedPropertyResults = new string[data.properties?.Count ?? 0];
+            if (!type.IsAssignableFrom(castedObj.GetType()))
+                return stringBuilder.AppendLine(new string(' ', depth) + Error.TypeMismatch(data.type, obj.GetType().FullName));
 
             // Modify fields
             if ((data.fields?.Count ?? 0) > 0)
-            {
                 for (var i = 0; i < data.fields.Count; i++)
-                {
-                    var field = data.fields[i];
-                    ModifyField(ref obj, field, stringBuilder, depth + 1, bindingFlags);
-                }
-            }
+                    ModifyField(ref castedObj, data.fields[i], stringBuilder, depth + 1, bindingFlags);
 
+            // Modify properties
             if ((data.properties?.Count ?? 0) > 0)
-            {
-                // Modify properties
                 for (var i = 0; i < data.properties.Count; i++)
-                {
-                    var property = data.properties[i];
-                    ModifyProperty(ref obj, property, stringBuilder, depth + 1, bindingFlags);
-                }
-            }
+                    ModifyProperty(ref castedObj, data.properties[i], stringBuilder, depth + 1, bindingFlags);
 
             return stringBuilder;
         }
@@ -113,7 +100,9 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     // Cast the object to the target type
                     var castedObject = TypeUtils.CastTo(referenceObject, targetType, out var error);
                     if (error != null)
-                        return stringBuilder.AppendLine(error);
+                        return stringBuilder.AppendLine(new string(' ', depth) + error);
+
+                    Modify(ref castedObject, fieldValue, stringBuilder, depth + 1, bindingFlags);
 
                     fieldInfo.SetValue(obj, castedObject);
                     return stringBuilder.AppendLine(new string(' ', depth) + $"[Success] Field '{fieldValue.name}' modified to '{castedObject}'.");
@@ -209,6 +198,8 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     if (error != null)
                         return stringBuilder.AppendLine(new string(' ', depth) + error);
 
+                    Modify(ref castedObject, propertyValue, stringBuilder, depth + 1, bindingFlags);
+
                     propInfo.SetValue(obj, castedObject);
                     return stringBuilder.AppendLine(new string(' ', depth) + $"[Success] Property '{propertyValue.name}' modified to '{castedObject}'.");
                 }
@@ -230,10 +221,10 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 }
                 catch (Exception ex)
                 {
-                    var warningMessage = $"[Error] Property '{propertyValue.name}' modification failed: {ex.Message}";
+                    var message = $"[Error] Property '{propertyValue.name}' modification failed: {ex.Message}";
                     if (McpPluginUnity.IsLogActive(LogLevel.Error))
-                        Debug.LogError(warningMessage); //, go);
-                    return stringBuilder.AppendLine(new string(' ', depth) + warningMessage);
+                        Debug.LogError(message); //, go);
+                    return stringBuilder.AppendLine(new string(' ', depth) + message);
                 }
             }
         }
