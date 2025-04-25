@@ -64,7 +64,6 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         catch (Exception ex)
                         {
                             _logger.LogError(ex, $"Error invoking tool '{data.Name}' on client '{Context?.ConnectionId}': {ex.Message}");
-                            retryCount++;
                             RemoveCurrentClient();
                             continue;
                         }
