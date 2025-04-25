@@ -35,7 +35,7 @@ Returns list of all available components preview if no requested components foun
 
             var allComponents = go.GetComponents<UnityEngine.Component>();
             var components = allComponents
-                .Where(c => componentInstanceIDs.Length == 0 || componentInstanceIDs.Contains(c.GetInstanceID()))
+                .Where(c => componentInstanceIDs == null || componentInstanceIDs.Length == 0 || componentInstanceIDs.Contains(c.GetInstanceID()))
                 .Select(c => Serializer.Component.BuildData(c))
                 .ToList();
 

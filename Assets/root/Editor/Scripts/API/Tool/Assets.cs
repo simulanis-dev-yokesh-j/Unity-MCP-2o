@@ -26,6 +26,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             public static string SourceAndDestinationPathsArrayMustBeOfTheSameLength()
                 => "[Error] Source and destination paths arrays must be of the same length.";
+
+            public static string NotAllowedToModifyAssetInPackages(string assetPath)
+                => $"[Error] Not allowed to modify asset in '/Packages' folder. Please modify it in '/Assets' folder. Path: '{assetPath}'.";
         }
     }
 }

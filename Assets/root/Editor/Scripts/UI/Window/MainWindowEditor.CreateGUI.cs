@@ -1,8 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -185,6 +181,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor
 
             var rawJsonField = root.Query<TextField>("rawJsonConfiguration").First();
             rawJsonField.value = Startup.RawJsonConfiguration(McpPluginUnity.Port);
+
+            // Rebuild MCP Server
+            // -----------------------------------------------------------------
+            root.Query<Button>("btnRebuildServer").First().RegisterCallback<ClickEvent>(async evt =>
+            {
+                await Startup.BuildServer(force: true);
+            });
         }
     }
 }

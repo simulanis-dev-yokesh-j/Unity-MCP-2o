@@ -51,20 +51,28 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     var completedTask = await Task.WhenAny(invokeTask, Task.Delay(TimeSpan.FromSeconds(Consts.Hub.TimeoutSeconds), cancellationToken));
                     if (completedTask == invokeTask)
                     {
-                        var result = await invokeTask;
-                        if (result == null)
-                            return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
-                                .Log(_logger);
+                        retryCount++;
+                        try
+                        {
+                            var result = await invokeTask;
+                            if (result == null)
+                                return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Tool '{data.Name}' returned null result.")
+                                    .Log(_logger);
 
-                        return result;
+                            return result;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"Error invoking tool '{data.Name}' on client '{Context?.ConnectionId}': {ex.Message}");
+                            RemoveCurrentClient();
+                            continue;
+                        }
                     }
-                    else
-                    {
-                        // Timeout occurred
-                        _logger.LogWarning($"Timeout: Client '{Context?.ConnectionId}' did not respond in {Consts.Hub.TimeoutSeconds} seconds. Removing from ConnectedClients.");
-                        RemoveCurrentClient();
-                        // Restart the loop to try again with a new client
-                    }
+
+                    // Timeout occurred
+                    _logger.LogWarning($"Timeout: Client '{Context?.ConnectionId}' did not respond in {Consts.Hub.TimeoutSeconds} seconds. Removing from ConnectedClients.");
+                    RemoveCurrentClient();
+                    // Restart the loop to try again with a new client
                 }
                 return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}' after {maxRetries} retries.")
                     .Log(_logger);
