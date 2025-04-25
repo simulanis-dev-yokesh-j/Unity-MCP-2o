@@ -9,10 +9,10 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Utils
     [Serializable]
     public class SerializedMember
     {
-        [JsonInclude] public string name = string.Empty; // needed for Unity's JsonUtility serialziation
-        [JsonInclude] public string type = string.Empty; // needed for Unity's JsonUtility serialziation
-        [JsonInclude] public List<SerializedMember>? fields; // needed for Unity's JsonUtility serialziation
-        [JsonInclude] public List<SerializedMember>? properties; // needed for Unity's JsonUtility serialziation
+        [JsonInclude] public string name = string.Empty; // needed for Unity's JsonUtility serialization
+        [JsonInclude] public string type = string.Empty; // needed for Unity's JsonUtility serialization
+        [JsonInclude] public List<SerializedMember>? fields; // needed for Unity's JsonUtility serialization
+        [JsonInclude] public List<SerializedMember>? properties; // needed for Unity's JsonUtility serialization
 
         [JsonInclude, JsonPropertyName("value")]
         public JsonElement? valueJsonElement = null; // System.Text.Json serialization
