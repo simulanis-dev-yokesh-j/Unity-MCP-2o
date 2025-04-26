@@ -10,9 +10,9 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_SetParent",
-            Title = "Set parent GameObject in opened scene"
+            Title = "Set parent GameObject in opened Prefab or in a Scene"
         )]
-        [Description(@"Duplicate GameObjects in opened scene by 'instanceID' (int) array.")]
+        [Description(@"Set GameObjects in opened Prefab or in a Scene by 'instanceID' (int) array.")]
         public Task<CallToolResponse> SetParent
         (
             [Description("The 'instanceID' array of the target GameObjects.")]

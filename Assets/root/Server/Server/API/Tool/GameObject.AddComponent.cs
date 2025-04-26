@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_AddComponent",
-            Title = "Add Component to a GameObject"
+            Title = "Add Component to a GameObject in opened Prefab or in a Scene"
         )]
         [Description("Add a component to a GameObject.")]
         public Task<CallToolResponse> AddComponent

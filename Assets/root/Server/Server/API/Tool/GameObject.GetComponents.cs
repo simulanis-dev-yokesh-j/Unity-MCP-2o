@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_GetComponents",
-            Title = "Get GameObject components"
+            Title = "Get GameObject components in opened Prefab or in a Scene"
         )]
         [Description(@"Get components of the target GameObject. Returns property values of each component.
 Returns list of all available components preview if no requested components found.")]

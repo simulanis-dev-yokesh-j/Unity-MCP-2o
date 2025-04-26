@@ -1,7 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "GameObject_Create",
-            Title = "Create a new GameObject",
+            Title = "Create a new GameObject in opened Prefab or in a Scene",
             Description = @"Create a new GameObject at specific path.
 if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount of operations."
         )]

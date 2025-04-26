@@ -19,16 +19,30 @@ namespace com.IvanMurzak.Unity.MCP.Common.Data.Utils
 
         public SerializedMember() { }
 
-        protected SerializedMember(string name, Type type, string json)
+        protected SerializedMember(string name, Type type)
         {
             this.name = name;
             this.type = type.FullName ?? throw new ArgumentNullException(nameof(type));
-
-            using var doc = JsonDocument.Parse(json);
-            valueJsonElement = doc.RootElement.Clone();
         }
 
         public static SerializedMember FromJson(string name, Type type, string json)
-            => new SerializedMember(name, type, json);
+        {
+            var result = new SerializedMember(name, type);
+            using (var doc = JsonDocument.Parse(json))
+            {
+                result.valueJsonElement = doc.RootElement.Clone();
+            }
+            return result;
+        }
+        public static SerializedMember FromPrimitive(string name, Type type, object primitiveValue)
+        {
+            var result = new SerializedMember(name, type);
+            var json = JsonSerializer.Serialize(primitiveValue);
+            using (var doc = JsonDocument.Parse(json))
+            {
+                result.valueJsonElement = doc.RootElement.Clone();
+            }
+            return result;
+        }
     }
 }

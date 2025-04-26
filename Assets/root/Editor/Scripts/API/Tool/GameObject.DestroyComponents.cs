@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
@@ -14,7 +13,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "GameObject_DestroyComponents",
-            Title = "Destroy Components from a GameObject",
+            Title = "Destroy Components from a GameObject in opened Prefab or in a Scene",
             Description = "Destroy one or many components from target GameObject."
         )]
         public string DestroyComponents

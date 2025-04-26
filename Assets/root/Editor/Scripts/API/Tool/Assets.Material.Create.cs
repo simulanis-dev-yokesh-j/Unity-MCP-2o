@@ -40,7 +40,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            return $"[Success] Material instanceID '{material.GetInstanceID()}' created at '{assetPath}'.\n{Serializer.Anything.Serialize(material)}";
+            var result = Serializer.Anything.Serialize(material, name: material.name);
+            return $"[Success] Material instanceID '{material.GetInstanceID()}' created at '{assetPath}'.\n{result}";
         });
     }
 }

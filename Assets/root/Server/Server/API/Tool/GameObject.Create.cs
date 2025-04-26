@@ -11,9 +11,10 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_Create",
-            Title = "Create GameObject"
+            Title = "Create a new GameObject in opened Prefab or in a Scene"
         )]
-        [Description("Create a new GameObject in the current active scene.")]
+        [Description(@"Create a new GameObject at specific path.
+if needed - provide proper 'position', 'rotation' and 'scale' to reduce amount of operations.")]
         public Task<CallToolResponse> Create
         (
             [Description("Path to the GameObject where it should be created. Can't be empty. Each intermediate GameObject should exist.")]

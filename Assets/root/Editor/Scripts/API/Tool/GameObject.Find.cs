@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
@@ -12,8 +11,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "GameObject_Find",
-            Title = "Find GameObject in Scene",
-            Description = "Find GameObject in the active scene. Returns metadata about GameObject and its children. Also it returns Components preview just for the target GameObject."
+            Title = "Find GameObject in opened Prefab or in a Scene",
+            Description = @"Finds specific GameObject by provided information.
+First it looks for the opened Prefab, if any Prefab is opened it looks only there ignoring a scene.
+If no opened Prefab it looks into current active scene.
+Returns GameObject infromation and its children.
+Also, it returns Components preview just for the target GameObject."
         )]
         public string Find
         (

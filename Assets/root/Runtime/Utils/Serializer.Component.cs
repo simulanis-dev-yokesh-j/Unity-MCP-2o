@@ -76,7 +76,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     isEnabled = BuildIsEnabled(component),
                     instanceID = component.GetInstanceID()
                 };
-                var componentType = component.GetType();
+
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
                 result.fields = Anything.SerializeFields(component, flags);

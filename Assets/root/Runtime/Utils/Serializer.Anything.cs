@@ -1,5 +1,5 @@
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,33 +16,59 @@ namespace com.IvanMurzak.Unity.MCP.Utils
     {
         public static class Anything
         {
-            public static SerializedMember Serialize(object obj, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            public static SerializedMember Serialize(object obj, Type? type = null, string? name = null, bool recursive = true,
+                BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
             {
-                var objType = obj.GetType();
-                var isStruct = objType.IsValueType && !objType.IsPrimitive && !objType.IsEnum;
+                name ??= string.Empty;
+                type ??= obj?.GetType();
 
-                if (objType.IsPrimitive)
+                if (obj == null)
+                    return SerializedMember.FromJson(name, type, null);
+
+                var isStruct = type.IsValueType && !type.IsPrimitive && !type.IsEnum;
+
+                if (type.IsPrimitive)
                 {
                     // Handle as primitive type
-                    return SerializedMember.FromJson(string.Empty, objType, JsonUtility.ToJson(obj));
+                    return SerializedMember.FromPrimitive(name, type, obj);
                 }
-                if (objType.IsEnum)
+                if (type.IsEnum)
                 {
                     // Handle as enum type
-                    return SerializedMember.FromJson(string.Empty, objType, JsonUtility.ToJson(obj));
+                    return SerializedMember.FromJson(name, type, JsonUtils.Serialize(obj));
                 }
-                if (objType.IsClass || isStruct)
+                if (type.IsClass)
                 {
-                    // Handle as class or struct type
-                    return new SerializedMember()
+                    var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
+                    if (isUnityObject)
                     {
-                        type = objType.FullName,
-                        fields = SerializeFields(obj, flags),
-                        properties = SerializeProperties(obj, flags),
-                    };
+                        var unityObject = obj as UnityEngine.Object;
+                        var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
+                        return SerializedMember.FromJson(name, type, instanceIDJson);
+                    }
+                    // Handle as class type
+                    if (recursive)
+                    {
+                        return new SerializedMember()
+                        {
+                            type = type.FullName,
+                            name = name,
+                            fields = SerializeFields(obj, flags),
+                            properties = SerializeProperties(obj, flags)
+                        };
+                    }
+                    else
+                    {
+                        return SerializedMember.FromJson(name, type, JsonUtility.ToJson(obj));
+                    }
+                }
+                if (isStruct)
+                {
+                    // Handle as struct type
+                    return SerializedMember.FromJson(name, type, JsonUtility.ToJson(obj));
                 }
 
-                throw new ArgumentException($"Unsupported type: {objType.FullName}");
+                throw new ArgumentException($"Unsupported type: {type.FullName}");
             }
 
             public static List<SerializedMember> SerializeFields(object obj, BindingFlags flags)
@@ -58,25 +84,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     var fieldType = field.FieldType;
 
                     serialized ??= new();
-
-                    if (value == null)
-                    {
-                        serialized.Add(SerializedMember.FromJson(field.Name, fieldType, null));
-                        continue;
-                    }
-
-                    // The type is a UnityEngine.Object type, so it should be handled differently.
-                    var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(fieldType);
-                    if (isUnityObject)
-                    {
-                        var unityObject = value as UnityEngine.Object;
-                        var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
-                        serialized.Add(SerializedMember.FromJson(field.Name, fieldType, instanceIDJson));
-                    }
-                    else
-                    {
-                        serialized.Add(SerializedMember.FromJson(field.Name, fieldType, JsonUtility.ToJson(value)));
-                    }
+                    serialized.Add(Serialize(value, fieldType, name: field.Name, recursive: false, flags: flags));
                 }
                 return serialized;
             }
@@ -96,25 +104,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                         var propType = prop.PropertyType;
 
                         serialized ??= new();
-
-                        if (value == null)
-                        {
-                            serialized.Add(SerializedMember.FromJson(prop.Name, propType, null));
-                            continue;
-                        }
-
-                        // The type is a UnityEngine.Object type, so it should be handled differently.
-                        var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(propType);
-                        if (isUnityObject)
-                        {
-                            var unityObject = value as UnityEngine.Object;
-                            var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
-                            serialized.Add(SerializedMember.FromJson(prop.Name, propType, instanceIDJson));
-                        }
-                        else
-                        {
-                            serialized.Add(SerializedMember.FromJson(prop.Name, propType, JsonUtility.ToJson(value)));
-                        }
+                        serialized.Add(Serialize(value, propType, name: prop.Name, recursive: false, flags: flags));
                     }
                     catch { /* skip inaccessible properties */ }
                 }
