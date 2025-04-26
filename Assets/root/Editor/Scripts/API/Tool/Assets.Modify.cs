@@ -17,7 +17,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         )]
         public string Modify
         (
-            [Description("The asset content. It override the existed asset content.")]
+            [Description("The asset content. It overrides the existing asset content.")]
             SerializedMember content,
             [Description("Path to the asset. See 'Assets_Search' for more details. Starts with 'Assets/'. Priority: 1. (Recommended)")]
             string? assetPath = null,

@@ -16,7 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [Description(@"Modify asset in the project. Not allowed to modify asset in 'Packages/' folder. Please modify it in 'Assets/' folder.")]
         public Task<CallToolResponse> Modify
         (
-            [Description("The asset content. It override the existed asset content.")]
+            [Description("The asset content. It overrides the existing asset content.")]
             SerializedMember content,
             [Description("Path to the asset. See 'Assets_Search' for more details. Starts with 'Assets/'. Priority: 1. (Recommended)")]
             string? assetPath = null,
