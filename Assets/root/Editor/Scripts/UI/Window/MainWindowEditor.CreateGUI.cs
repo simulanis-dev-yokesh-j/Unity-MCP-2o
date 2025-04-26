@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -72,6 +73,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                     plugin.KeepConnected,
                     (connectionState, keepConnected) => (connectionState, keepConnected)
                 )
+                .ThrottleLast(TimeSpan.FromMilliseconds(10))
+                .ObserveOnCurrentSynchronizationContext()
+                .SubscribeOnCurrentSynchronizationContext()
                 .Subscribe(tuple =>
                 {
                     var (connectionState, keepConnected) = tuple;
@@ -82,6 +86,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         HubConnectionState.Disconnected => false,
                         HubConnectionState.Reconnecting => true,
                         _ => false
+                    };
+
+                    connectionStatusText.text = connectionState switch
+                    {
+                        HubConnectionState.Connected => keepConnected
+                            ? "Connected"
+                            : "Disconnected",
+                        HubConnectionState.Disconnected => keepConnected
+                            ? "Connecting..."
+                            : "Disconnected",
+                        HubConnectionState.Reconnecting => keepConnected
+                            ? "Connecting..."
+                            : "Disconnected",
+                        HubConnectionState.Connecting => keepConnected
+                            ? "Connecting..."
+                            : "Disconnected",
+                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
 
                     connectionStatusCircle.RemoveFromClassList(USS_IndicatorClass_Connected);
@@ -99,22 +120,11 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         HubConnectionState.Reconnecting => keepConnected
                             ? USS_IndicatorClass_Connecting
                             : USS_IndicatorClass_Disconnected,
+                        HubConnectionState.Connecting => keepConnected
+                            ? USS_IndicatorClass_Connecting
+                            : USS_IndicatorClass_Disconnected,
                         _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, null)
                     });
-
-                    connectionStatusText.text = connectionState switch
-                    {
-                        HubConnectionState.Connected => keepConnected
-                            ? "Connected"
-                            : "Disconnected",
-                        HubConnectionState.Disconnected => keepConnected
-                            ? "Connecting..."
-                            : "Disconnected",
-                        HubConnectionState.Reconnecting => keepConnected
-                            ? "Connecting..."
-                            : "Disconnected",
-                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
-                    };
 
                     btnConnectOrDisconnect.text = connectionState switch
                     {
@@ -125,6 +135,9 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             ? ServerButtonText_Stop
                             : ServerButtonText_Connect,
                         HubConnectionState.Reconnecting => keepConnected
+                            ? ServerButtonText_Stop
+                            : ServerButtonText_Connect,
+                        HubConnectionState.Connecting => keepConnected
                             ? ServerButtonText_Stop
                             : ServerButtonText_Connect,
                         _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
@@ -138,7 +151,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
             {
                 if (btnConnectOrDisconnect.text == ServerButtonText_Connect)
                 {
-                    btnConnectOrDisconnect.text = ServerButtonText_Stop;
+                    // btnConnectOrDisconnect.text = ServerButtonText_Stop;
                     McpPluginUnity.KeepConnected = true;
                     McpPluginUnity.Save();
                     if (McpPlugin.HasInstance)
@@ -152,7 +165,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Disconnect)
                 {
-                    btnConnectOrDisconnect.text = ServerButtonText_Connect;
+                    // btnConnectOrDisconnect.text = ServerButtonText_Connect;
                     McpPluginUnity.KeepConnected = false;
                     McpPluginUnity.Save();
                     if (McpPlugin.HasInstance)
@@ -160,7 +173,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                 }
                 else if (btnConnectOrDisconnect.text == ServerButtonText_Stop)
                 {
-                    btnConnectOrDisconnect.text = ServerButtonText_Connect;
+                    // btnConnectOrDisconnect.text = ServerButtonText_Connect;
                     McpPluginUnity.KeepConnected = false;
                     McpPluginUnity.Save();
                     if (McpPlugin.HasInstance)

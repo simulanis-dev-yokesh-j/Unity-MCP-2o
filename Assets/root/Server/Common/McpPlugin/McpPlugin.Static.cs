@@ -17,6 +17,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public static IDisposable DoOnce(Action<IMcpPlugin> func) => _instance
             .Where(x => x != null)
             .Take(1)
+            .ObserveOnCurrentSynchronizationContext()
+            .SubscribeOnCurrentSynchronizationContext()
             .Subscribe(instance =>
             {
                 if (instance == null)
@@ -27,12 +29,14 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }
                 catch (Exception e)
                 {
-                    instance?._logger.LogError(e, "[McpPlugin] Error in Do()");
+                    instance?._logger.LogError(e, "[McpPlugin] Error in DoOnce()");
                 }
             });
 
         public static IDisposable DoAlways(Action<IMcpPlugin> func) => _instance
             .Where(x => x != null)
+            .ObserveOnCurrentSynchronizationContext()
+            .SubscribeOnCurrentSynchronizationContext()
             .Subscribe(instance =>
             {
                 if (instance == null)
@@ -43,7 +47,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 }
                 catch (Exception e)
                 {
-                    instance?._logger.LogError(e, "[McpPlugin] Error in Do()");
+                    instance?._logger.LogError(e, "[McpPlugin] Error in DoAlways()");
                 }
             });
 

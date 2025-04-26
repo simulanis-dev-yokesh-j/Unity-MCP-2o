@@ -89,12 +89,17 @@ namespace com.IvanMurzak.Unity.MCP.Common
             });
         }
 
-        public Task<bool> Connect(CancellationToken cancellationToken = default)
+        public async Task<bool> Connect(CancellationToken cancellationToken = default)
         {
-            _continueToReconnect.Value = true;
+            _continueToReconnect.Value = false;
 
             // Dispose the previous internal CancellationTokenSource if it exists
             CancelInternalToken(dispose: true);
+
+            if (_hubConnection.Value != null)
+                await _hubConnection.Value.StopAsync();
+
+            // await Task.Delay(100, cancellationToken);
 
             // Create a new internal CancellationTokenSource and link it to the external token
             internalCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -102,7 +107,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
             {
                 using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(internalCts.Token, timeoutCts.Token);
 
-                return InternalConnect(linkedCts.Token);
+                _continueToReconnect.Value = true;
+                return await InternalConnect(linkedCts.Token);
             }
         }
 
@@ -121,7 +127,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             }
         }
 
-        async Task<bool> InternalConnect(CancellationToken cancellationToken = default)
+        async Task<bool> InternalConnect(CancellationToken cancellationToken)
         {
             if (_hubConnection.Value == null)
             {
@@ -145,9 +151,12 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     .Subscribe(async _ =>
                     {
                         connectionTask = null;
+                        if (cancellationToken.IsCancellationRequested)
+                            return;
                         _logger.LogWarning("Connection closed. Attempting to reconnect... {0}.", Endpoint);
                         await InternalConnect(cancellationToken);
-                    });
+                    })
+                    .RegisterTo(cancellationToken);
             }
 
             if (_hubConnection.Value?.State == HubConnectionState.Connected)
@@ -194,7 +203,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                         _logger.LogWarning("Failed to start connection: Unknown error {0}.", Endpoint);
                     }
 
-                    if (_continueToReconnect.CurrentValue)
+                    if (_continueToReconnect.CurrentValue && !cancellationToken.IsCancellationRequested)
                     {
                         _logger.LogTrace("Waiting before retry... {0}", Endpoint);
                         await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); // Wait before retrying
