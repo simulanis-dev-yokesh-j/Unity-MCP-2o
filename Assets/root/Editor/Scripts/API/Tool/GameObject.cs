@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
-using com.IvanMurzak.Unity.MCP.Editor.Utils;
+using com.IvanMurzak.Unity.MCP.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
 {

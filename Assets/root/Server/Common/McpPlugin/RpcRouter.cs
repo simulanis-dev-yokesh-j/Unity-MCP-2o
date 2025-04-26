@@ -16,6 +16,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
         readonly IConnectionManager _connectionManager;
         readonly CompositeDisposable _serverEventsDisposables = new();
         readonly IDisposable _hubConnectionDisposable;
+        readonly string guid = System.Guid.NewGuid().ToString();
 
         public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => _connectionManager.ConnectionState;
         public ReadOnlyReactiveProperty<bool> KeepConnected => _connectionManager.KeepConnected;
@@ -53,6 +54,22 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 return;
 
             _logger.LogTrace("Subscribing to server events.");
+
+            // hubConnection.On<string, string>(Consts.Hub.Ping,
+            //     ping => ping == Consts.Hub.Ping
+            //         ? Consts.Hub.Pong
+            //         : ping)
+            //     .AddTo(_serverEventsDisposables);
+
+            hubConnection.On<string, string>(Consts.Hub.Ping,
+                ping =>
+                {
+                    _logger.LogTrace("ping " + guid);
+                    return ping == Consts.Hub.Ping
+                        ? Consts.Hub.Pong
+                        : ping;
+                })
+                .AddTo(_serverEventsDisposables);
 
             hubConnection.On<RequestCallTool, IResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, async data =>
                 {

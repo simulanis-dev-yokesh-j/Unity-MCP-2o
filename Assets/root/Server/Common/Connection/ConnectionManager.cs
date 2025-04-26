@@ -144,6 +144,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                     .Where(_ => _continueToReconnect.CurrentValue)
                     .Subscribe(async _ =>
                     {
+                        connectionTask = null;
                         _logger.LogWarning("Connection closed. Attempting to reconnect... {0}.", Endpoint);
                         await InternalConnect(cancellationToken);
                     });
@@ -175,6 +176,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
             connectionTask = _hubConnection.CurrentValue.StartAsync(cancellationToken)
                 .ContinueWith(async task =>
                 {
+                    connectionTask = null;
                     if (task.IsCompletedSuccessfully)
                     {
                         _logger.LogInformation("Connection started successfully {0}.", Endpoint);
@@ -199,7 +201,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
                         // Cancel the current connection task to allow for a new connection attempt
                         // connectionTask?.Dispose();
-                        connectionTask = null;
+                        // connectionTask = null;
 
                         _logger.LogTrace("Retrying connection... {0}", Endpoint);
                         return await InternalConnect(cancellationToken);
@@ -247,7 +249,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
         public async Task DisposeAsync()
         {
             connectionTask = null;
-            _continueToReconnect.Value = false;
+            if (!_continueToReconnect.IsDisposed)
+                _continueToReconnect.Value = false;
 
             hubConnectionLogger?.Dispose();
             hubConnectionObservable?.Dispose();
@@ -257,7 +260,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
             CancelInternalToken(dispose: true);
 
-            if (_hubConnection.Value != null)
+            if (_hubConnection.CurrentValue != null)
             {
                 try
                 {

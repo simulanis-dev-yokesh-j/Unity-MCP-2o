@@ -1,7 +1,5 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using com.IvanMurzak.Unity.MCP.Common;
@@ -14,7 +12,8 @@ namespace com.IvanMurzak.Unity.MCP.Server
     public class RemoteApp : BaseHub<RemoteApp>, IRemoteApp
     {
 
-        public RemoteApp(ILogger<RemoteApp> logger, IHubContext<RemoteApp> hubContext) : base(logger, hubContext)
+        public RemoteApp(ILogger<RemoteApp> logger, IHubContext<RemoteApp> hubContext)
+            : base(logger, hubContext, pingTimeout: TimeSpan.FromSeconds(1))
         {
         }
 
@@ -37,21 +36,26 @@ namespace com.IvanMurzak.Unity.MCP.Server
                     _logger.LogInformation(message);
                 }
 
-                const int maxRetries = 5; // Maximum number of retries
-                var retryCount = 0;       // Retry counter
+                const int maxRetries = 10; // Maximum number of retries
+                var retryCount = 0;        // Retry counter
 
                 while (retryCount < maxRetries)
                 {
+                    retryCount++;
                     var client = GetActiveClient();
                     if (client == null)
-                        return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
-                            .Log(_logger);
+                    {
+                        _logger.LogWarning($"No connected clients for {GetType().Name}. Retrying [{retryCount}/{maxRetries}]...");
+                        await Task.Delay(1000, cancellationToken); // Wait before retrying
+                        continue;
+                        // return ResponseData<ResponseCallTool>.Error(data.RequestID, $"No connected clients for {GetType().Name}.")
+                        //     .Log(_logger);
+                    }
 
                     var invokeTask = client.InvokeAsync<ResponseData<ResponseCallTool>>(Consts.RPC.Client.RunCallTool, data, cancellationToken);
                     var completedTask = await Task.WhenAny(invokeTask, Task.Delay(TimeSpan.FromSeconds(Consts.Hub.TimeoutSeconds), cancellationToken));
                     if (completedTask == invokeTask)
                     {
-                        retryCount++;
                         try
                         {
                             var result = await invokeTask;

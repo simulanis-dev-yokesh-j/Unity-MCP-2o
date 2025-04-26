@@ -1,7 +1,6 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor;
 
@@ -11,14 +10,12 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Assets_Modify",
-            Title = "Modify asset file",
-            Description = @"Modify asset in the project. Not allowed to modify asset in 'Packages/' folder. Please modify it in 'Assets/' folder."
+            "Assets_Read",
+            Title = "Read asset file content",
+            Description = @"Read file asset in the project."
         )]
-        public string Modify
+        public string Read
         (
-            [Description("The asset content. It override the existed asset content.")]
-            SerializedMember content,
             [Description("Path to the asset. See 'Assets_Search' for more details. Starts with 'Assets/'. Priority: 1. (Recommended)")]
             string? assetPath = null,
             [Description("GUID of the asset. Priority: 2.")]
@@ -35,22 +32,14 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (string.IsNullOrEmpty(assetGuid))
                 assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
 
-            if (assetPath.StartsWith("Packages/"))
-                return Error.NotAllowedToModifyAssetInPackages(assetPath);
-
             var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
             if (asset == null)
                 return Error.NotFoundAsset(assetPath, assetGuid);
 
-            var obj = (object)asset;
+            var serialized = Serializer.Anything.Serialize(asset);
+            var json = JsonUtils.Serialize(serialized);
 
-            var result = ReflectionUtils.Modify(ref obj, content).ToString();
-
-            // AssetDatabase.CreateAsset(asset, assetPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            return result.ToString();
+            return $"[Success] Loaded asset at path '{assetPath}'.\n{json}";
 
             //             var instanceID = asset.GetInstanceID();
             //             return @$"[Success] Loaded asset.
