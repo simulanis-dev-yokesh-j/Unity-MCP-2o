@@ -1,7 +1,8 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 #if !UNITY_EDITOR
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+using System.Linq;
+using UnityEngine;
 
 namespace com.IvanMurzak.Unity.MCP.Utils
 {
