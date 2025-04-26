@@ -69,9 +69,9 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 ### Prefabs
 
 - ✅ Instantiate
-- ✅ Create
+- 🔲 Create
 - ✅ Open
-- 🔲 Modify
+- ✅ Modify (GameObject.Modify)
 - ✅ Save
 - ✅ Close
 
@@ -80,11 +80,12 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Assets
 
-- ✅ Search
+- ✅ Create
+- ✅ Find
 - ✅ Refresh
 - 🔲 Import (is it needed?)
-- 🔲 Read
-- 🔲 Modify
+- ✅ Read
+- ✅ Modify
 - ✅ Rename
 - ✅ Delete
 - ✅ Move
@@ -103,9 +104,14 @@ The system is extensible: you can define custom `tool`s directly in your Unity p
 
 ### Materials
 
-- 🔲 Create
-- 🔲 Update
+- ✅ Create
+- ✅ Modify (Assets.Modify)
+- ✅ Read (Assets.Read)
 - ✅ Assign to a Component on a GameObject
+
+### Shader
+
+- ✅ List All
 
 ### Scripts
 
