@@ -85,6 +85,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         HubConnectionState.Connected => true,
                         HubConnectionState.Disconnected => false,
                         HubConnectionState.Reconnecting => true,
+                        HubConnectionState.Connecting => true,
                         _ => false
                     };
 
@@ -102,6 +103,23 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                         HubConnectionState.Connecting => keepConnected
                             ? "Connecting..."
                             : "Disconnected",
+                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
+                    };
+
+                    btnConnectOrDisconnect.text = connectionState switch
+                    {
+                        HubConnectionState.Connected => keepConnected
+                            ? ServerButtonText_Disconnect
+                            : ServerButtonText_Connect,
+                        HubConnectionState.Disconnected => keepConnected
+                            ? ServerButtonText_Stop
+                            : ServerButtonText_Connect,
+                        HubConnectionState.Reconnecting => keepConnected
+                            ? ServerButtonText_Stop
+                            : ServerButtonText_Connect,
+                        HubConnectionState.Connecting => keepConnected
+                            ? ServerButtonText_Stop
+                            : ServerButtonText_Connect,
                         _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
                     };
 
@@ -125,23 +143,6 @@ namespace com.IvanMurzak.Unity.MCP.Editor
                             : USS_IndicatorClass_Disconnected,
                         _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, null)
                     });
-
-                    btnConnectOrDisconnect.text = connectionState switch
-                    {
-                        HubConnectionState.Connected => keepConnected
-                            ? ServerButtonText_Disconnect
-                            : ServerButtonText_Connect,
-                        HubConnectionState.Disconnected => keepConnected
-                            ? ServerButtonText_Stop
-                            : ServerButtonText_Connect,
-                        HubConnectionState.Reconnecting => keepConnected
-                            ? ServerButtonText_Stop
-                            : ServerButtonText_Connect,
-                        HubConnectionState.Connecting => keepConnected
-                            ? ServerButtonText_Stop
-                            : ServerButtonText_Connect,
-                        _ => McpPluginUnity.IsConnected.CurrentValue.ToString() ?? "Unknown"
-                    };
                 })
                 .AddTo(_disposables);
             }).AddTo(_disposables);
