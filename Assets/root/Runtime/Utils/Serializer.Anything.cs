@@ -39,13 +39,6 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                 }
                 if (type.IsClass)
                 {
-                    var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
-                    if (isUnityObject)
-                    {
-                        var unityObject = obj as UnityEngine.Object;
-                        var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
-                        return SerializedMember.FromJson(name, type, instanceIDJson);
-                    }
                     // Handle as class type
                     if (recursive)
                     {
@@ -59,6 +52,13 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     }
                     else
                     {
+                        var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
+                        if (isUnityObject)
+                        {
+                            var unityObject = obj as UnityEngine.Object;
+                            var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
+                            return SerializedMember.FromJson(name, type, instanceIDJson);
+                        }
                         return SerializedMember.FromJson(name, type, JsonUtility.ToJson(obj));
                     }
                 }
