@@ -113,7 +113,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             return base.OnDisconnectedAsync(exception);
         }
 
-        public void RemoveCurrentClient()
+        public void RemoveCurrentClient(ISingleClientProxy client)
         {
             if (!ConnectedClients.TryGetValue(GetType(), out var clients) || clients.IsEmpty)
             {
@@ -128,6 +128,7 @@ namespace com.IvanMurzak.Unity.MCP.Server
             if (clients.TryRemove(connectionId, out _))
             {
                 _logger.LogInformation($"Client '{connectionId}' removed from connected clients for {GetType().Name}.");
+                Context?.Abort();
             }
             else
             {

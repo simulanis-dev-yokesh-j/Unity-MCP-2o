@@ -68,14 +68,14 @@ namespace com.IvanMurzak.Unity.MCP.Server
                         catch (Exception ex)
                         {
                             _logger.LogError(ex, $"Error invoking tool '{data.Name}' on client '{Context?.ConnectionId}': {ex.Message}");
-                            RemoveCurrentClient();
+                            RemoveCurrentClient(client);
                             continue;
                         }
                     }
 
                     // Timeout occurred
                     _logger.LogWarning($"Timeout: Client '{Context?.ConnectionId}' did not respond in {Consts.Hub.TimeoutSeconds} seconds. Removing from ConnectedClients.");
-                    RemoveCurrentClient();
+                    RemoveCurrentClient(client);
                     // Restart the loop to try again with a new client
                 }
                 return ResponseData<ResponseCallTool>.Error(data.RequestID, $"Failed to run tool '{data.Name}' after {maxRetries} retries.")
