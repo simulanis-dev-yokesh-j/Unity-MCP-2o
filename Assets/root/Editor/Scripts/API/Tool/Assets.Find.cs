@@ -12,8 +12,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
     {
         [McpPluginTool
         (
-            "Assets_Search",
-            Title = "Search in the project assets",
+            "Assets_Find",
+            Title = "Find assets in the project",
 Description = @"Search the asset database using the search filter string.
 Available types:
 t:AnimationClip

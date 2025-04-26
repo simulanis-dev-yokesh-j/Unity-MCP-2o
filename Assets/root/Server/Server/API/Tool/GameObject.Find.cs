@@ -10,9 +10,13 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_Find",
-            Title = "Find GameObject by InstanceID"
+            Title = "Find GameObject in opened Prefab or in a Scene"
         )]
-        [Description("Find GameObject in the active scene. Returns metadata about GameObject and its children.")]
+        [Description(@"Finds specific GameObject by provided information.
+First it looks for the opened Prefab, if any Prefab is opened it looks only there ignoring a scene.
+If no opened Prefab it looks into current active scene.
+Returns GameObject infromation and its children.
+Also, it returns Components preview just for the target GameObject.")]
         public Task<CallToolResponse> Find
         (
             [Description("Determines the depth of the hierarchy to include. 0 - means only the target GameObject. 1 - means to include one layer below.")]

@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor.SceneManagement;
 
@@ -13,8 +12,8 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "GameObject_SetParent",
-            Title = "Set parent GameObject in opened scene",
-            Description = @"Set GameObjects in opened scene by 'instanceID' (int) array."
+            Title = "Set parent GameObject in opened Prefab or in a Scene",
+            Description = @"Set GameObjects in opened Prefab or in a Scene by 'instanceID' (int) array."
         )]
         public string SetParent
         (

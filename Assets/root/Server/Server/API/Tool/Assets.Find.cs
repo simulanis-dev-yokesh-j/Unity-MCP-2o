@@ -9,8 +9,8 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
     {
         [McpServerTool
         (
-            Name = "Assets_Search",
-            Title = "Search in the project assets"
+            Name = "Assets_Find",
+            Title = "Find assets in the project"
         )]
         [Description(@"Search the asset database using the search filter string.
 Available types:
@@ -51,7 +51,7 @@ Searching is case insensitive.")]
             string? filter = null
         )
         {
-            return ToolRouter.Call("Assets_Search", arguments =>
+            return ToolRouter.Call("Assets_Find", arguments =>
             {
                 if (filter != null && filter.Length > 0)
                     arguments[nameof(filter)] = filter;

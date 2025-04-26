@@ -1,6 +1,7 @@
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 using System.ComponentModel;
 using com.IvanMurzak.Unity.MCP.Common;
+using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 using UnityEditor;
 
@@ -11,11 +12,13 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "Assets_Modify",
-            Title = "Assets Modify",
-            Description = @"Modify asset in the project. Not allowed to modify asset in '/Packages' folder. Please modify it in '/Assets' folder."
+            Title = "Modify asset file",
+            Description = @"Modify asset in the project. Not allowed to modify asset in 'Packages/' folder. Please modify it in 'Assets/' folder."
         )]
         public string Modify
         (
+            [Description("The asset content. It overrides the existing asset content.")]
+            SerializedMember content,
             [Description("Path to the asset. See 'Assets_Search' for more details. Starts with 'Assets/'. Priority: 1. (Recommended)")]
             string? assetPath = null,
             [Description("GUID of the asset. Priority: 2.")]
@@ -39,13 +42,21 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
             if (asset == null)
                 return Error.NotFoundAsset(assetPath, assetGuid);
 
-            var instanceID = asset.GetInstanceID();
+            var obj = (object)asset;
 
+            var result = ReflectionUtils.Modify(ref obj, content);
 
-            return @$"[Success] Loaded asset.
-# Asset path: {assetPath}
-# Asset GUID: {assetGuid}
-# Asset instanceID: {instanceID}";
+            // AssetDatabase.CreateAsset(asset, assetPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            return result.ToString();
+
+            //             var instanceID = asset.GetInstanceID();
+            //             return @$"[Success] Loaded asset.
+            // # Asset path: {assetPath}
+            // # Asset GUID: {assetGuid}
+            // # Asset instanceID: {instanceID}";
         });
     }
 }

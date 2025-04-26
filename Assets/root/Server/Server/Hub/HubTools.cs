@@ -11,20 +11,17 @@ using R3;
 
 namespace com.IvanMurzak.Unity.MCP.Server
 {
-    public class HubTools : Hub, IToolRunner
+    public class HubTools : BaseHub<HubTools>, IToolRunner
     {
         private static readonly ConcurrentDictionary<string, TaskCompletionSource<string>> _pendingRequests = new();
 
-        readonly ILogger<HubTools> _logger;
         readonly IMcpRunner _localApp;
         readonly ILocalServer? _localServer;
         readonly IRemoteServer? _remoteServer;
-        readonly CompositeDisposable _disposables = new();
 
-        public HubTools(ILogger<HubTools> logger, IMcpRunner localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
+        public HubTools(ILogger<HubTools> logger, IHubContext<HubTools> hubContext, IMcpRunner localApp, IRemoteServer? remoteServer = null, ILocalServer? localServer = null)
+            : base(logger, hubContext, pingTimeout: TimeSpan.FromSeconds(1))
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _logger.LogTrace("Ctor.");
             _localApp = localApp ?? throw new ArgumentNullException(nameof(localApp));
             _remoteServer = remoteServer;
             _localServer = localServer;

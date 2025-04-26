@@ -11,8 +11,11 @@ namespace com.IvanMurzak.Unity.MCP.Common
 {
     public class RemoteServer : IRemoteServer
     {
-        protected readonly ILogger<RemoteServer> _logger;
-        protected readonly IConnectionManager _connectionManager;
+        readonly ILogger<RemoteServer> _logger;
+        readonly IConnectionManager _connectionManager;
+        readonly CompositeDisposable _serverEventsDisposables = new();
+        readonly IDisposable _hubConnectionDisposable;
+        readonly string guid = System.Guid.NewGuid().ToString();
 
         public ReadOnlyReactiveProperty<HubConnectionState> ConnectionState => throw new NotImplementedException();
         public ReadOnlyReactiveProperty<bool> KeepConnected => throw new NotImplementedException();
@@ -23,6 +26,36 @@ namespace com.IvanMurzak.Unity.MCP.Common
             _logger.LogTrace("Ctor.");
             _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
             _connectionManager.Endpoint = Consts.Hub.DefaultEndpoint + Consts.Hub.LocalServer;
+
+            _hubConnectionDisposable = connectionManager.HubConnection
+                .Subscribe(SubscribeOnServerEvents);
+        }
+
+        void SubscribeOnServerEvents(HubConnection? hubConnection)
+        {
+            _logger.LogTrace("Clearing server events disposables.");
+            _serverEventsDisposables.Clear();
+
+            if (hubConnection == null)
+                return;
+
+            _logger.LogTrace("Subscribing to server events.");
+
+            // hubConnection.On<string, string>(Consts.Hub.Ping,
+            //     ping => ping == Consts.Hub.Ping
+            //         ? Consts.Hub.Pong
+            //         : ping)
+            //     .AddTo(_serverEventsDisposables);
+
+            hubConnection.On<string, string>(Consts.Hub.Ping,
+                ping =>
+                {
+                    _logger.LogTrace("ping " + guid);
+                    return ping == Consts.Hub.Ping
+                        ? Consts.Hub.Pong
+                        : ping;
+                })
+                .AddTo(_serverEventsDisposables);
         }
 
         public Task<ResponseData<string>> NotifyAboutUpdatedTools(CancellationToken cancellationToken = default)
@@ -56,6 +89,9 @@ namespace com.IvanMurzak.Unity.MCP.Common
 
         public Task DisposeAsync()
         {
+            _serverEventsDisposables.Dispose();
+            _hubConnectionDisposable.Dispose();
+
             return _connectionManager.DisposeAsync();
         }
     }

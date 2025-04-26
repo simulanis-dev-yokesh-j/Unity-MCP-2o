@@ -15,6 +15,8 @@ namespace com.IvanMurzak.Unity.MCP.Common
             public const string LocalServer = "/mcp/local-server";
             public const string RemoteApp = "/mcp/remote-app";
             public const float TimeoutSeconds = 10f;
+            public const string Ping = "Ping";
+            public const string Pong = "Pong";
         }
         public static partial class RPC
         {

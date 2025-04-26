@@ -10,7 +10,7 @@ namespace com.IvanMurzak.Unity.MCP.Server.API
         [McpServerTool
         (
             Name = "GameObject_DestroyComponents",
-            Title = "Destroy Components from a GameObject"
+            Title = "Destroy Components from a GameObject in opened Prefab or in a Scene"
         )]
         [Description("Destroy one or many components from target GameObject.")]
         public Task<CallToolResponse> DestroyComponents

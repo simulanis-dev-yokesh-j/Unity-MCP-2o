@@ -27,10 +27,10 @@ namespace com.IvanMurzak.Unity.MCP.Server
                 builder.Services.AddSignalR(configure =>
                 {
                     configure.EnableDetailedErrors = true;
-                    configure.MaximumReceiveMessageSize = 1024 * 1024 * 10; // 10 MB
-                    configure.ClientTimeoutInterval = TimeSpan.FromMinutes(5);
-                    configure.KeepAliveInterval = TimeSpan.FromSeconds(15);
-                    configure.HandshakeTimeout = TimeSpan.FromSeconds(15);
+                    configure.MaximumReceiveMessageSize = 1024 * 1024 * 256; // 256 MB
+                    configure.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+                    configure.KeepAliveInterval = TimeSpan.FromSeconds(1);
+                    configure.HandshakeTimeout = TimeSpan.FromSeconds(5);
                     configure.JsonSerialize(JsonUtils.JsonSerializerOptions);
                 });
 

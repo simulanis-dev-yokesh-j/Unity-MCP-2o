@@ -29,6 +29,15 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             public static string NotAllowedToModifyAssetInPackages(string assetPath)
                 => $"[Error] Not allowed to modify asset in '/Packages' folder. Please modify it in '/Assets' folder. Path: '{assetPath}'.";
+
+            public static string EmptyAssetPath()
+                => "[Error] Asset path is empty. Please provide a valid path. Sample: \"Assets/Scripts/MyScript.cs\".";
+            public static string AssetPathMustStartWithAssets(string assetPath)
+                => $"[Error] Asset path must start with 'Assets/'. Path: '{assetPath}'.";
+            public static string AssetPathMustEndWithMat(string assetPath)
+                => $"[Error] Asset path must end with '.mat'. Path: '{assetPath}'.";
+            public static string ShaderNotFound(string shaderName)
+                => $"[Error] Shader not found. Name: '{shaderName}'. Please check if the shader is in the project and the name is correct.";
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using com.IvanMurzak.Unity.MCP.Common;
 using com.IvanMurzak.Unity.MCP.Common.Data.Unity;
 using com.IvanMurzak.Unity.MCP.Common.Data.Utils;
-using com.IvanMurzak.Unity.MCP.Editor.Utils;
 using com.IvanMurzak.Unity.MCP.Utils;
 
 namespace com.IvanMurzak.Unity.MCP.Editor.API
@@ -14,17 +13,16 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
         [McpPluginTool
         (
             "GameObject_ModifyComponent",
-            Title = "Modify Component at GameObject",
+            Title = "Modify Component at GameObject in opened Prefab or in a Scene",
             Description = "Modify existed component at GameObject."
         )]
         public string ModifyComponent
         (
             [Description(@"Json Object with required readonly 'instanceID' and 'type' fields.
-Any other field would be used for changing value in the target component.
-Only required to modify properties and fields and with 'Type' field at the root.
-It should respect the original structure of the component.
-Nested 'instanceID' fields and properties are references to UnityEngine.Object types.
-The target reference instance could be located in project assets, in the scene or in the prefabs.")]
+Each field and property requires to have 'type' and 'name' fields to identify the exact modification target.
+Follow the object schema to specify what to change, ignore values that should not be modified.
+Any unknown or wrong located fields and properties will be ignored.
+Check the result of this command to see what was changed. The ignored fields and properties will not be listed.")]
             ComponentData data,
             [Description("GameObject by 'instanceID' (int). Priority: 1. (Recommended)")]
             int instanceID = 0,

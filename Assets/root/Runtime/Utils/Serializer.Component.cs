@@ -76,72 +76,11 @@ namespace com.IvanMurzak.Unity.MCP.Utils
                     isEnabled = BuildIsEnabled(component),
                     instanceID = component.GetInstanceID()
                 };
-                var componentType = component.GetType();
+
                 var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-                // Process fields
-                foreach (var field in componentType.GetFields(flags)
-                    .Where(field => field.GetCustomAttribute<ObsoleteAttribute>() == null)
-                    .Where(field => field.IsPublic || field.IsPrivate && field.GetCustomAttribute<SerializeField>() != null))
-                {
-                    var value = field.GetValue(component);
-                    var type = field.FieldType;
-
-                    result.fields ??= new();
-
-                    if (value == null)
-                    {
-                        result.fields.Add(SerializedMember.FromJson(field.Name, type, "null"));
-                        continue;
-                    }
-
-                    // The type is a UnityEngine.Object type, so it should be handled differently.
-                    var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
-                    if (isUnityObject)
-                    {
-                        var unityObject = value as UnityEngine.Object;
-                        var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
-                        result.fields.Add(SerializedMember.FromJson(field.Name, type, instanceIDJson));
-                    }
-                    else
-                    {
-                        result.fields.Add(SerializedMember.FromJson(field.Name, type, JsonUtility.ToJson(value)));
-                    }
-                }
-
-                // Process properties
-                foreach (var prop in componentType.GetProperties(flags)
-                    .Where(prop => prop.GetCustomAttribute<ObsoleteAttribute>() == null)
-                    .Where(prop => prop.CanRead))
-                {
-                    try
-                    {
-                        var value = prop.GetValue(component);
-                        var type = prop.PropertyType;
-
-                        result.properties ??= new();
-
-                        if (value == null)
-                        {
-                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, "null"));
-                            continue;
-                        }
-
-                        // The type is a UnityEngine.Object type, so it should be handled differently.
-                        var isUnityObject = typeof(UnityEngine.Object).IsAssignableFrom(type);
-                        if (isUnityObject)
-                        {
-                            var unityObject = value as UnityEngine.Object;
-                            var instanceIDJson = JsonUtility.ToJson(new InstanceID(unityObject.GetInstanceID()));
-                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, instanceIDJson));
-                        }
-                        else
-                        {
-                            result.properties.Add(SerializedMember.FromJson(prop.Name, type, JsonUtility.ToJson(value)));
-                        }
-                    }
-                    catch { /* skip inaccessible properties */ }
-                }
+                result.fields = Anything.SerializeFields(component, flags);
+                result.properties = Anything.SerializeProperties(component, flags);
 
                 return result;
             }

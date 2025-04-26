@@ -3,29 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using com.IvanMurzak.Unity.MCP.Common;
-using com.IvanMurzak.Unity.MCP.Editor.API;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace com.IvanMurzak.Unity.MCP.Editor.Utils
+namespace com.IvanMurzak.Unity.MCP.Utils
 {
-    public static class GameObjectUtils
+    public static partial class GameObjectUtils
     {
-        public static GameObject[] FindRootGameObjects(Scene? scene = null)
-        {
-            if (scene == null)
-            {
-                var rootGos = UnityEditor.SceneManagement.EditorSceneManager
-                    .GetActiveScene()
-                    .GetRootGameObjects();
 
-                return rootGos;
-            }
-            else
-            {
-                return scene.Value.GetRootGameObjects();
-            }
-        }
         public static GameObject FindBy(int? instanceID, string? path, string? name, out string error)
         {
             path = StringUtils.TrimPath(path);
@@ -37,7 +22,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                 go = FindByInstanceID(instanceID.Value);
                 if (go == null)
                 {
-                    error = Tool_GameObject.Error.NotFoundGameObjectWithInstanceID(instanceID.Value);
+                    error = $"[Error] Not found GameObject witn instanceID '{instanceID.Value}'";
                     return null;
                 }
             }
@@ -47,7 +32,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                 go = FindByPath(path);
                 if (go == null)
                 {
-                    error = Tool_GameObject.Error.NotFoundGameObjectAtPath(path);
+                    error = $"[Error] Not found GameObject at path '{path}'";
                     return null;
                 }
             }
@@ -57,7 +42,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
                 go = GameObject.Find(name);
                 if (go == null)
                 {
-                    error = Tool_GameObject.Error.NotFoundGameObjectWithName(name);
+                    error = $"[Error] Not found GameObject with name '{name}'";
                     return null;
                 }
             }
@@ -70,17 +55,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.Utils
             error = null;
             return go;
         }
-        public static GameObject FindByInstanceID(int instanceID)
-        {
-            if (instanceID == 0)
-                return null;
 
-            var obj = UnityEditor.EditorUtility.InstanceIDToObject(instanceID);
-            if (obj is not GameObject go)
-                return null;
-
-            return go;
-        }
         public static GameObject FindByPath(string path, GameObject? root = null)
         {
             path = StringUtils.TrimPath(path);
