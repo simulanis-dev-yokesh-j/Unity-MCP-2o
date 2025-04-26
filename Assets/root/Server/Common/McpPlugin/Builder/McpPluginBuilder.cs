@@ -32,6 +32,7 @@ namespace com.IvanMurzak.Unity.MCP.Common
                 var hubConnection = new HubConnectionBuilder()
                     .WithUrl(endpoint)
                     .WithAutomaticReconnect()
+                    .WithServerTimeout(TimeSpan.FromSeconds(1))
                     .AddJsonProtocol(options =>
                     {
                         // options.PayloadSerializerOptions.PropertyNamingPolicy = null;

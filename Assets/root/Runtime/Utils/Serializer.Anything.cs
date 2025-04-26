@@ -27,7 +27,7 @@ namespace com.IvanMurzak.Unity.MCP.Utils
 
                 var isStruct = type.IsValueType && !type.IsPrimitive && !type.IsEnum;
 
-                if (type.IsPrimitive)
+                if (type.IsPrimitive || type == typeof(string) || type == typeof(decimal) || type == typeof(DateTime))
                 {
                     // Handle as primitive type
                     return SerializedMember.FromPrimitive(name, type, obj);
