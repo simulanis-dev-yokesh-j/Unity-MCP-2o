@@ -44,7 +44,7 @@ namespace com.IvanMurzak.Unity.MCP.Editor.API
 
             var obj = (object)asset;
 
-            var result = ReflectionUtils.Modify(ref obj, content).ToString();
+            var result = ReflectionUtils.Modify(ref obj, content);
 
             // AssetDatabase.CreateAsset(asset, assetPath);
             AssetDatabase.SaveAssets();
